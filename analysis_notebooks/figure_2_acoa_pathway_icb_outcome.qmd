@@ -31,7 +31,7 @@ fouraminobutyrate, glutarate, lysine and pyruvate represent different parts of t
 
 ```{r}
 #| warning: false
-#| include: false
+#| echo: false
 #| label: load_data
 
 acoa_df <- readRDS("../data/cleaned_data/acoa_data.rds")
@@ -46,7 +46,6 @@ Overall Survival (OS) by above/below median ACoA pathway gene abundance.
 
 ```{r}
 #| warning: false
-#| include: false
 #| label: panel_a_os
 
 # cut the distribution of pyruvate into above/below median:
@@ -72,15 +71,12 @@ p <- ggsurvplot(fit,  size = 1,  # change line size
            xlim = c(0,48)
            ) 
 print(p)
-g_to_save <- ggsave_survival_workaround(p)
-ggsave(file="survival_lachno_clostr_years.svg", plot=g_to_save, width=10, height=8)
 
 ```
 Same plot but looking at PFS instead of OS:
 
 ```{r}
 #| warning: false
-#| include: false
 #| label: panel_a_pfs
 
 
@@ -101,9 +97,6 @@ p <- ggsurvplot(fit,  size = 1,  # change line size
            tables.theme =  theme(aspect.ratio = 0.2)
            ) 
 print(p)
-g_to_save <- ggsave_survival_workaround(p)
-ggsave(file="survival_lachno_clostr_years.svg", plot=g_to_save, width=10, height=8)
-
 ```
 
 ### Panel B
@@ -112,7 +105,6 @@ Restricted cubic spline, adjusted for age, diagnosis and performance with above/
 
 ```{r}
 #| warning: false
-#| include: false
 #| label: panel_b
 
 model_spline_os <- coxph(Surv(tt_os_d, event_os) ~ rms::rcs(pyruvate,4) + age10 + factor(cohort) + ecog, acoa_df)
@@ -133,7 +125,6 @@ ggplot(spline_data, aes(x = buty)) +
   labs(x = "Pyruvate-pathway genes present", y = "Hazard ratio") +
   theme_minimal()
 
-
 ```
 
 ## Taxonomy breakdown plots:
@@ -146,7 +137,6 @@ PCoA shows relationship between ACoA pathways gene abundance and PCA axes.
 
 ```{r}
 #| warning: false
-#| include: false
 #| label: panel_c
 
 ps <- readRDS("../data/cleaned_data/plotting_phyloseq.rds")
@@ -171,7 +161,6 @@ ACoA pathway abundance vs relative abundance of Lachnospiraceae and Reuminococca
 
 ```{r}
 #| warning: false
-#| include: false
 #| label: panel_d_lachno
 
 # We will take the information we need out the phyloseq, and convert it to a dataframe for plotting: 
@@ -196,7 +185,6 @@ compare_family %>%
 ```
 ```{r}
 #| warning: false
-#| include: false
 #| label: panel_d_rumino
 
 
@@ -218,7 +206,6 @@ Univariate Cox regression analyses PFS relationship to ACoA gene abundance in ex
 
 ```{r}
 #| warning: false
-#| include: false
 #| label: panel_e
 
 
