@@ -1,0 +1,100 @@
+[
+  {
+    "objectID": "figure_2_acoa_pathway_icb_outcome.html",
+    "href": "figure_2_acoa_pathway_icb_outcome.html",
+    "title": " Figure 2 - Butyrate Production Capacity from ACoA Pathway and ICB outcome",
+    "section": "",
+    "text": "Here are the column names of the data we are plotting:\nfouraminobutyrate, glutarate, lysine and pyruvate represent different parts of the butyrate synthesis pathway."
+  },
+  {
+    "objectID": "figure_2_acoa_pathway_icb_outcome.html#survival-plots-as-a-function-of-pyruvate-gene-abundance",
+    "href": "figure_2_acoa_pathway_icb_outcome.html#survival-plots-as-a-function-of-pyruvate-gene-abundance",
+    "title": " Figure 2 - Butyrate Production Capacity from ACoA Pathway and ICB outcome",
+    "section": "Survival plots as a function of pyruvate gene abundance:",
+    "text": "Survival plots as a function of pyruvate gene abundance:\n\nPanel A\nOverall Survival (OS) by above/below median ACoA pathway gene abundance.\nSame plot but looking at PFS instead of OS:\n\n\nPanel B\nRestricted cubic spline, adjusted for age, diagnosis and performance with above/below median pathway abundance."
+  },
+  {
+    "objectID": "figure_2_acoa_pathway_icb_outcome.html#taxonomy-breakdown-plots",
+    "href": "figure_2_acoa_pathway_icb_outcome.html#taxonomy-breakdown-plots",
+    "title": " Figure 2 - Butyrate Production Capacity from ACoA Pathway and ICB outcome",
+    "section": "Taxonomy breakdown plots:",
+    "text": "Taxonomy breakdown plots:\nWe will now plot some microbiome data, using a phyloseq object that contains our sequencing data. This object contains a list of the taxonomy of organisms identified, the abundance in each sample, and any associated sample specific metadata in one object.\n\nPanel C\nPCoA shows relationship between ACoA pathways gene abundance and PCA axes."
+  },
+  {
+    "objectID": "figure_2_acoa_pathway_icb_outcome.html#panel-d",
+    "href": "figure_2_acoa_pathway_icb_outcome.html#panel-d",
+    "title": " Figure 2 - Butyrate Production Capacity from ACoA Pathway and ICB outcome",
+    "section": "Panel D",
+    "text": "Panel D\nACoA pathway abundance vs relative abundance of Lachnospiraceae and Reuminococcaceae"
+  },
+  {
+    "objectID": "figure_2_acoa_pathway_icb_outcome.html#panel-e",
+    "href": "figure_2_acoa_pathway_icb_outcome.html#panel-e",
+    "title": " Figure 2 - Butyrate Production Capacity from ACoA Pathway and ICB outcome",
+    "section": "Panel E",
+    "text": "Panel E\nUnivariate Cox regression analyses PFS relationship to ACoA gene abundance in external cohort."
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "About this site"
+  },
+  {
+    "objectID": "figure_1_hazard_ratio_fiber.html",
+    "href": "figure_1_hazard_ratio_fiber.html",
+    "title": " Figure 1 - Hazard Ratio Analysis of Fiber Intake",
+    "section": "",
+    "text": "The data we are visualizing here has the following structure:"
+  },
+  {
+    "objectID": "figure_1_hazard_ratio_fiber.html#panel-a",
+    "href": "figure_1_hazard_ratio_fiber.html#panel-a",
+    "title": " Figure 1 - Hazard Ratio Analysis of Fiber Intake",
+    "section": "Panel A",
+    "text": "Panel A\nMortality Hazard for PFS by daily average fiber intake, visualized via partial smoothing spline. Ticks along the x axis represent individual patients."
+  },
+  {
+    "objectID": "figure_1_hazard_ratio_fiber.html#panel-b",
+    "href": "figure_1_hazard_ratio_fiber.html#panel-b",
+    "title": " Figure 1 - Hazard Ratio Analysis of Fiber Intake",
+    "section": "Panel B",
+    "text": "Panel B\nMortality Hazard for OS by daily average fiber intake, visualized via partial smoothing spline. Ticks along the x axis represent individual patients."
+  },
+  {
+    "objectID": "figure_1_hazard_ratio_fiber.html#panel-c",
+    "href": "figure_1_hazard_ratio_fiber.html#panel-c",
+    "title": " Figure 1 - Hazard Ratio Analysis of Fiber Intake",
+    "section": "Panel C",
+    "text": "Panel C\nKaplan-Meier PFS by daily average fiber intake, two groups &gt;= 15 grams/day."
+  },
+  {
+    "objectID": "figure_1_hazard_ratio_fiber.html#panel-d",
+    "href": "figure_1_hazard_ratio_fiber.html#panel-d",
+    "title": " Figure 1 - Hazard Ratio Analysis of Fiber Intake",
+    "section": "Panel D",
+    "text": "Panel D\nKaplan-Meier OS by daily average fiber intake, two groups &gt;= 15 grams/day."
+  },
+  {
+    "objectID": "figure_1_hazard_ratio_fiber.html#panel-e",
+    "href": "figure_1_hazard_ratio_fiber.html#panel-e",
+    "title": " Figure 1 - Hazard Ratio Analysis of Fiber Intake",
+    "section": "Panel E",
+    "text": "Panel E\nUnivariate HRs for PFS among clinically relavant subgroups."
+  },
+  {
+    "objectID": "figure_1_hazard_ratio_fiber.html#panel-f",
+    "href": "figure_1_hazard_ratio_fiber.html#panel-f",
+    "title": " Figure 1 - Hazard Ratio Analysis of Fiber Intake",
+    "section": "Panel F",
+    "text": "Panel F\nMultivariate HR for PFS adjusted for age, diagnosis, and performance status."
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": ".",
+    "section": "",
+    "text": "This is a Quarto website.\nTo learn more about Quarto websites visit https://quarto.org/docs/websites."
+  }
+]
