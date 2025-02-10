@@ -139,7 +139,7 @@ PCoA shows relationship between ACoA pathways gene abundance and PCA axes.
 #| warning: false
 #| label: panel_c
 
-ps <- readRDS("../data/cleaned_data/plotting_phyloseq.rds")
+ps <- readRDS("../data/cleaned_data/plotting_phyloseq_order.rds")
 
 ps %>%
   ps_filter(SAMPID %in% acoa_df$SAMPID) %>%
@@ -150,8 +150,8 @@ ps %>%
            plot_taxa = c("Lachnospiraceae", "Bacteroidales_order", "Ruminococcaceae")) +
   scale_fill_viridis(option="B", begin = 0, end=1) +
   theme_classic() + 
-  xlim(c(-.25, .75)) +
-  ylim(c(-.3, .6))
+  scale_x_reverse() + 
+  scale_y_reverse()
 
 ```
 
