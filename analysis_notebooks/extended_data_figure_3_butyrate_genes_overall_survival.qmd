@@ -1,0 +1,111 @@
+--- 
+title: |
+  <img src="./images/fiber_beaker_image_food.jpg" width="250px" style="margin-left:5%; margin-right:5%"/>
+  Extended Figure 3 - Butyrate Gene Abundance and Hazard Ration, and Univatiate Analysis of Butyrate Pathway.
+format:
+  html:
+    css: styles.css
+---
+
+
+
+```{r}
+#| echo: false
+#| warning: false
+#| include: false
+#| label: library_data_imports
+
+library(tidyverse)
+library(ggplot2)
+library(phyloseq)
+library(survival)
+library(survminer)
+library(viridis)
+library(yingtools2)
+source("utility_funcs.R")
+
+
+```
+
+Some of these cells will be executable using only the public data.  These section panels <span class="executable" > Look like this</span>.  Other sections rely on data we are not able to make public (for example patient-level survival data).  These section panels <span class="nogo" > Look like this</span>.
+
+
+```{r}
+#| warning: false
+#| echo: false
+#| label: load_data
+
+acoa_df <- readRDS("../data/cleaned_data/acoa_data.rds")
+colnames(acoa_df)
+```
+
+## Survival plots as a function of pyruvate gene abundance:
+
+<h2 class="nogo" >Panel A</h2>
+
+Hazard Ratio of Overall Survival Evaluated with respect to Butyrate production gene RPKM. 
+
+```{r}
+#| warning: false
+#| echo: false
+#| label: hr_spline_butyrate_genes
+
+os_butyrate <-  coxph(Surv(tt_os_d, event_os)~rms::rcs(total,4)+age10+factor(cohort)+ecog,, data = acoa_df)
+ptemp <- termplot(os_butyrate, se=T, plot=F)
+buterm <- ptemp$total
+center <- buterm$y[which(buterm$y == median(buterm$y))]
+ytemp <- buterm$y + outer(buterm$se, c(0, -1.96, 1.96), '*')
+exp_ytemp <- exp(ytemp - center)
+
+spline_data <- data.frame(buty = buterm$x, Estimate = exp_ytemp[,1],
+                          Lower = exp_ytemp[,2], Upper = exp_ytemp[,3])
+
+ggplot(spline_data, aes(x = buty)) +
+  geom_ribbon(aes(ymin = Lower, ymax = Upper), fill = "grey80", alpha = 0.5) +
+  geom_line(aes(y = Estimate), color = "blue") +
+  geom_rug(sides = "b") +  # Add rug plot at the bottom ('b') of the plot
+  scale_y_log10() +  # Log scale for y-axis
+  labs(x = "Total butyrate-pathway genes present", y = "Hazard ratio") +
+  theme_minimal()
+```
+<h2 class="nogo" >Panel B</h2>
+
+Univariate model of OS as a function of total butyrate genes, and each major sub-pathway in the butyrate production gene pathways. 
+
+```{r}
+#| warning: false
+#| echo: false
+#| label: univariate_butyrate_pathway
+
+univ2 <- function(cox, k=1, l=1){
+  coef <- exp(coef(cox))
+  confint <- exp(confint(cox))
+  p <- summary(cox)$coefficients[,5]
+  out <- data.frame("HR"=round(coef,4), round(confint,4), "p"=round(p,9))
+  q <- nrow(out)
+  if(l== -1){out <- out[q,]
+  }else{out <- out[k:l,]}
+  return(out)
+
+}
+
+forest_os <- rbind(
+univ2(coxph(Surv(tt_os_d, event_os)~log(total)+age10+cohort+ecog, acoa_df)),
+univ2(coxph(Surv(tt_os_d, event_os)~log(pyruvate)+age10+cohort+ecog, acoa_df)),
+univ2(coxph(Surv(tt_os_d, event_os)~log(lysine+0.0000001)+age10+cohort+ecog, acoa_df)),
+univ2(coxph(Surv(tt_os_d, event_os)~log(fouraminobutyrate+0.000001)+age10+cohort+ecog, acoa_df)),
+univ2(coxph(Surv(tt_os_d, event_os)~log(gluatarate+0.000001)+age10+cohort+ecog, acoa_df)))
+
+forest_os %>%
+  rename_with(~ c("HR", "CI_low", "CI_high", "p"), .cols = everything()) %>%
+  rownames_to_column("scfa") %>%
+  ggplot() +
+  geom_vline(xintercept=1, lty=2, size=0.25)+
+  geom_point(aes(x=HR, y=fct_reorder(scfa, HR, .desc = T)))+
+  geom_linerange(aes(xmin=CI_low, xmax=CI_high, y=fct_reorder(scfa, HR)), size=0.5) +
+  scale_x_continuous(transform = "log", breaks=round(exp(seq(-2,1.5,0.5)),1)) +
+  theme_classic() +
+  coord_cartesian(xlim=exp(c(-2, 0.3))) + 
+  labs(y = "")
+  
+```

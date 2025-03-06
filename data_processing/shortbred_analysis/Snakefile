@@ -1,0 +1,136 @@
+'''
+This Snakefile does:
+* Build marker protein reference (target proteins in pathways we are interested in)
+* Align the metagenomic reads to the above reference
+
+snakemake -j 999 --use-conda --cluster-config cluster.json --cluster 'bsub -n {cluster.threads}  -R {cluster.memory} -W {cluster.walltime} -e {cluster.error} -o {cluster.output}'
+'''
+
+from glob import glob
+import json
+
+
+sample_dir = '/home/daia1/my_workdir/samples'
+sample_folder_name = glob( '/home/daia1/my_workdir/samples/*SGP*_R1.fastq.gz')
+sample_names = [folder.split('/')[-1].split('_')[0] for folder in sample_folder_name]
+# use the avaialable *.fastq files in the sampledir
+print(sample_names)
+###############################################################################################
+# Butyrate acid
+###############################################################################################
+rule cat_preprocessed:
+    input:
+        R1='{sample_dir}/{sample}_R1.fastq.gz', 
+        R2='{sample_dir}/{sample}_R2.fastq.gz'
+    output:
+        '{sample_dir}/{sample}_cat.fastq.gz'
+    shell:
+        'cat {input.R1} {input.R2} > {output[0]}'
+
+rule cat:
+    input:
+        expand('{sample_dir}/{sample}_cat.fastq.gz', sample_dir = sample_dir, sample = sample_names)
+# build marker protein reference using shortbred's indentify script
+
+rule builld_marker_ref:
+    input:
+        identify_script='/home/daia1/my_workdir/APPS/shortbred/shortbred_identify.py',
+        target_fa='/home/daia1/my_workdir/other_pipeline/butyrate_gene_quantify/data/butyrate_pw_genes_aa_seqs.fa',
+        uniref_ref='/home/daia1/my_workdir/MelodyCART/shortred_analysis/shortbred_stuff/uniref90_nosc.fasta',
+        usearch_path='/home/daia1/my_workdir/APPS/usearch11.0.667_i86linux32',
+        tmp_dir='/home/daia1/my_workdir/other_pipeline/butyrate_gene_quantify/tmp'
+    output:
+        '/home/daia1/my_workdir/other_pipeline/butyrate_gene_quantify/data/butyrate_pw_genes_markers.fa'
+    conda:
+        'envs/py2.yaml'
+    threads:
+        32
+    shell:
+        '''
+        python {input.identify_script} --goi {input.target_fa} --ref {input.uniref_ref} --markers {output} --usearch {input.usearch_path} --tmp {input.tmp_dir} --threads {threads}
+        '''
+rule butymarker:
+    input: '/home/daia1/my_workdir/other_pipeline/butyrate_gene_quantify/data/butyrate_pw_genes_markers.fa'
+
+# Align the reads to the marker protein database using the quantify script
+
+rule quantify_reads:
+    input:
+        quantify_script='/home/daia1/my_workdir/APPS/shortbred/shortbred_quantify.py',
+        markers='/home/daia1/my_workdir/other_pipeline/butyrate_gene_quantify/data/butyrate_pw_genes_markers.fa',
+        usearch_path='/home/daia1/my_workdir/APPS/usearch11.0.667_i86linux32',  
+        #tblastn_path='/home/daia1/anaconda3/envs/shotgun2/bin/tblastn',
+        #makeblastdb_path='/home/daia1/anaconda3/envs/shotgun2/bin/makeblastdb',
+        reads='{sample_dir}/{sample}_cat.fastq.gz'
+    output:
+        '{sample_dir}/{sample}_butyrate.txt'
+    conda:
+        'envs/py2.yaml'
+    threads:
+        32
+    params:
+        tmp_quant='{sample_dir}/butyrate_tmp_{sample}'
+    shell:
+        '''
+        python {input.quantify_script} --markers {input.markers} --search_program usearch \
+            --usearch {input.usearch_path} --threads {threads} \
+            --tmp {params.tmp_quant} --wgs {input.reads} --results {output}
+        '''
+#--tblastn {input.tblastn_path} --makeblastdb {input.makeblastdb_path}
+rule buty:
+    input:
+        expand('{sample_dir}/{sample}_butyrate.txt', sample_dir = sample_dir, sample = sample_names)
+
+
+###############################################################################################
+# Secondary bile acid
+###############################################################################################
+'''       
+rule bileacid_marker_ref:
+    input:
+        identify_script='/home/daia1/my_workdir/APPS/biobakery-shortbred-918294a74d70/shortbred_identify.py',
+        bsh_fa='/home/daia1/my_workdir/other_pipeline/butyrate_gene_quantify/data/BSH_aa_seq.fasta',
+        uniref_ref='/home/daia1/my_workdir/ref_db/uniref/uniref90_fasta/uniref90.fasta',
+        usearch_path='/home/daia1/my_workdir/APPS/usearch11.0.667_i86linux32',
+        tmp_dir='/home/daia1/my_workdir/other_pipeline/butyrate_gene_quantify/tmp_bile_bsh'
+    output:
+        bsh_marker='/home/daia1/my_workdir/other_pipeline/butyrate_gene_quantify/data/bsh_markers.fa',
+        bai_markers='/home/daia1/my_workdir/other_pipeline/butyrate_gene_quantify/data/bai_markers.fa'
+    conda:
+        'envs/py2.yaml'
+    threads:
+        10
+    shell:
+        '
+        {input.identify_script} --goi {input.bsh_fa} --ref {input.uniref_ref} --markers {output.bsh_marker} --search_program usearch --usearch {input.usearch_path} --tmp {input.tmp_dir}; 
+        '
+#{input.identify_script} --goi {input.target_fa} --ref {input.uniref_ref} --markers {output} --search_program usearch --usearch {input.usearch_path} --tmp {input.tmp_dir} 
+
+
+rule quantify_secondary_bile_acid:
+    input:
+        quantify_script='/home/daia1/my_workdir/APPS/biobakery-shortbred-918294a74d70/shortbred_quantify.py',
+        markers='/home/daia1/my_workdir/other_pipeline/butyrate_gene_quantify/data/bai_markers.fa',
+        usearch_path='/home/daia1/my_workdir/APPS/usearch11.0.667_i86linux32',  
+        tblastn_path='/home/daia1/anaconda3/envs/shotgun2/bin/tblastn',
+        makeblastdb_path='/home/daia1/anaconda3/envs/shotgun2/bin/makeblastdb',
+        reads='{sample_dir}/{sample}.fastq'
+    output:
+        '{sample_dir}/{sample}_short_bile.txt'
+    conda:
+        'envs/py2.yaml'
+    threads:
+        10
+    params:
+        tmp_quant='{sample_dir}/short_tmp_bile_{sample}'
+    shell:
+        '
+        python {input.quantify_script} --markers {input.markers} --search_program usearch \
+            --usearch {input.usearch_path} --threads {threads} \
+            --tblastn {input.tblastn_path} --makeblastdb {input.makeblastdb_path} \
+            --tmp {params.tmp_quant} --wgs {input.reads} --results {output}
+        '
+'''
+rule bile:
+    input:'/home/daia1/my_workdir/other_pipeline/butyrate_gene_quantify/data/bsh_markers.fa'
+       # expand('{sample_dir}/{sample}_short_bile.txt', sample = 'FMT_92EE', sample_dir = sample_dir)

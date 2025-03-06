@@ -1,0 +1,110 @@
+--- 
+title: |
+  <img src="./images/fiber_beaker_image_food.jpg" width="250px" style="margin-left:5%; margin-right:5%"/>
+  Extended Figure 4 - A deeper dive into relationship between ACOA pathway abundance and microbiome taxonomy.
+format:
+  html:
+    css: styles.css
+---
+
+
+
+```{r}
+#| echo: false
+#| warning: false
+#| include: false
+#| label: library_data_imports
+
+library(tidyverse)
+library(ggplot2)
+library(phyloseq)
+library(microViz)
+library(survival)
+library(survminer)
+library(viridis)
+library(yingtools2)
+source("utility_funcs.R")
+
+
+```
+
+Some of these cells will be executable using only the public data.  These section panels <span class="executable" > Look like this</span>.  Other sections rely on data we are not able to make public (for example patient-level survival data).  These section panels <span class="nogo" > Look like this</span>.
+
+
+```{r}
+#| warning: false
+#| echo: false
+#| label: load_data
+
+ps <- readRDS("../data/cleaned_data/plotting_phyloseq_deidentified.rds")
+
+```
+
+## Survival plots as a function of pyruvate gene abundance:
+
+<h2 class="executable" >Panel A</h2>
+
+Relationship between Rel Abundance of Bacteroidales and Acetyle-CoA pathway abundance. 
+
+```{r}
+#| warning: false
+#| echo: false
+#| label: panel_a
+
+
+# We will take the information we need out the phyloseq, and convert it to a dataframe for plotting: 
+
+family_ps <- readRDS("../data/cleaned_data/deid_family_ps.rds")
+
+family_ps %>%
+  filter(grepl("Bacteroidales", Family)) %>%
+  ggplot() +
+  geom_smooth(aes(x=pyruvate, y=total_family), method=lm, color="firebrick2") +
+  geom_point(aes(x=pyruvate, y=total_family),
+             shape=21, size=3, fill="firebrick2", alpha=0.8) +
+  theme_classic() + 
+  labs(
+    x = "Acetyl-CoA pathway gene abundance (RPKM)",
+    y = "Bacteroidales"
+  )
+```
+<h2 class="executable" >Panel B</h2>
+
+PCOA external Cohort 
+
+```{r}
+#| warning: false
+#| echo: false
+#| label: panel_b
+
+raw_mpa_phy_icb <- readRDS("../data/cleaned_data/wargo_phylo.RDS")
+
+raw_mpa_phy_icb %>%
+  tax_fix() %>%
+  tax_transform(trans = "compositional", rank = "Family") %>%
+  ord_calc("PCA") %>%
+  ord_plot(fill = "log_acoa", size = 4, shape=21, alpha=0.6,
+           plot_taxa = 1:3) + #c("Lachnospiraceae", "Bacteroidaceae", "Ruminococcaceae")) +
+  scale_fill_viridis(option="C", begin = 0, end=1, na.value="white") +
+  theme_classic()
+```
+
+<h2 class="executable" >Panel C</h2>
+
+Acetyle CoA Gene abundance and butyric acid relationship
+
+```{r}
+#| warning: false
+#| echo: false
+#| label: panel_c
+
+metabolomics_db <- readRDS("../data/cleaned_data/metabolomics_data.rds")
+
+ggplot(metabolomics_db) +
+  geom_smooth(aes(x=log(pyruvate), y=Butyric.acid), method=lm, color="#e05f5f") +
+  geom_point(aes(x=log(pyruvate), y=Butyric.acid),
+             shape=21, size=3, fill="#e05f5f", alpha=0.8) +
+  theme_classic()
+cor.test(metabolomics_db$Butyric.acid, log(metabolomics_db$pyruvate))
+  
+```

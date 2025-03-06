@@ -1,0 +1,17 @@
+--- 
+title: |
+  <img src="./images/shotbread_cookie_analysis.jpg" width="250px" style="margin-left:5%; margin-right:5%"/>
+  ShortBRED Analysis.
+format:
+  html:
+    css: styles.css
+---
+
+
+
+## What is ShortBRED? (and what did we use it for?)
+
+ShortBRED is a [tool developed by the Huttenhower group](https://huttenhower.sph.harvard.edu/shortbred/) for profiling/identifying against specific protein families of interest using shotgun metagenomic sequencing data.  In this project it was used to profile genes involved in butyrate synthesis using a set of genes identified by Vital et al in their paper [Revealing the Bacterial Butyrate Synthesis Pathways by Analyzing (Meta)genomic Data](https://journals.asm.org/doi/10.1128/mbio.00889-14).  Genes used in this analysis were downloaded from the [Integrated Microbial Genomes and Microbiomes database](https://img.jgi.doe.gov/).  A fastq file including the exact genes used in the analysis for this paper is included in this Github repo for this project. 
+
+### Steps for running our ShortBRED analysis:
+

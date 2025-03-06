@@ -3,12 +3,30 @@ project:
   output-dir: ../docs
 
 website:
-  title: "."
+  title: "Butyrate, Microbiome and ICB Outcomes"
   navbar:
     left:
-      - href: index.qmd
-        text: Home
-      - about.qmd
+      - icon: github
+        href: "https://github.com/mskcc-microbiome/butyrate_and_icb_2025" 
+  sidebar:
+    style: "floating"
+    search: true
+    collapse-level: 3
+    contents: 
+      - section: "Main Figures"
+        contents: 
+          - text: "Figure 1: Hazard Ratio with Fiber"
+            href: figure_1_hazard_ratio_fiber.qmd
+          - text: "Figure 2: ACoA Pathway and ICB/Survival Outcomes"
+            href: figure_2_acoa_pathway_icb_outcome.qmd
+      - section: "Extended Figures"
+        contents: 
+          - text: "Extended Figure 2: PFS Fiber by Disease Type"
+            href: extended_data_figure_2_pfs_fiber_disease_type.qmd
+          - text: "Extended Figure 3: Butyrate Genes and OS"
+            href: extended_data_figure_3_butyrate_genes_overall_survival.qmd
+          - text: "Extended Figure 4: Deeper Look at ACOA genes and taxonomy"
+            href: extended_data_figure_4_acoa_pathway_family_associations_continued.qmd
 
 format:
   html:

@@ -65,7 +65,8 @@ genename <- named %>%
   pivot_wider(id_cols= WMS_SGPID, names_from=gene_path_true, values_from=total_count)
 
 tpt1_a <- tpt1 %>%
-  left_join(genename, by=c("WMS_SGPID"))
+  left_join(genename, by=c("WMS_SGPID")) %>%
+  filter(!is.na(pyruvate))
 
 write_rds(tpt1_a, "data/cleaned_data/acoa_data.rds")
 

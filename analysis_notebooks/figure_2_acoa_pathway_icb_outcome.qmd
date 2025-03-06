@@ -2,6 +2,9 @@
 title: |
   <img src="./images/fiber_beaker_image_food.jpg" width="250px" style="margin-left:5%; margin-right:5%"/>
   Figure 2 - Butyrate Production Capacity from ACoA Pathway and ICB outcome
+format:
+  html:
+    css: styles.css
 ---
 
 
@@ -25,6 +28,8 @@ source("utility_funcs.R")
 
 ```
 
+Some of these cells will be executable using only the public data.  These section panels <span class="executable" > Look like this</span>.  Other sections rely on data we are not able to make public (for example patient-level survival data).  These section panels <span class="nogo" > Look like this</span>.
+
 Here are the column names of the data we are plotting:
 
 fouraminobutyrate, glutarate, lysine and pyruvate represent different parts of the butyrate synthesis pathway. 
@@ -40,7 +45,7 @@ colnames(acoa_df)
 
 ## Survival plots as a function of pyruvate gene abundance:
 
-### Panel A
+<h2 class="nogo" >Panel A</h2>
 
 Overall Survival (OS) by above/below median ACoA pathway gene abundance. 
 
@@ -50,7 +55,6 @@ Overall Survival (OS) by above/below median ACoA pathway gene abundance.
 
 # cut the distribution of pyruvate into above/below median:
 acoa_df <- acoa_df %>%
-  filter(!is.na(pyruvate)) %>%
   mutate(med_p = cut(pyruvate, quantile(pyruvate, probs=seq(0,1,0.5)), c("Below Median", "Above Median"))) %>% #ifelse(pyruvate > median(pyruvate, na.rm = T), "Above Median", "Below Median")) %>%
   mutate(tt_os_months = tt_os_d/30.44) %>%
   mutate(tt_pfs_months = tt_pfs_d/30.44) %>%
@@ -85,21 +89,19 @@ names(fit$strata) <- gsub("med_p=", "", names(fit$strata))
 p <- ggsurvplot(fit,  size = 1,  # change line size
            linetype = "solid", # use solid line
            break.time.by = 12, # break time axis by 12 months
-           palette = c("coral4", "aquamarine4"), # custom color palette
+           palette = c("aquamarine4", "coral4"), # custom color palette
            conf.int = TRUE, # Add confidence interval
            pval = TRUE, # Add p-value,
            legend.title="",
            risk.table = TRUE, risk.table.y.text.col = TRUE,
            ylab = "Survival %",
            xlab = "Time (Months)",
-           xlim = c(0,48),
-           ggtheme = theme_classic() + theme(aspect.ratio = 1),
-           tables.theme =  theme(aspect.ratio = 0.2)
+           xlim = c(0,48)
            ) 
 print(p)
 ```
 
-### Panel B
+<h2 class="nogo" >Panel B</h2>
 
 Restricted cubic spline, adjusted for age, diagnosis and performance with above/below median pathway abundance. 
 
@@ -131,7 +133,7 @@ ggplot(spline_data, aes(x = buty)) +
 
 We will now plot some microbiome data, using a `phyloseq` object that contains our sequencing data.  This object contains a list of the taxonomy of organisms identified, the abundance in each sample, and any associated sample specific metadata in one object. 
 
-### Panel C
+<h3 class="executable" >Panel C</h3>
 
 PCoA shows relationship between ACoA pathways gene abundance and PCA axes. 
 
@@ -139,10 +141,9 @@ PCoA shows relationship between ACoA pathways gene abundance and PCA axes.
 #| warning: false
 #| label: panel_c
 
-ps <- readRDS("../data/cleaned_data/plotting_phyloseq_order.rds")
+ps <- readRDS("../data/cleaned_data/plotting_phyloseq_deidentified.rds")
 
 ps %>%
-  ps_filter(SAMPID %in% acoa_df$SAMPID) %>%
   tax_fix() %>%
   tax_transform(trans = "compositional", rank = "Family") %>%
   ord_calc("PCA") %>%
@@ -155,7 +156,7 @@ ps %>%
 
 ```
 
-## Panel D
+<h3 class="executable" >Panel D</h3>
 
 ACoA pathway abundance vs relative abundance of Lachnospiraceae and Reuminococcaceae 
 
@@ -163,14 +164,9 @@ ACoA pathway abundance vs relative abundance of Lachnospiraceae and Reuminococca
 #| warning: false
 #| label: panel_d_lachno
 
-# We will take the information we need out the phyloseq, and convert it to a dataframe for plotting: 
-compare_family <- ps %>% 
-  get.otu.melt() %>%
-  group_by(SAMPID, Family) %>%
-  summarise(total_family = sum(pctseqs)) %>%
-  left_join(acoa_df %>% select(SAMPID, `pyruvate`))
+family_ps <- readRDS("../data/cleaned_data/deid_family_ps.rds")
 
-compare_family %>%
+family_ps  %>%
   filter(Family == "Lachnospiraceae") %>%
   ggplot() +
   geom_smooth(aes(x=pyruvate, y=total_family), method=lm, color="steelblue") +
@@ -188,7 +184,7 @@ compare_family %>%
 #| label: panel_d_rumino
 
 
-compare_family %>%
+family_ps  %>%
   filter(Family == "Ruminococcaceae") %>%
   ggplot() +
   geom_smooth(aes(x=pyruvate, y=total_family), method=lm, color="darkgoldenrod3") +
@@ -201,12 +197,127 @@ compare_family %>%
   )
 
 ```
-## Panel E
+
+## Univariate Cox Survival Analysis
+
+<h3 class="nogo" >Panel E External Data</h3>
 Univariate Cox regression analyses PFS relationship to ACoA gene abundance in external cohort.
 
 ```{r}
 #| warning: false
-#| label: panel_e
+#| label: panel_e_external_data
+
+wargo_surv_df <- readRDS("../data/cleaned_data/wargo_pfs_data_for_univariate_model.RDS")
+
+model1_wargo <- coxph(Surv(pfs_d, pfsevent)~log(rum), wargo_surv_df)
+model2_wargo <- coxph(Surv(pfs_d, pfsevent)~log(rum_lach), wargo_surv_df)
+model3_wargo <- coxph(Surv(pfs_d, pfsevent)~log(clostridiales), wargo_surv_df)
+model4_wargo <- coxph(Surv(pfs_d, pfsevent)~log(clostridia), wargo_surv_df)
+model5_wargo <- coxph(Surv(pfs_d, pfsevent)~log(eval(faecalibacterium_prausnitzii+1e-7)), wargo_surv_df)
+model6_wargo <- coxph(Surv(pfs_d, pfsevent)~log1p(pyruvate), wargo_surv_df)
+
+
+models <- list(model1_wargo, model2_wargo, model3_wargo, model4_wargo, model5_wargo, model6_wargo)
+
+
+
+results_df <- data.frame()
+
+
+for (i in seq_along(models)) {
+  model <- models[[i]]
+  summary_model <- summary(model)
+
+
+  hr <- summary_model$coefficients[, "exp(coef)"]
+  lower_ci <- summary_model$conf.int[, "lower .95"]
+  upper_ci <- summary_model$conf.int[, "upper .95"]
+  pvalue <- summary_model$coefficients[, "Pr(>|z|)"]
+
+
+  results_df <- rbind(results_df, data.frame(
+    Model = paste0("model", i),
+    HR = hr,
+    Lower_CI = lower_ci,
+    Upper_CI = upper_ci,
+    pvalue = pvalue
+  ))
+}
+
+results_df$source = rep("wargo", 6)
+results_df$modelname = c("log(Ruminococcaceae)", "log(Ruminococcacaeae + Lachnospiraceae)",
+                             "log(Clostridiales)", "log(Clostridia)", "log(F prausnitizii + 1e-7)", "log(ACoA")
+
+
+ggplot(results_df) +
+  geom_point(aes(y=fct_rev(fct_reorder(modelname, HR)), x=HR)) +
+  geom_errorbarh(aes(y=fct_rev(fct_reorder(modelname, HR)), xmin=Lower_CI, xmax=Upper_CI), height=0.5)+
+  geom_vline(xintercept=1, lty=2, col="gray70") +
+  scale_x_continuous(trans="log") +
+  theme_classic() +
+  labs(title = "HR (95% CI) univariable Cox",
+       subtitle ="", y="Variable", x="HR")
+
+
+```
+
+<h3 class="nogo" >Panel E MSK Data</h3>
+Univariate Cox regression analyses PFS relationship to ACoA gene abundance in MSK Observational Data.
+
+```{r}
+#| warning: false
+#| label: panel_e_internal_data
+
+msk_df <- readRDS("../data/cleaned_data/interal_msk_data_for_univariate_model.RDS")
+
+model1_msk <- coxph(Surv(tt_pfs_d, pfs_event)~log(rum), msk_df)
+model2_msk <- coxph(Surv(tt_pfs_d, pfs_event)~log(rum_lach), msk_df)
+model3_msk <- coxph(Surv(tt_pfs_d, pfs_event)~log(clostridiales), msk_df)
+model4_msk <- coxph(Surv(tt_pfs_d, pfs_event)~log(clostridia), msk_df)
+model5_msk <- coxph(Surv(tt_pfs_d, pfs_event)~log(eval(faecalibacterium_prausnitzii+1e-4)), msk_df)
+model6_msk <- coxph(Surv(tt_pfs_d, pfs_event)~log1p(pyruvate), msk_df)
+
+
+models <- list(model1_msk, model2_msk, model3_msk, model4_msk, model5_msk, model6_msk)
+
+
+
+results_df <- data.frame()
+
+
+for (i in seq_along(models)) {
+  model <- models[[i]]
+  summary_model <- summary(model)
+
+
+  hr <- summary_model$coefficients[, "exp(coef)"]
+  lower_ci <- summary_model$conf.int[, "lower .95"]
+  upper_ci <- summary_model$conf.int[, "upper .95"]
+  pvalue <- summary_model$coefficients[, "Pr(>|z|)"]
+
+
+  results_df <- rbind(results_df, data.frame(
+    Model = paste0("model", i),
+    HR = hr,
+    Lower_CI = lower_ci,
+    Upper_CI = upper_ci,
+    pvalue = pvalue
+  ))
+}
+
+results_df$source = rep("msk", 6)
+results_df$modelname = c("log(Ruminococcaceae)", "log(Ruminococcacaeae + Lachnospiraceae)",
+                             "log(Clostridiales)", "log(Clostridia)", "log(F prausnitizii + 1e-7)", "log(ACoA")
+
+
+ggplot(results_df) +
+  geom_point(aes(y=fct_rev(fct_reorder(modelname, HR)), x=HR)) +
+  geom_errorbarh(aes(y=fct_rev(fct_reorder(modelname, HR)), xmin=Lower_CI, xmax=Upper_CI), height=0.5)+
+  geom_vline(xintercept=1, lty=2, col="gray70") +
+  scale_x_continuous(trans="log") +
+  theme_classic() +
+  labs(title = "HR (95% CI) univariable Cox",
+       subtitle ="", y="Variable", x="HR")
 
 
 ```
