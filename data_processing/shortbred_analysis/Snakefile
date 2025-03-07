@@ -6,7 +6,6 @@ We provide the marker db used in our published analysis, but include the rule us
 as a comment here in case anyone wishes to update the marker db. 
 '''
 
-from glob import glob
 import json
 import yaml
 import shutil
@@ -14,23 +13,23 @@ import shutil
 from pathlib import Path
 
 # Import config file:
-configfile: os.path.join(workflow.basedir, "/config.yaml")
+configfile: os.path.join(workflow.basedir, "config.yaml")
 
-sample_dir=config["sample_dir"]
+sample_dir=config['sample_dir']
 sample=config['sample']
 
 rule all:
     input:
-        butyrate_out='{sample_dir}/{sample}_butyrate.txt',
+        butyrate_out='{sample}_butyrate.txt',
 
 rule cat_preprocessed:
     input:
         R1='{sample_dir}/{sample}_R1.fastq.gz', 
         R2='{sample_dir}/{sample}_R2.fastq.gz',
     output:
-        '{sample_dir}/{sample}_cat.fastq.gz',
+        fq=temp('concatenated/{sample}_cat.fastq.gz'),
     shell:
-        'cat {input.R1} {input.R2} > {output[0]}'
+        'cat {input.R1} {input.R2} > {output.fq}'
 
 
 # Align the reads to the marker protein database using the quantify script
@@ -40,15 +39,15 @@ rule quantify_reads:
         quantify_script=config['quantify_script'],
         markers=config['marker_fastq'],
         usearch_path=config['usearch'], 
-        reads='{sample_dir}/{sample}_cat.fastq.gz'
+        reads="concatenated/{sample}_cat.fastq.gz"
     output:
-        '{sample_dir}/{sample}_butyrate.txt',
+        '{sample}_butyrate.txt',
     conda:
         'envs/shortbred_env.yaml'
     threads:
         32
     params:
-        tmp_quant='{sample_dir}/butyrate_tmp_{sample}'
+        tmp_quant='butyrate_tmp_{sample}'
     shell:
         '''
         python {input.quantify_script} --markers {input.markers} --search_program usearch \
