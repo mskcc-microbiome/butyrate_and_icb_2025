@@ -1,7 +1,7 @@
 --- 
 title: |
   <img src="./images/fiber_beaker_image_food.jpg" width="250px" style="margin-left:5%; margin-right:5%"/>
-  Extended Figure 3 - Butyrate Gene Abundance and Hazard Ration, and Univatiate Analysis of Butyrate Pathway.
+  Extended Figure 3 \nButyrate Gene Abundance and Hazard Ration, and Univatiate Analysis of Butyrate Pathway.
 format:
   html:
     css: styles.css
@@ -47,7 +47,6 @@ Hazard Ratio of Overall Survival Evaluated with respect to Butyrate production g
 
 ```{r}
 #| warning: false
-#| echo: false
 #| label: hr_spline_butyrate_genes
 
 os_butyrate <-  coxph(Surv(tt_os_d, event_os)~rms::rcs(total,4)+age10+factor(cohort)+ecog,, data = acoa_df)
@@ -74,7 +73,6 @@ Univariate model of OS as a function of total butyrate genes, and each major sub
 
 ```{r}
 #| warning: false
-#| echo: false
 #| label: univariate_butyrate_pathway
 
 univ2 <- function(cox, k=1, l=1){

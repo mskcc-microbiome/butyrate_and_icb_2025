@@ -1,7 +1,7 @@
 --- 
 title: |
   <img src="./images/fiber_beaker_image_food.jpg" width="250px" style="margin-left:5%; margin-right:5%"/>
-  Extended Figure 4 - A deeper dive into relationship between ACOA pathway abundance and microbiome taxonomy.
+  Extended Figure 4 \nA deeper dive into relationship between ACOA pathway abundance and microbiome taxonomy.
 format:
   html:
     css: styles.css
@@ -48,7 +48,6 @@ Relationship between Rel Abundance of Bacteroidales and Acetyle-CoA pathway abun
 
 ```{r}
 #| warning: false
-#| echo: false
 #| label: panel_a
 
 
@@ -74,7 +73,6 @@ PCOA external Cohort
 
 ```{r}
 #| warning: false
-#| echo: false
 #| label: panel_b
 
 raw_mpa_phy_icb <- readRDS("../data/cleaned_data/wargo_phylo.RDS")
@@ -95,7 +93,6 @@ Acetyle CoA Gene abundance and butyric acid relationship
 
 ```{r}
 #| warning: false
-#| echo: false
 #| label: panel_c
 
 metabolomics_db <- readRDS("../data/cleaned_data/metabolomics_data.rds")

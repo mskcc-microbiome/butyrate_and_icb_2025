@@ -13,6 +13,10 @@ website:
     search: true
     collapse-level: 3
     contents: 
+      - section: "Analysis Notes"
+        contents: 
+          - text: "shortBred Analysis\nButyrate Gene Quantification"
+            href: shortbred_analysis_intro.qmd
       - section: "Main Figures"
         contents: 
           - text: "Figure 1: Hazard Ratio with Fiber"
