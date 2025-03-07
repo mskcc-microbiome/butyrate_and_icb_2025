@@ -1,9 +1,0 @@
-channels:
- - conda-forge
- - bioconda
-dependencies:
- - python=2.7
- - biopython
- - cd-hit
- - muscle=3.8.1551
- - blast

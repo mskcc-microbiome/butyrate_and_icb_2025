@@ -104,7 +104,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><p><img src="./images/shotbread_cookie_analysis.jpg" width="250px" style="margin-left:5%; margin-right:5%"> ShortBRED Analysis.</p></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><p><img src="./images/shortbread_cookie_analysis.jpg" width="250px" style="margin-left:5%; margin-right:5%"> ShortBRED Analysis.</p></li></ol></nav>
         <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
@@ -189,6 +189,7 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#what-is-shortbred-and-what-did-we-use-it-for" id="toc-what-is-shortbred-and-what-did-we-use-it-for" class="nav-link active" data-scroll-target="#what-is-shortbred-and-what-did-we-use-it-for">What is ShortBRED? (and what did we use it for?)</a>
   <ul class="collapse">
   <li><a href="#steps-for-running-our-shortbred-analysis" id="toc-steps-for-running-our-shortbred-analysis" class="nav-link" data-scroll-target="#steps-for-running-our-shortbred-analysis">Steps for running our ShortBRED analysis:</a></li>
+  <li><a href="#run-an-example" id="toc-run-an-example" class="nav-link" data-scroll-target="#run-an-example">Run an example:</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -198,7 +199,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><p><img src="./images/shotbread_cookie_analysis.jpg" width="250px" style="margin-left:5%; margin-right:5%"> ShortBRED Analysis.</p></h1>
+<h1 class="title"><p><img src="./images/shortbread_cookie_analysis.jpg" width="250px" style="margin-left:5%; margin-right:5%"> ShortBRED Analysis.</p></h1>
 </div>
 
 
@@ -217,11 +218,53 @@ ul.task-list li input[type="checkbox"] {
 
 <section id="what-is-shortbred-and-what-did-we-use-it-for" class="level2">
 <h2 class="anchored" data-anchor-id="what-is-shortbred-and-what-did-we-use-it-for">What is ShortBRED? (and what did we use it for?)</h2>
-<p>ShortBRED is a <a href="https://huttenhower.sph.harvard.edu/shortbred/">tool developed by the Huttenhower group</a> for profiling/identifying against specific protein families of interest using shotgun metagenomic sequencing data. In this project it was used to profile genes involved in butyrate synthesis using a set of genes identified by Vital et al in their paper <a href="https://journals.asm.org/doi/10.1128/mbio.00889-14">Revealing the Bacterial Butyrate Synthesis Pathways by Analyzing (Meta)genomic Data</a>. Genes used in this analysis were downloaded from the <a href="https://img.jgi.doe.gov/">Integrated Microbial Genomes and Microbiomes database</a>. A fastq file including the exact genes used in the analysis for this paper is included in this Github repo for this project.</p>
+<p><a href="https://huttenhower.sph.harvard.edu/shortbred/">ShortBRED</a> is a tool developed by the Huttenhower group for profiling specific protein families of interest using shotgun metagenomic data.</p>
+<p>In this project it was used to profile genes involved in butyrate synthesis using a set of genes identified by Vital et al in their paper <a href="https://journals.asm.org/doi/10.1128/mbio.00889-14">Revealing the Bacterial Butyrate Synthesis Pathways by Analyzing (Meta)genomic Data</a>.</p>
+<p>Genes used in this analysis were downloaded from the <a href="https://img.jgi.doe.gov/">Integrated Microbial Genomes and Microbiomes database</a>. A fastq file which acted as our ShortBRED database for this analysis is included in <a href="https://github.com/mskcc-microbiome/butyrate_and_icb_2025/tree/main/data_processing/shortbred_analysis">the Github repo</a> for this project.</p>
 <section id="steps-for-running-our-shortbred-analysis" class="level3">
 <h3 class="anchored" data-anchor-id="steps-for-running-our-shortbred-analysis">Steps for running our ShortBRED analysis:</h3>
+<section id="step-0-get-software-etc" class="level4">
+<h4 class="anchored" data-anchor-id="step-0-get-software-etc">Step 0: Get software etc:</h4>
+<p>To get started - you will need:</p>
+<ul>
+<li>Code from our repo! Get this by cloning the repo (<code>git clone git@github.com:mskcc-microbiome/butyrate_and_icb_2025.git</code> (SSH) or <code>git clone https://github.com/mskcc-microbiome/butyrate_and_icb_2025.git</code> (HTTPS)) or by downloading the files required. In particular you will need:
+<ul>
+<li>the <code>data_processing/shortbred_analysis/</code> folder with our required scripts for running our <code>ShortBRED</code> analysis.</li>
+</ul></li>
+<li>Download (or locate) a copy of <a href="https://www.drive5.com/usearch/">usearch</a></li>
+<li>Download a copy of <a href="https://github.com/biobakery/shortbred">shortBRED</a></li>
+</ul>
+</section>
+<section id="step-1-update-config-file" class="level4">
+<h4 class="anchored" data-anchor-id="step-1-update-config-file">Step 1: Update config file:</h4>
+<ul>
+<li>Please open the config file in <code>data_processing/shortbred_analysis/config.yaml</code> and edit the following parameters:</li>
+</ul>
+</section>
+</section>
+<section id="run-an-example" class="level3">
+<h3 class="anchored" data-anchor-id="run-an-example">Run an example:</h3>
+<p>To run the example of this <code>shortBRED</code> code on one of the fastqs from this project:</p>
+<section id="step-0" class="level4">
+<h4 class="anchored" data-anchor-id="step-0">Step 0:</h4>
+<ul>
+<li>Follow the steps in setup or in the <code>data_processing/shortbred_analysis/README.md</code> to set up your environment for running this code.</li>
+</ul>
+</section>
+<section id="step-1" class="level4">
+<h4 class="anchored" data-anchor-id="step-1">Step 1:</h4>
+<ul>
+<li>Download a test file, ie: one of the fastqs from <a href="https://www.ncbi.nlm.nih.gov/bioproject/?term=PRJNA1190411">this paper</a></li>
+</ul>
+</section>
+<section id="step-2" class="level4">
+<h4 class="anchored" data-anchor-id="step-2">Step 2:</h4>
+<ul>
+<li>Run our <code>Snakemake</code> pipeline on this file:</li>
+</ul>
 
 
+</section>
 </section>
 </section>
 
