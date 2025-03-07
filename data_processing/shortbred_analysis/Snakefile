@@ -16,38 +16,19 @@ from pathlib import Path
 # Import config file:
 configfile: os.path.join(workflow.basedir, "/config.yaml")
 
-
-# build marker protein reference using shortbred's indentify script
-
-## Note - we provide the exact marker gene reference used, so this step is skipped, we include it for completeness:
-#rule builld_marker_ref:
-#    input:
-#        identify_script='<...shortbred_dir/shortbred_identify.py>',
-#        target_fa='<amino acid sequences fastq - example provided in directory>',
-#        uniref_ref='<path_to_your_uniref90.fasta reference'>,
-#        usearch_path='<path to usearch - in particular: usearch11.0.667_i86linux32>',
-#        tmp_dir='<tmp_output dir>'
-#    output:
-#        '<desired output dir/butyrate_pw_genes_markers.fa>'
-#    conda:
-#        'envs/shortbred_env.yaml'
-#    threads:
-#        32
-#    shell:
-#        '''
-#        python {input.identify_script} --goi {input.target_fa} --ref {input.uniref_ref} --markers {output} --usearch {input.usearch_path} --tmp {input.tmp_dir} --threads {threads}
-#        '''
+sample_dir=config["sample_dir"]
+sample=config['sample']
 
 rule all:
     input:
-        expand('{sample_dir}/{sample}_butyrate.txt', sample_dir = sample_dir, sample = sample_names)
+        butyrate_out='{sample_dir}/{sample}_butyrate.txt',
 
 rule cat_preprocessed:
     input:
         R1='{sample_dir}/{sample}_R1.fastq.gz', 
-        R2='{sample_dir}/{sample}_R2.fastq.gz'
+        R2='{sample_dir}/{sample}_R2.fastq.gz',
     output:
-        '{sample_dir}/{sample}_cat.fastq.gz'
+        '{sample_dir}/{sample}_cat.fastq.gz',
     shell:
         'cat {input.R1} {input.R2} > {output[0]}'
 
@@ -61,7 +42,7 @@ rule quantify_reads:
         usearch_path=config['usearch'], 
         reads='{sample_dir}/{sample}_cat.fastq.gz'
     output:
-        '{sample_dir}/{sample}_butyrate.txt'
+        '{sample_dir}/{sample}_butyrate.txt',
     conda:
         'envs/shortbred_env.yaml'
     threads:
@@ -76,3 +57,21 @@ rule quantify_reads:
         '''
 
 
+## Note - we provide the exact marker gene reference used, so this step is skipped, we include it for completeness:
+# rule builld_marker_ref:
+#     input:
+#         identify_script='<...shortbred_dir/shortbred_identify.py>',
+#         target_fa='<amino acid sequences fastq - example provided in directory>',
+#         uniref_ref='<path_to_your_uniref90.fasta reference'>,
+#         usearch_path='<path to usearch - in particular: usearch11.0.667_i86linux32>',
+#         tmp_dir='<tmp_output dir>'
+#     output:
+#         '<desired output dir/butyrate_pw_genes_markers.fa>'
+#     conda:
+#         'envs/shortbred_env.yaml'
+#     threads:
+#         32
+#     shell:
+#         '''
+#         python {input.identify_script} --goi {input.target_fa} --ref {input.uniref_ref} --markers {output} --usearch {input.usearch_path} --tmp {input.tmp_dir} --threads {threads}
+#         '''

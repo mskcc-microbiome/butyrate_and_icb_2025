@@ -10,6 +10,8 @@ ShortBRED has the following environmental requirements:
 
 These environmental requirements are captured in the `shortbred_env.yaml` file used by the `Snakefile` for `ShortBRED` analysis. 
 
+Our analysis currently assumes a structure where each sample has a directory containing R1 and R2 as `fastq.gz` files.  The `sample_dir` and `sample` name will be provided as dynamic entries to the config.
+
 You will also need to update the config file for the snakemake workflow for the following parameters:
 - `quantify_script`: (the path to the shortBRED quantify_script)
 - `marker_fastq`: (path to the marker fastq we provided (or updated marker.fastq if using your own reference)).
