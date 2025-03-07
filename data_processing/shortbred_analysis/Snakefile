@@ -45,7 +45,7 @@ rule quantify_reads:
     threads:
         32
     params:
-        tmp_quant="butyrate_tmp_{config['sample']}""
+        tmp_quant="butyrate_tmp_{config['sample']}"
     shell:
         '''
         python {input.quantify_script} --markers {input.markers} --search_program usearch \
