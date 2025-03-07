@@ -15,7 +15,7 @@ website:
     contents: 
       - section: "Analysis Notes"
         contents: 
-          - text: "shortBred Analysis\nButyrate Gene Quantification"
+          - text: "shortBRED Analysis Butyrate Gene Quantification"
             href: shortbred_analysis_intro.qmd
       - section: "Main Figures"
         contents: 

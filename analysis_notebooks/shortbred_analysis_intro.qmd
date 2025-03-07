@@ -33,6 +33,12 @@ To get started - you will need:
   - Please open the config file in `data_processing/shortbred_analysis/config.yaml` and edit the following parameters:
   
 
+#### Step 2 Navigate the the folder and run it!
+
+- `snakemake --directory "./test_dir" --config sample=$SAMPLE_NAME sample_dir=$SAMPLE_DIR`
+- Sample Name should be the prefix of your sample (assuming it ends in R1)
+- Sample dir is the directory. 
+
 ### Run an example:
 
 To run the example of this `shortBRED` code on one of the fastqs from this project:
