@@ -15,19 +15,17 @@ from pathlib import Path
 # Import config file:
 configfile: os.path.join(workflow.basedir, "config.yaml")
 
-sample_dir=config['sample_dir']
-sample=config['sample']
 
 rule all:
     input:
-        butyrate_out='{sample}_butyrate.txt',
+        butyrate_out="{config['sample']}_butyrate.txt",
 
 rule cat_preprocessed:
     input:
-        R1='{sample_dir}/{sample}_R1.fastq.gz', 
-        R2='{sample_dir}/{sample}_R2.fastq.gz',
+        R1="{config['sample_dir']}/{config['sample']}_R1.fastq.gz", 
+        R2="{config['sample_dir']}/{config['sample']}_R2.fastq.gz",
     output:
-        fq=temp('concatenated/{sample}_cat.fastq.gz'),
+        fq=temp("concatenated/{config['sample']}_cat.fastq.gz"),
     shell:
         'cat {input.R1} {input.R2} > {output.fq}'
 
@@ -39,15 +37,15 @@ rule quantify_reads:
         quantify_script=config['quantify_script'],
         markers=config['marker_fastq'],
         usearch_path=config['usearch'], 
-        reads="concatenated/{sample}_cat.fastq.gz"
+        reads="concatenated/{config['sample']}_cat.fastq.gz"
     output:
-        '{sample}_butyrate.txt',
+        "{config['sample']}_butyrate.txt",
     conda:
         'envs/shortbred_env.yaml'
     threads:
         32
     params:
-        tmp_quant='butyrate_tmp_{sample}'
+        tmp_quant="butyrate_tmp_{config['sample']}""
     shell:
         '''
         python {input.quantify_script} --markers {input.markers} --search_program usearch \
