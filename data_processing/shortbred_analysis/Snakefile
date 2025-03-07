@@ -22,8 +22,8 @@ rule all:
 
 rule cat_preprocessed:
     input:
-        R1="{config['sample_dir']}/{config['sample']}_R1.fastq.gz", 
-        R2="{config['sample_dir']}/{config['sample']}_R2.fastq.gz",
+        R1="{config['sample_dir']}{config['sample']}_R1_001.fastq.gz", 
+        R2="{config['sample_dir']}{config['sample']}_R2_001.fastq.gz",
     output:
         fq=temp("concatenated/{config['sample']}_cat.fastq.gz"),
     shell:
