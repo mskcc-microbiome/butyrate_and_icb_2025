@@ -6,3 +6,4 @@ data/*
 .Rprofile
 *.Rproj
 data_processing/shortbred_analysis/config.yaml
+data_processing/shortbred_analysis/config_params.sh
