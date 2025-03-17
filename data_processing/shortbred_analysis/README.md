@@ -40,10 +40,25 @@ Now open `data_processing/shortbred_analysis/config_params.sh` and edit the foll
 - `MARKER_FASTQ` - this is the marker fastq we supplied for this analysis!  Location: `data_processing/shortbred_analysis/butyrate_pw_genes_markers.fa`
 - `QUANTIFY_SCRIPT` -  the path to the `shortbred_quantify.py` script in your Shortbred installation. 
 
-#### Test Run
+#### (recommended) Test Run
 
-Open `data_processing/shortbred_analysis/shortbred_template.sh` and save a copy with a new name ie `data_processing/shortbred_analysis/shortbred_test_run.sh`
+Save `data_processing/shortbred_analysis/shortbred_template.sh` with a new name ie `cp data_processing/shortbred_analysis/shortbred_template.sh data_processing/shortbred_analysis/shortbred_test_run.sh`.
 
+Edit the header to add job specific details (note we use LSF headers, please update to whatever submission manager you use!)
+
+- `#BSUB -J` -> `#BSUB -J test_shortbred_run`
+- `#BSUB -o` -> `#BSUB -o test_shortbred_run.stdout`
+- `#BSUB -eo` -> `#BSUB -eo test_shortbred_run.stderr`
+- `#BSUB -n` -> `#BSUB -n 1` (for example, can do more than this too, and set the `threads` parameter below to match.)
+
+Manually edit the following parameters:
+
+- `r1`: path to r1 direction `fastq.gz` file for testing. 
+- `r2`: path to r2 direction `fastq.gz` file for testing. 
+- `threads`: treads used in test (can default to 1 if needed).
+- `output`: desired output file.  ie: {$sample_name}_butyrate.txt".
+- `input`: a file for the concatenated `r1` and `r2` files (when submitting the job array we make this a temporary file.)
+- `tmp_dir`: name of a temporary directory this analysis can use while running. (ie {$sample_name}_shortbred_tmp)
 
 ### Snakemake:
 
