@@ -3,7 +3,9 @@ This Snakefile does:
 * Align the metagenomic reads to a protein reference marker db.
 
 We provide the marker db used in our published analysis, but include the rule used to build it 
-as a comment here in case anyone wishes to update the marker db. 
+as a comment at the bottom here in case anyone wishes to update the marker db. 
+
+Please note that the config parameters in `config.yaml` must be updated in order to use this. 
 '''
 
 import json
@@ -22,8 +24,8 @@ rule all:
 
 rule cat_preprocessed:
     input:
-        R1="{config['sample_dir']}{config['sample']}_R1_001.fastq.gz", 
-        R2="{config['sample_dir']}{config['sample']}_R2_001.fastq.gz",
+        R1=config['r1'], 
+        R2=config['r2'],
     output:
         fq=temp("concatenated/{config['sample']}_cat.fastq.gz"),
     shell:
@@ -54,7 +56,8 @@ rule quantify_reads:
         '''
 
 
-## Note - we provide the exact marker gene reference used, so this step is skipped, we include it for completeness:
+## Note - we provide the exact marker gene reference used, so this step is skipped, we include
+# it for completeness (and if you want to build your own ref):
 # rule builld_marker_ref:
 #     input:
 #         identify_script='<...shortbred_dir/shortbred_identify.py>',
