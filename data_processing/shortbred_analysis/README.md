@@ -10,6 +10,7 @@
 - Install [usearch](https://www.drive5.com/usearch/download.html) (just need v6.0.307 or later, we use v 11.0.667):
     - `curl https://www.drive5.com/downloads/usearch11.0.667_i86linux32.gz --output usearch11.0.667_i86linux32.gz`
     - `gunzip usearch11.0.667_i86linux32.gz`
+    - ***Note: make sure you change the permissions if needed so that you have the rights to execute this file*** (`chmod u+x usearch11.0.667_i86linux32`)
 - Install [Shortbred](https://huttenhower.sph.harvard.edu/shortbred/)
     - `git clone git@github.com:biobakery/shortbred.git` (`git clone https://github.com/biobakery/shortbred.git`)
 
@@ -53,12 +54,10 @@ Edit the header to add job specific details (note we use LSF headers, please upd
 
 Manually edit the following parameters:
 
-- `r1`: path to r1 direction `fastq.gz` file for testing. 
-- `r2`: path to r2 direction `fastq.gz` file for testing. 
-- `threads`: treads used in test (can default to 1 if needed).
+- `input`: the `fastq.gz` file you are running your analysis on. 
 - `output`: desired output file.  ie: {$sample_name}_butyrate.txt".
-- `input`: a file for the concatenated `r1` and `r2` files (when submitting the job array we make this a temporary file.)
 - `tmp_dir`: name of a temporary directory this analysis can use while running. (ie {$sample_name}_shortbred_tmp)
+- `threads`: treads used in test (can default to 1 if needed).
 
 ### Snakemake:
 
