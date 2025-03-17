@@ -41,7 +41,7 @@ Now open `data_processing/shortbred_analysis/config_params.sh` and edit the foll
 - `MARKER_FASTQ` - this is the marker fastq we supplied for this analysis!  Location: `data_processing/shortbred_analysis/butyrate_pw_genes_markers.fa`
 - `QUANTIFY_SCRIPT` -  the path to the `shortbred_quantify.py` script in your Shortbred installation. 
 
-#### (recommended) Test Run
+#### Test Run (recommended)
 
 Save `data_processing/shortbred_analysis/shortbred_template.sh` with a new name ie `cp data_processing/shortbred_analysis/shortbred_template.sh data_processing/shortbred_analysis/shortbred_test_run.sh`.
 
@@ -58,6 +58,22 @@ Manually edit the following parameters:
 - `output`: desired output file.  ie: {$sample_name}_butyrate.txt".
 - `tmp_dir`: name of a temporary directory this analysis can use while running. (ie {$sample_name}_shortbred_tmp)
 - `threads`: treads used in test (can default to 1 if needed).
+
+submit the job!
+
+`sh data_processing/shortbred_analysis/shortbred_test_run.sh` or if submitting as a LSF job: `bsub < data_processing/shortbred_analysis/shortbred_test_run.sh`.
+
+#### Submit a list of jobs:
+
+Given a folder of `fastq.gz` files, run a job to submit the shortbred analysis on all of them.  We wrote an example script for doing this here:
+
+`data_processing/shortbred_analysis/shortbred_run_on_folder_example.sh`
+
+You may need to modify this for your exact use case. 
+
+To run it, modify the dir
+
+
 
 ### Snakemake:
 
