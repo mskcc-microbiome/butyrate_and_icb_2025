@@ -12,11 +12,12 @@ title: |
 #| include: false
 #| label: library_data_imports
 
-library(tidyverse)
-library(ggplot2)
-library(phyloseq)
-library(microViz)
+library(dplyr)
+library(survival)
+library(survminer)
+library(forestplot)
 source("utility_funcs.R")
+library(Hmisc)
 ```
 
 The data we are visualizing here has the following structure:
@@ -28,6 +29,47 @@ The data we are visualizing here has the following structure:
 #| label: load_data
 
 
+all_metadata_fiber <- readRDS("../public_data/fiber_data/all_metadata_fiber.RDS")
+data <- readRDS("../public_data/fiber_data/fiber_data_clean_labels.RDS")
+
+# Pull out different sub-groups from this data:
+
+UCdata=filter(data,cancer_type!=4)
+
+UCdata$TMBhigherThan10<-ifelse(UCdata$Impact.TMB.Score>=10,1,0)
+
+UCdata<-mutate(UCdata,TMBhigherThan10.Imputed = case_when(is.na(TMBhigherThan10)==FALSE~TMBhigherThan10,
+                                                          is.na(TMBhigherThan10)==TRUE~0))
+
+
+mUCdata=filter(UCdata,io_regimen!=6 & io_regimen!=13 & io_regimen!=15)
+
+
+dataUCavelumab=filter(mUCdata,io_regimen==5)
+dataUC_NOTavelumab=filter(mUCdata,io_regimen!=5)
+
+
+mUCdataFiber=filter(mUCdata,((calor>=600 & calor<=4200 & sex.factor=="Male") 
+                    |(calor>=500 & calor<=3500 & sex.factor=="Female"))&(nblank<=70))
+dataUCavelumabFiber=filter(dataUCavelumab,((calor>=600 & calor<=4200 & sex.factor=="Male") 
+                                 |(calor>=500 & calor<=3500 & sex.factor=="Female"))&(nblank<=70))
+dataUC_NOTavelumabFiber=filter(dataUC_NOTavelumab,((calor>=600 & calor<=4200 & sex.factor=="Male") 
+                                           |(calor>=500 & calor<=3500 & sex.factor=="Female"))&(nblank<=70))
+
+
+RCdata=filter(data,cancer_type==4)
+
+mRCdata=filter(RCdata,io_regimen!=7 & io_regimen!=15 & io_regimen!=99)
+dataRCIpiNivo=filter(RCdata,io_regimen==9 | io_regimen==17)
+dataRCioTKI=filter(RCdata,io_regimen==8 | io_regimen==18 | io_regimen==10 | io_regimen==11 | io_regimen==16 | io_regimen==12)
+
+
+mRCdataFiber=filter(mRCdata,((calor>=600 & calor<=4200 & sex.factor=="Male") 
+                             |(calor>=500 & calor<=3500 & sex.factor=="Female"))&(nblank<=70))
+dataRCIpiNivoFiber=filter(dataRCIpiNivo,((calor>=600 & calor<=4200 & sex.factor=="Male") 
+                                         |(calor>=500 & calor<=3500 & sex.factor=="Female"))&(nblank<=70))
+dataRCioTKIFiber=filter(dataRCioTKI,((calor>=600 & calor<=4200 & sex.factor=="Male") 
+                                     |(calor>=500 & calor<=3500 & sex.factor=="Female"))&(nblank<=70))
 ```
 
 ## Panel A
@@ -39,6 +81,12 @@ Mortality Hazard for PFS by daily average fiber intake, visualized via partial s
 #| include: false
 #| label: panel_a
 
+makeSpline(all_metadata_fiber, all_metadata_fiber$pfs_mo, all_metadata_fiber$pod_status, 
+           all_metadata_fiber$aofib,
+           xlab = "Daily average fiber intake (g/day)", ylab="Hazard ratio (95% CI)",
+           title="Smoothing spline for progression-free survival",
+           knots=2,
+           centerpoint = 15)
 
 ```
 
@@ -51,7 +99,12 @@ Mortality Hazard for OS by daily average fiber intake, visualized via partial sm
 #| include: false
 #| label: panel_b
 
-
+makeSpline(all_metadata_fiber, all_metadata_fiber$os_mo, all_metadata_fiber$os_status, 
+           all_metadata_fiber$aofib,
+           xlab = "Daily average fiber intake (g/day)", ylab="Hazard ratio (95% CI)",
+           title="Smoothing spline for overall survival",
+           knots=2, 
+           centerpoint = 15)
 ```
 
 ## Panel C
@@ -63,7 +116,23 @@ Kaplan-Meier PFS by daily average fiber intake, two groups >= 15 grams/day.
 #| include: false
 #| label: panel_c
 
+kmPFS<-survfit(Surv(pfs_mo, pod_status)~fiber_dichotomized,
+               type="kaplan-meier", data=all_metadata_fiber)
 
+ggsurvplot(kmPFS,risk.table=TRUE,
+           xlab="Time (months)", 
+           ylab="Progression-free survival",
+           pval = TRUE,
+           legend=c(0.8,0.9),
+           title="Patients with urothelial or renal cell cancer on ICB",
+           legend.title="Fiber intake",
+           legend.labs=c("<15 g/day","15+ g/day"),
+           #surv.median.line = "hv",
+           conf.int=TRUE,
+           break.x.by=6,
+           axes.offset=FALSE,
+           xlim=c(0,25),
+           data = all_metadata_fiber)
 ```
 
 ## Panel D
@@ -75,7 +144,23 @@ Kaplan-Meier OS by daily average fiber intake, two groups >= 15 grams/day.
 #| include: false
 #| label: panel_d
 
+kmOS<-survfit(Surv(os_mo, os_status)~fiber_dichotomized,
+              type="kaplan-meier", data=all_metadata_fiber)
 
+ggsurvplot(kmOS,risk.table=TRUE,
+           xlab="Time (months)", 
+           ylab="Overall survival",
+           pval = TRUE,
+           legend="none",
+           title="Patients with urothelial or renal cell cancer on ICB",
+           legend.title="Fiber intake",
+           legend.labs=c("<15 g/day","15+ g/day"),
+           #surv.median.line = "hv",
+           conf.int=TRUE,
+           break.x.by=6,
+           axes.offset=FALSE,
+           xlim=c(0,25),
+           data = all_metadata_fiber)
 ```
 
 ## Panel E
@@ -86,7 +171,59 @@ Univariate HRs for PFS among clinically relavant subgroups.
 #| include: false
 #| label: panel_e
 
+cox_pfs_all_uv <-coxph(Surv(pfs_mo,pod_status)~ fiber_dichotomized,
+                       all_metadata_fiber)
+summary(cox_pfs_all_uv)
 
+cox_pfs_RC <-coxph(Surv(pfs_mo,pod_status)~ fiber_dichotomized,
+                   mRCdataFiber)
+summary(cox_pfs_RC)
+
+cox_pfs_RC_IpiNivo <-coxph(Surv(pfs_mo,pod_status)~ fiber_dichotomized,
+                           dataRCIpiNivoFiber)
+summary(cox_pfs_RC_IpiNivo)
+
+cox_pfs_RC_TKI_IO <-coxph(Surv(pfs_mo,pod_status)~ fiber_dichotomized,
+                          dataRCioTKIFiber)
+summary(cox_pfs_RC_TKI_IO)
+
+cox_pfs_UC <-coxph(Surv(pfs_mo,pod_status)~ fiber_dichotomized,
+                   mUCdataFiber)
+summary(cox_pfs_UC)
+
+cox_pfs_UC_NOTavelumab <-coxph(Surv(pfs_mo,pod_status)~ fiber_dichotomized,
+                               dataUC_NOTavelumab)
+summary(cox_pfs_UC_NOTavelumab)
+
+cox_pfs_UC_avelumab <-coxph(Surv(pfs_mo,pod_status)~ fiber_dichotomized,
+                            dataUCavelumab)
+summary(cox_pfs_UC_avelumab)
+
+
+
+forestplot_data <- tibble::tibble(mean  = c(0.4409,0.3485, 0.4555, 0.3034, 0.6998, 0.8952, 0.8994),
+                                  lower = c(0.2582,0.1608, 0.1071, 0.09031, 0.3332, 0.3767, 0.1789),
+                                  upper = c(0.7528,0.7551, 1.937, 1.02, 1.47, 2.128, 4.521),
+                                  study = c("All","RCC", "RCC ipi-nivo", "RCC TKI-ICB",
+                                            "UC", "UC non-maintenance ICB", "UC maintenance ICB"),
+                                  n = c("88","48","15","24","40","26","14"),
+                                  events = c("57","28","8","12","29","21","8"),
+                                  HR = c("0.44","0.35", "0.46", "0.30", "0.70", "0.90", "0.90"))
+
+forestplot_data |>
+  forestplot(labeltext = c(study, n, events, HR),
+             clip = c(0.09, 2.5),
+             xlog = TRUE,
+             xlab = "Hazard ratio for PFS (95% CI)",
+             xticks = c(0.1,0.25,0.5,1.0,2.5),
+             title = "Univariable progression-free survival subgroup analyis") |>
+  fp_set_style(box = "royalblue",
+               line = "darkblue",
+               summary = "royalblue") |> 
+  fp_add_header(study = c("Subgroup"),
+                n = c("n"),
+                events = c("Events"),
+                HR = c("HR")) 
 ```
 
 ## Panel F
@@ -98,5 +235,54 @@ Multivariate HR for PFS adjusted for age, diagnosis, and performance status.
 #| include: false
 #| label: panel_f
 
+cox_pfs_all <-coxph(Surv(pfs_mo,pod_status)~ fiber_dichotomized + ageby10 + ecog_1to5_final,
+                    all_metadata_fiber)
+summary(cox_pfs_all)
 
+cox_pfs_RC <-coxph(Surv(pfs_mo,pod_status)~ fiber_dichotomized + ageby10 + ecog_1to5_final,
+                   mRCdataFiber)
+summary(cox_pfs_RC)
+
+cox_pfs_RC_IpiNivo <-coxph(Surv(pfs_mo,pod_status)~ fiber_dichotomized+ ageby10 + ecog_1to5_final,
+                           dataRCIpiNivoFiber)
+summary(cox_pfs_RC_IpiNivo)
+
+cox_pfs_RC_TKI_IO <-coxph(Surv(pfs_mo,pod_status)~ fiber_dichotomized+ ageby10 + ecog_1to5_final,
+                          dataRCioTKIFiber)
+summary(cox_pfs_RC_TKI_IO)
+
+cox_pfs_UC <-coxph(Surv(pfs_mo,pod_status)~ fiber_dichotomized+ ageby10 + ecog_1to5_final,
+                   mUCdataFiber)
+summary(cox_pfs_UC)
+
+cox_pfs_UC_NOTavelumab <-coxph(Surv(pfs_mo,pod_status)~ fiber_dichotomized+ ageby10 + ecog_1to5_final,
+                               dataUC_NOTavelumabFiber)
+summary(cox_pfs_UC_NOTavelumab)
+
+cox_pfs_UC_avelumab <-coxph(Surv(pfs_mo,pod_status)~ fiber_dichotomized+ ageby10 + ecog_1to5_final,
+                            dataUCavelumabFiber)
+summary(cox_pfs_UC_avelumab)
+
+forestplot_data <- tibble::tibble(mean  = c(0.405, 0.3185, 0.6549),
+                                  lower = c(0.2298, 0.1322, 0.3038),
+                                  upper = c(0.7138, 0.7676, 1.412),
+                                  study = c("All", "RCC", "UC"),
+                                  n = c("88","48","40"),
+                                  events = c("57","28","29"),
+                                  HR = c("0.41","0.32","0.65"))
+
+forestplot_data |>
+  forestplot(labeltext = c(study, n, events, HR),
+             clip = c(0.09, 2.5),
+             xlog = TRUE,
+             xlab = "Hazard ratio for PFS (95% CI)",
+             xticks = c(0.1,0.25,0.5,1.0,2.5),
+             title = "Multivariable progression-free survival subgroup analyis") |>
+  fp_set_style(box = "royalblue",
+               line = "darkblue",
+               summary = "royalblue") |> 
+  fp_add_header(study = c("Subgroup"),
+                n = c("n"),
+                events = c("Events"),
+                HR = c("HR"))
 ```

@@ -1,0 +1,134 @@
+--- 
+title: |
+  <img src="./images/fiber_beaker_image_food.jpg" width="250px" style="margin-left:5%; margin-right:5%"/>
+  Extended Figure 2: PFS vs Fiber by Disease Type
+---
+
+
+
+```{r}
+#| echo: false
+#| warning: false
+#| include: false
+#| label: library_data_imports
+
+library(dplyr)
+library(survival)
+library(survminer)
+library(forestplot)
+source("utility_funcs.R")
+```
+
+The data we are visualizing here has the following structure:
+
+
+```{r}
+#| warning: false
+#| include: false
+#| label: load_data
+
+
+all_metadata_fiber <- readRDS("../public_data/fiber_data/all_metadata_fiber.RDS")
+data <- readRDS("../public_data/fiber_data/fiber_data_clean_labels.RDS")
+
+# Pull out different sub-groups from this data:
+
+UCdata=filter(data,cancer_type!=4)
+UCdata$TMBhigherThan10<-ifelse(UCdata$Impact.TMB.Score>=10,1,0)
+UCdata<-mutate(UCdata,TMBhigherThan10.Imputed = case_when(is.na(TMBhigherThan10)==FALSE~TMBhigherThan10,
+                                                          is.na(TMBhigherThan10)==TRUE~0))
+mUCdata=filter(UCdata,io_regimen!=6 & io_regimen!=13 & io_regimen!=15)
+mUCdataFiber=filter(mUCdata,((calor>=600 & calor<=4200 & sex.factor=="Male") 
+                    |(calor>=500 & calor<=3500 & sex.factor=="Female"))&(nblank<=70))
+
+
+RCdata=filter(data,cancer_type==4)
+mRCdata=filter(RCdata,io_regimen!=7 & io_regimen!=15 & io_regimen!=99)
+mRCdataFiber=filter(mRCdata,((calor>=600 & calor<=4200 & sex.factor=="Male") 
+                             |(calor>=500 & calor<=3500 & sex.factor=="Female"))&(nblank<=70))
+```
+
+## Panel A
+
+Mortality Hazard for PFS by daily average fiber intake, visualized via partial smoothing spline.  Ticks along the x axis represent individual patients. 
+
+```{r}
+#| warning: false
+#| include: true
+#| label: panel_a
+
+cox_pfs_allMet_mv <-coxph(Surv(pfs_mo,
+                               pod_status)~ fiber_dichotomized + 
+                            ageby10 + 
+                            ecog_1to5_final +
+                            cancer_RCCvsUC_NAME,
+                          all_metadata_fiber)
+
+summary(cox_pfs_allMet_mv)
+
+
+cox_pfs_allMet_mv2 <-coxph(Surv(pfs_mo,
+                                pod_status)~ fiber_dichotomized + 
+                             calor +
+                             ageby10 + 
+                             ecog_1to5_final +
+                             cancer_RCCvsUC_NAME,
+                           all_metadata_fiber)
+
+summary(cox_pfs_allMet_mv2)
+
+
+cox_pfs_allMet_mv3 <-coxph(Surv(pfs_mo,
+                                pod_status)~ fiber_dichotomized + 
+                             Impact.TMB.Imputed +
+                             ageby10 + 
+                             ecog_1to5_final +
+                             cancer_RCCvsUC_NAME,
+                           all_metadata_fiber)
+
+summary(cox_pfs_allMet_mv3)
+
+
+#Extended Data Figure 2
+kmPFS<-survfit(Surv(pfs_mo, pod_status)~fiber_dichotomized,
+               type="kaplan-meier", data=mUCdataFiber)
+
+ggsurvplot(kmPFS,risk.table=TRUE,
+           xlab="Time (months)", 
+           ylab="Progression-free survival",
+           #pval = TRUE,
+           legend="none",
+           title="Patients with urothelial cancer on ICB",
+           legend.title="Fiber intake",
+           legend.labs=c("<15 g/day","15+ g/day"),
+           #surv.median.line = "hv",
+           conf.int=TRUE,
+           break.x.by=6,
+           axes.offset=FALSE,
+           xlim=c(0,16),
+           data = mUCdataFiber)
+
+```
+```{r}
+#| warning: false
+#| include: true
+#| label: panel_b
+
+kmPFS<-survfit(Surv(pfs_mo, pod_status)~fiber_dichotomized,
+               type="kaplan-meier", data=mRCdataFiber)
+
+ggsurvplot(kmPFS,risk.table=TRUE,
+           xlab="Time (months)", 
+           ylab="Progression-free survival",
+           #pval = TRUE,
+           legend="none",
+           title="Patients with renal cell cancer on ICB",
+           legend.title="Fiber intake",
+           legend.labs=c("<15 g/day","15+ g/day"),
+           #surv.median.line = "hv",
+           conf.int=TRUE,
+           break.x.by=6,
+           axes.offset=FALSE,
+           #xlim=c(0,16),
+           data = mRCdataFiber)
+```

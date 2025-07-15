@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Butyrate, Microbiome and ICB Outcomes</title>
+<title>Butyrate, Microbiome and ICB Outcomes -  Extended Figure 2: PFS vs Fiber by Disease Type</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -19,6 +19,40 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -199,16 +233,206 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#panel-a" id="toc-panel-a" class="nav-link active" data-scroll-target="#panel-a">Panel A</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./extended_data_figure_2_pfs_fiber_disease_type.html">Extended Figures</a></li><li class="breadcrumb-item"><a href="./extended_data_figure_2_pfs_fiber_disease_type.html">Extended Figure 2: PFS Fiber by Disease Type</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><p><img src="./images/fiber_beaker_image_food.jpg" width="250px" style="margin-left:5%; margin-right:5%"> Extended Figure 2: PFS vs Fiber by Disease Type</p></h1>
+</div>
 
 
 
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
 
 
+</header>
+
+
+<p>The data we are visualizing here has the following structure:</p>
+<section id="panel-a" class="level2">
+<h2 class="anchored" data-anchor-id="panel-a">Panel A</h2>
+<p>Mortality Hazard for PFS by daily average fiber intake, visualized via partial smoothing spline. Ticks along the x axis represent individual patients.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>cox_pfs_allMet_mv <span class="ot">&lt;-</span><span class="fu">coxph</span>(<span class="fu">Surv</span>(pfs_mo,</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>                               pod_status)<span class="sc">~</span> fiber_dichotomized <span class="sc">+</span> </span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>                            ageby10 <span class="sc">+</span> </span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>                            ecog_1to5_final <span class="sc">+</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>                            cancer_RCCvsUC_NAME,</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>                          all_metadata_fiber)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(cox_pfs_allMet_mv)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Call:
+coxph(formula = Surv(pfs_mo, pod_status) ~ fiber_dichotomized + 
+    ageby10 + ecog_1to5_final + cancer_RCCvsUC_NAME, data = all_metadata_fiber)
+
+  n= 88, number of events= 57 
+
+                         coef exp(coef) se(coef)      z Pr(&gt;|z|)   
+fiber_dichotomized    -0.8237    0.4388   0.2917 -2.824  0.00475 **
+ageby10                0.3010    1.3511   0.1422  2.117  0.03426 * 
+ecog_1to5_final        0.3214    1.3790   0.3315  0.970  0.33227   
+cancer_RCCvsUC_NAMEUC  0.4412    1.5545   0.2914  1.514  0.13006   
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+                      exp(coef) exp(-coef) lower .95 upper .95
+fiber_dichotomized       0.4388     2.2790    0.2477    0.7772
+ageby10                  1.3511     0.7401    1.0226    1.7853
+ecog_1to5_final          1.3790     0.7251    0.7202    2.6407
+cancer_RCCvsUC_NAMEUC    1.5545     0.6433    0.8781    2.7520
+
+Concordance= 0.676  (se = 0.036 )
+Likelihood ratio test= 20.55  on 4 df,   p=4e-04
+Wald test            = 20.05  on 4 df,   p=5e-04
+Score (logrank) test = 21.25  on 4 df,   p=3e-04</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>cox_pfs_allMet_mv2 <span class="ot">&lt;-</span><span class="fu">coxph</span>(<span class="fu">Surv</span>(pfs_mo,</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>                                pod_status)<span class="sc">~</span> fiber_dichotomized <span class="sc">+</span> </span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>                             calor <span class="sc">+</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>                             ageby10 <span class="sc">+</span> </span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>                             ecog_1to5_final <span class="sc">+</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>                             cancer_RCCvsUC_NAME,</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>                           all_metadata_fiber)</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(cox_pfs_allMet_mv2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Call:
+coxph(formula = Surv(pfs_mo, pod_status) ~ fiber_dichotomized + 
+    calor + ageby10 + ecog_1to5_final + cancer_RCCvsUC_NAME, 
+    data = all_metadata_fiber)
+
+  n= 88, number of events= 57 
+
+                            coef  exp(coef)   se(coef)      z Pr(&gt;|z|)  
+fiber_dichotomized    -0.7247475  0.4844469  0.3636819 -1.993   0.0463 *
+calor                 -0.0001182  0.9998818  0.0002659 -0.445   0.6566  
+ageby10                0.2964480  1.3450727  0.1416315  2.093   0.0363 *
+ecog_1to5_final        0.3283082  1.3886169  0.3321438  0.988   0.3229  
+cancer_RCCvsUC_NAMEUC  0.4488039  1.5664374  0.2920805  1.537   0.1244  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+                      exp(coef) exp(-coef) lower .95 upper .95
+fiber_dichotomized       0.4844     2.0642    0.2375    0.9881
+calor                    0.9999     1.0001    0.9994    1.0004
+ageby10                  1.3451     0.7435    1.0190    1.7754
+ecog_1to5_final          1.3886     0.7201    0.7242    2.6626
+cancer_RCCvsUC_NAMEUC    1.5664     0.6384    0.8837    2.7767
+
+Concordance= 0.675  (se = 0.036 )
+Likelihood ratio test= 20.75  on 5 df,   p=9e-04
+Wald test            = 20.38  on 5 df,   p=0.001
+Score (logrank) test = 21.54  on 5 df,   p=6e-04</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>cox_pfs_allMet_mv3 <span class="ot">&lt;-</span><span class="fu">coxph</span>(<span class="fu">Surv</span>(pfs_mo,</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>                                pod_status)<span class="sc">~</span> fiber_dichotomized <span class="sc">+</span> </span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>                             Impact.TMB.Imputed <span class="sc">+</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>                             ageby10 <span class="sc">+</span> </span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>                             ecog_1to5_final <span class="sc">+</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>                             cancer_RCCvsUC_NAME,</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>                           all_metadata_fiber)</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(cox_pfs_allMet_mv3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Call:
+coxph(formula = Surv(pfs_mo, pod_status) ~ fiber_dichotomized + 
+    Impact.TMB.Imputed + ageby10 + ecog_1to5_final + cancer_RCCvsUC_NAME, 
+    data = all_metadata_fiber)
+
+  n= 88, number of events= 57 
+
+                          coef exp(coef) se(coef)      z Pr(&gt;|z|)   
+fiber_dichotomized    -0.82256   0.43931  0.28929 -2.843  0.00446 **
+Impact.TMB.Imputed    -0.08070   0.92247  0.06581 -1.226  0.22012   
+ageby10                0.27994   1.32305  0.14220  1.969  0.04900 * 
+ecog_1to5_final        0.18632   1.20481  0.34864  0.534  0.59305   
+cancer_RCCvsUC_NAMEUC  0.73653   2.08868  0.37273  1.976  0.04815 * 
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+                      exp(coef) exp(-coef) lower .95 upper .95
+fiber_dichotomized       0.4393     2.2763    0.2492    0.7745
+Impact.TMB.Imputed       0.9225     1.0840    0.8108    1.0495
+ageby10                  1.3231     0.7558    1.0012    1.7483
+ecog_1to5_final          1.2048     0.8300    0.6084    2.3860
+cancer_RCCvsUC_NAMEUC    2.0887     0.4788    1.0060    4.3365
+
+Concordance= 0.677  (se = 0.035 )
+Likelihood ratio test= 22.13  on 5 df,   p=5e-04
+Wald test            = 22.25  on 5 df,   p=5e-04
+Score (logrank) test = 23.39  on 5 df,   p=3e-04</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Extended Data Figure 2</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>kmPFS<span class="ot">&lt;-</span><span class="fu">survfit</span>(<span class="fu">Surv</span>(pfs_mo, pod_status)<span class="sc">~</span>fiber_dichotomized,</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">type=</span><span class="st">"kaplan-meier"</span>, <span class="at">data=</span>mUCdataFiber)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsurvplot</span>(kmPFS,<span class="at">risk.table=</span><span class="cn">TRUE</span>,</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>           <span class="at">xlab=</span><span class="st">"Time (months)"</span>, </span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>           <span class="at">ylab=</span><span class="st">"Progression-free survival"</span>,</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>           <span class="co">#pval = TRUE,</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>           <span class="at">legend=</span><span class="st">"none"</span>,</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>           <span class="at">title=</span><span class="st">"Patients with urothelial cancer on ICB"</span>,</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>           <span class="at">legend.title=</span><span class="st">"Fiber intake"</span>,</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>           <span class="at">legend.labs=</span><span class="fu">c</span>(<span class="st">"&lt;15 g/day"</span>,<span class="st">"15+ g/day"</span>),</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>           <span class="co">#surv.median.line = "hv",</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>           <span class="at">conf.int=</span><span class="cn">TRUE</span>,</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>           <span class="at">break.x.by=</span><span class="dv">6</span>,</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>           <span class="at">axes.offset=</span><span class="cn">FALSE</span>,</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>           <span class="at">xlim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">16</span>),</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>           <span class="at">data =</span> mUCdataFiber)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="extended_data_figure_2_pfs_fiber_disease_type_files/figure-html/panel_a-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>kmPFS<span class="ot">&lt;-</span><span class="fu">survfit</span>(<span class="fu">Surv</span>(pfs_mo, pod_status)<span class="sc">~</span>fiber_dichotomized,</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>               <span class="at">type=</span><span class="st">"kaplan-meier"</span>, <span class="at">data=</span>mRCdataFiber)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsurvplot</span>(kmPFS,<span class="at">risk.table=</span><span class="cn">TRUE</span>,</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>           <span class="at">xlab=</span><span class="st">"Time (months)"</span>, </span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>           <span class="at">ylab=</span><span class="st">"Progression-free survival"</span>,</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>           <span class="co">#pval = TRUE,</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>           <span class="at">legend=</span><span class="st">"none"</span>,</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>           <span class="at">title=</span><span class="st">"Patients with renal cell cancer on ICB"</span>,</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>           <span class="at">legend.title=</span><span class="st">"Fiber intake"</span>,</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>           <span class="at">legend.labs=</span><span class="fu">c</span>(<span class="st">"&lt;15 g/day"</span>,<span class="st">"15+ g/day"</span>),</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>           <span class="co">#surv.median.line = "hv",</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>           <span class="at">conf.int=</span><span class="cn">TRUE</span>,</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>           <span class="at">break.x.by=</span><span class="dv">6</span>,</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>           <span class="at">axes.offset=</span><span class="cn">FALSE</span>,</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>           <span class="co">#xlim=c(0,16),</span></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>           <span class="at">data =</span> mRCdataFiber)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="extended_data_figure_2_pfs_fiber_disease_type_files/figure-html/panel_b-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+
+
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
