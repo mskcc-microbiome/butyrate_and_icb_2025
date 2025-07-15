@@ -44,7 +44,7 @@
     "href": "figure_1_hazard_ratio_fiber.html#panel-a",
     "title": " Figure 1 - Hazard Ratio Analysis of Fiber Intake",
     "section": "Panel A",
-    "text": "Panel A\nMortality Hazard for PFS by daily average fiber intake, visualized via partial smoothing spline. Ticks along the x axis represent individual patients.\n\nmakeSpline(all_metadata_fiber, all_metadata_fiber$pfs_mo, all_metadata_fiber$pod_status, \n           all_metadata_fiber$aofib,\n           xlab = \"Daily average fiber intake (g/day)\", ylab=\"Hazard ratio (95% CI)\",\n           title=\"Smoothing spline for progression-free survival\",\n           knots=2,\n           centerpoint = 15)",
+    "text": "Panel A\nMortality Hazard for PFS by daily average fiber intake, visualized via partial smoothing spline. Ticks along the x axis represent individual patients.\n\nmakeSpline(all_metadata_fiber, all_metadata_fiber$pfs_mo, all_metadata_fiber$pod_status, \n           all_metadata_fiber$aofib,\n           xlab = \"Daily average fiber intake (g/day)\", ylab=\"Hazard ratio (95% CI)\",\n           title=\"Smoothing spline for progression-free survival\",\n           knots=2,\n           centerpoint = 15)+\n  scale_x_log10()",
     "crumbs": [
       "Main Figures",
       "Figure 1: Hazard Ratio with Fiber"
@@ -55,7 +55,7 @@
     "href": "figure_1_hazard_ratio_fiber.html#panel-b",
     "title": " Figure 1 - Hazard Ratio Analysis of Fiber Intake",
     "section": "Panel B",
-    "text": "Panel B\nMortality Hazard for OS by daily average fiber intake, visualized via partial smoothing spline. Ticks along the x axis represent individual patients.\n\nmakeSpline(all_metadata_fiber, all_metadata_fiber$os_mo, all_metadata_fiber$os_status, \n           all_metadata_fiber$aofib,\n           xlab = \"Daily average fiber intake (g/day)\", ylab=\"Hazard ratio (95% CI)\",\n           title=\"Smoothing spline for overall survival\",\n           knots=2, \n           centerpoint = 15)",
+    "text": "Panel B\nMortality Hazard for OS by daily average fiber intake, visualized via partial smoothing spline. Ticks along the x axis represent individual patients.\n\nmakeSpline(all_metadata_fiber, all_metadata_fiber$os_mo, all_metadata_fiber$os_status, \n           all_metadata_fiber$aofib,\n           xlab = \"Daily average fiber intake (g/day)\", ylab=\"Hazard ratio (95% CI)\",\n           title=\"Smoothing spline for overall survival\",\n           knots=2, \n           centerpoint = 15) +\n  scale_x_log10()",
     "crumbs": [
       "Main Figures",
       "Figure 1: Hazard Ratio with Fiber"
