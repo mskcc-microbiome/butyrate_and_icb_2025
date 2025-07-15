@@ -78,7 +78,7 @@ Mortality Hazard for PFS by daily average fiber intake, visualized via partial s
 
 ```{r}
 #| warning: false
-#| include: false
+#| include: true
 #| label: panel_a
 
 makeSpline(all_metadata_fiber, all_metadata_fiber$pfs_mo, all_metadata_fiber$pod_status, 
@@ -96,7 +96,7 @@ Mortality Hazard for OS by daily average fiber intake, visualized via partial sm
 
 ```{r}
 #| warning: false
-#| include: false
+#| include: true
 #| label: panel_b
 
 makeSpline(all_metadata_fiber, all_metadata_fiber$os_mo, all_metadata_fiber$os_status, 
@@ -113,7 +113,7 @@ Kaplan-Meier PFS by daily average fiber intake, two groups >= 15 grams/day.
 
 ```{r}
 #| warning: false
-#| include: false
+#| include: true
 #| label: panel_c
 
 kmPFS<-survfit(Surv(pfs_mo, pod_status)~fiber_dichotomized,
@@ -141,7 +141,7 @@ Kaplan-Meier OS by daily average fiber intake, two groups >= 15 grams/day.
 
 ```{r}
 #| warning: false
-#| include: false
+#| include: true
 #| label: panel_d
 
 kmOS<-survfit(Surv(os_mo, os_status)~fiber_dichotomized,
@@ -168,7 +168,7 @@ Univariate HRs for PFS among clinically relavant subgroups.
 
 ```{r}
 #| warning: false
-#| include: false
+#| include: true
 #| label: panel_e
 
 cox_pfs_all_uv <-coxph(Surv(pfs_mo,pod_status)~ fiber_dichotomized,
@@ -232,7 +232,7 @@ Multivariate HR for PFS adjusted for age, diagnosis, and performance status.
 
 ```{r}
 #| warning: false
-#| include: false
+#| include: true
 #| label: panel_f
 
 cox_pfs_all <-coxph(Surv(pfs_mo,pod_status)~ fiber_dichotomized + ageby10 + ecog_1to5_final,
