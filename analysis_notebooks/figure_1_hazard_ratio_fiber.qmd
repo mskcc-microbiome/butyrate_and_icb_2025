@@ -72,7 +72,7 @@ dataRCioTKIFiber=filter(dataRCioTKI,((calor>=600 & calor<=4200 & sex.factor=="Ma
                                      |(calor>=500 & calor<=3500 & sex.factor=="Female"))&(nblank<=70))
 ```
 
-## Panel A
+## Panel B
 
 Mortality Hazard for PFS by daily average fiber intake, visualized via partial smoothing spline.  Ticks along the x axis represent individual patients. 
 
@@ -91,7 +91,7 @@ makeSpline(all_metadata_fiber, all_metadata_fiber$pfs_mo, all_metadata_fiber$pod
 
 ```
 
-## Panel B
+## Panel C
 
 Mortality Hazard for OS by daily average fiber intake, visualized via partial smoothing spline.  Ticks along the x axis represent individual patients. 
 
@@ -109,7 +109,7 @@ makeSpline(all_metadata_fiber, all_metadata_fiber$os_mo, all_metadata_fiber$os_s
   scale_x_log10()
 ```
 
-## Panel C
+## Panel D
 
 Kaplan-Meier PFS by daily average fiber intake, two groups >= 15 grams/day.  
 
@@ -137,7 +137,7 @@ ggsurvplot(kmPFS,risk.table=TRUE,
            data = all_metadata_fiber)
 ```
 
-## Panel D
+## Panel E
 
 Kaplan-Meier OS by daily average fiber intake, two groups >= 15 grams/day. 
 
@@ -165,7 +165,7 @@ ggsurvplot(kmOS,risk.table=TRUE,
            data = all_metadata_fiber)
 ```
 
-## Panel E
+## Panel F
 Univariate HRs for PFS among clinically relavant subgroups.
 
 ```{r}
@@ -228,7 +228,7 @@ forestplot_data |>
                 HR = c("HR")) 
 ```
 
-## Panel F
+## Panel G
 
 Multivariate HR for PFS adjusted for age, diagnosis, and performance status.
 

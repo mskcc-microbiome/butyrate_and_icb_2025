@@ -237,12 +237,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#panel-a" id="toc-panel-a" class="nav-link active" data-scroll-target="#panel-a">Panel A</a></li>
-  <li><a href="#panel-b" id="toc-panel-b" class="nav-link" data-scroll-target="#panel-b">Panel B</a></li>
+  <li><a href="#panel-b" id="toc-panel-b" class="nav-link active" data-scroll-target="#panel-b">Panel B</a></li>
   <li><a href="#panel-c" id="toc-panel-c" class="nav-link" data-scroll-target="#panel-c">Panel C</a></li>
   <li><a href="#panel-d" id="toc-panel-d" class="nav-link" data-scroll-target="#panel-d">Panel D</a></li>
   <li><a href="#panel-e" id="toc-panel-e" class="nav-link" data-scroll-target="#panel-e">Panel E</a></li>
   <li><a href="#panel-f" id="toc-panel-f" class="nav-link" data-scroll-target="#panel-f">Panel F</a></li>
+  <li><a href="#panel-g" id="toc-panel-g" class="nav-link" data-scroll-target="#panel-g">Panel G</a></li>
   </ul>
 </nav>
     </div>
@@ -269,8 +269,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 <p>The data we are visualizing here has the following structure:</p>
-<section id="panel-a" class="level2">
-<h2 class="anchored" data-anchor-id="panel-a">Panel A</h2>
+<section id="panel-b" class="level2">
+<h2 class="anchored" data-anchor-id="panel-b">Panel B</h2>
 <p>Mortality Hazard for PFS by daily average fiber intake, visualized via partial smoothing spline. Ticks along the x axis represent individual patients.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">makeSpline</span>(all_metadata_fiber, all_metadata_fiber<span class="sc">$</span>pfs_mo, all_metadata_fiber<span class="sc">$</span>pod_status, </span>
@@ -289,8 +289,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-<section id="panel-b" class="level2">
-<h2 class="anchored" data-anchor-id="panel-b">Panel B</h2>
+<section id="panel-c" class="level2">
+<h2 class="anchored" data-anchor-id="panel-c">Panel C</h2>
 <p>Mortality Hazard for OS by daily average fiber intake, visualized via partial smoothing spline. Ticks along the x axis represent individual patients.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">makeSpline</span>(all_metadata_fiber, all_metadata_fiber<span class="sc">$</span>os_mo, all_metadata_fiber<span class="sc">$</span>os_status, </span>
@@ -309,8 +309,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-<section id="panel-c" class="level2">
-<h2 class="anchored" data-anchor-id="panel-c">Panel C</h2>
+<section id="panel-d" class="level2">
+<h2 class="anchored" data-anchor-id="panel-d">Panel D</h2>
 <p>Kaplan-Meier PFS by daily average fiber intake, two groups &gt;= 15 grams/day.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>kmPFS<span class="ot">&lt;-</span><span class="fu">survfit</span>(<span class="fu">Surv</span>(pfs_mo, pod_status)<span class="sc">~</span>fiber_dichotomized,</span>
@@ -339,8 +339,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-<section id="panel-d" class="level2">
-<h2 class="anchored" data-anchor-id="panel-d">Panel D</h2>
+<section id="panel-e" class="level2">
+<h2 class="anchored" data-anchor-id="panel-e">Panel E</h2>
 <p>Kaplan-Meier OS by daily average fiber intake, two groups &gt;= 15 grams/day.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>kmOS<span class="ot">&lt;-</span><span class="fu">survfit</span>(<span class="fu">Surv</span>(os_mo, os_status)<span class="sc">~</span>fiber_dichotomized,</span>
@@ -369,8 +369,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-<section id="panel-e" class="level2">
-<h2 class="anchored" data-anchor-id="panel-e">Panel E</h2>
+<section id="panel-f" class="level2">
+<h2 class="anchored" data-anchor-id="panel-f">Panel F</h2>
 <p>Univariate HRs for PFS among clinically relavant subgroups.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>cox_pfs_all_uv <span class="ot">&lt;-</span><span class="fu">coxph</span>(<span class="fu">Surv</span>(pfs_mo,pod_status)<span class="sc">~</span> fiber_dichotomized,</span>
@@ -558,8 +558,8 @@ Score (logrank) test = 0.02  on 1 df,   p=0.9</code></pre>
 </div>
 </div>
 </section>
-<section id="panel-f" class="level2">
-<h2 class="anchored" data-anchor-id="panel-f">Panel F</h2>
+<section id="panel-g" class="level2">
+<h2 class="anchored" data-anchor-id="panel-g">Panel G</h2>
 <p>Multivariate HR for PFS adjusted for age, diagnosis, and performance status.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>cox_pfs_all <span class="ot">&lt;-</span><span class="fu">coxph</span>(<span class="fu">Surv</span>(pfs_mo,pod_status)<span class="sc">~</span> fiber_dichotomized <span class="sc">+</span> ageby10 <span class="sc">+</span> ecog_1to5_final,</span>

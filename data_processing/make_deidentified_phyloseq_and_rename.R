@@ -1,4 +1,6 @@
 library(tidyverse)
+library(microViz)
+library(phyloseq)
 
 prefix = "data/data_from_josh/gu_project/"
 
@@ -6,92 +8,54 @@ serse_phylo <- readRDS(paste0(prefix, "serse_phylo.rds"))
 acoa_df <- readRDS("data/cleaned_data/acoa_data.rds")
 ps <- ps_filter(serse_phylo, experiments %in% acoa_df$WMS_SGPID)
 
-
-
-sample_df <- data.frame(sample_data(ps))
-new_sample_data <- left_join(sample_df, acoa_df %>% select(id_int, `pyruvate`), by = "id_int") %>%
+sample_data(ps) <- data.frame(sample_data(ps)) %>% 
+  rownames_to_column("tmp_rownames") %>%
+  left_join(acoa_df %>% select(id_int, `pyruvate`), by = "id_int") %>%
   mutate(log_total = log(total)) %>%
   mutate(log_acoa = log(pyruvate)) %>%
   select(-c(age, impact_tmb_score, cpb_drug, ecog, best_overall_response,
             tt_pfs_d, pfs_event, tt_os_d, event_os, TMPT, identifier,
             analysis_id, experiments, lb)) %>%
   as.data.frame() %>%
+  column_to_rownames("tmp_rownames")%>%
   sample_data()
-rownames(new_sample_data) <- rownames(sample_data(ps))
-sample_data(ps) <- new_sample_data
-# Extract OTU matrix and convert it to a tibble
-otu_df <- otu_table(ps) %>%
-  as.data.frame() %>%
-  rownames_to_column("Taxa") %>%
-  as_tibble()
 
-# Ensure the taxonomy data is also accessible
-taxa_df <- tax_table(ps) %>%
-  as.data.frame() %>%
-  rownames_to_column("Taxa") %>%
-  as_tibble()
+# Next we will add information about top 10 families to the sample data for this phyloseq:
 
-# Aggregate the data
-bacteroidales_aggregate <- otu_df %>%
-  # Use left_join to include taxonomy information
-  left_join(taxa_df, by = "Taxa") %>%
-  # Filter rows based on your criteria
-  filter(str_detect(Family, "Bacteroidaceae") | str_detect(Order, "Bacteroidales")) %>%
-  # Sum across all samples (assuming samples are columns starting from the 2nd column)
-  summarise(across(starts_with("SGP"), sum, na.rm = TRUE)) %>% 
-  # Add a new Taxa row for the aggregate
-  mutate(Taxa = "k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Bacteroidales_order|g__Bac|s__Bac") %>%
-  # Select only the necessary columns to match the original OTU matrix format
-  select(c(Taxa, starts_with("SGP")))
+#Step 1: get family level abundance
+ps_family <- tax_glom(ps, taxrank = "Family")
 
-# Optionally, you might want to remove the original taxa
-otu_df <- otu_df %>%
-  filter(!str_detect(Taxa, "Bacteroidaceae") & !str_detect(Taxa, "Bacteroidales"))
+taxa_names(ps_family) <- as.character(tax_table(ps_family)[, "Family"])
+
+# Step 2: Transform to compositional (relative abundance)
+ps_family_rel <- transform_sample_counts(ps_family, function(x) x / sum(x))
+
+# Step 3: Compute mean abundance per family across all samples
+mean_abund <- taxa_sums(ps_family_rel) / nsamples(ps_family_rel)
+
+# Step 4: Identify top 10 families by mean abundance
+top10_families <- names(sort(mean_abund, decreasing = TRUE)[1:10])
+
+# Step 5: Create a sample_data data frame with columns for each top family
+abund_df <- as(otu_table(ps_family_rel), "matrix")
+if (!taxa_are_rows(ps_family_rel)) {
+  abund_df <- t(abund_df)
+}
+abund_df <- as.data.frame(abund_df)
+
+# Extract only the top 10 families
+top10_df <- abund_df[top10_families, ]
+top10_df <- t(top10_df)
 
 
-# Append this new row to the original OTU data frame
-otu_df <- bind_rows(otu_df, bacteroidales_aggregate)
+# Step 6: Add to sample metadata
+sample_metadata <- as.data.frame(sample_data(ps_family_rel))
+sample_metadata <- cbind(sample_metadata, top10_df)
 
-# Convert back to OTU matrix
-new_otu_table <- otu_df %>%
-  column_to_rownames("Taxa") %>%
-  as.matrix()
+# Step 5: Assign updated metadata back to the species-level object
+sample_data(ps) <- sample_data(sample_metadata)
 
+ps %>%
+  ps_filter(SAMPID %in% acoa_df$SAMPID) %>%
+  write_rds("public_data/sequencing_data/plotting_phyloseq_deidentified.rds")
 
-
-
-# Assuming you have created an entry for 'Bacteroidales_phylum' in the OTU table
-# First, create a new row for the taxonomy table
-new_taxa_row <- data.frame(
-  Kingdom = "Bacteria",
-  Phylum = "Bacteroidetes",
-  Class = NA,
-  Order = "Bacteroidales",
-  Family = "Bacteroidales_order",
-  Genus = "Bac",
-  Species = "Bac"
-)
-
-# Convert it to the same format as the existing taxonomy table
-new_taxa_row <- as(new_taxa_row, "matrix")
-
-# Add this new row to the existing taxonomy table
-taxa_matrix <- as.matrix(tax_table(ps))
-taxa_matrix <- rbind(taxa_matrix, new_taxa_row)
-rownames(taxa_matrix)[nrow(taxa_matrix)] <- "k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Bacteroidales_order|g__Bac|s__Bac" # Ensure the rownames match those in the OTU table
-
-# Replace the old taxonomy table with the new one
-tax_table(ps) <- tax_table(taxa_matrix)
-
-ps2 <- phyloseq(otu_table(new_otu_table, taxa_are_rows=T), tax_table(taxa_matrix), sample_data(ps)) %>%
-  ps_filter(SAMPID %in% acoa_df$SAMPID)
-
-write_rds(ps2, "data/cleaned_data/plotting_phyloseq_deidentified.rds")
-
-compare_family <- ps2 %>% 
-  get.otu.melt() %>%
-  group_by(SAMPID, Family) %>%
-  summarise(total_family = sum(pctseqs)) %>%
-  left_join(acoa_df %>% select(SAMPID, `pyruvate`))
-
-saveRDS(compare_family, "data/cleaned_data/deid_family_ps.rds")
