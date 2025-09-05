@@ -1,3 +1,3 @@
-quantify_script: "/home/daia1/my_workdir/APPS/shortbred/shortbred_quantify.py"
-marker_fastq: "/home/daia1/my_workdir/other_pipeline/butyrate_gene_quantify/data/butyrate_pw_genes_markers.fa"
-usearch: "/home/daia1/my_workdir/APPS/usearch11.0.667_i86linux32"
+quantify_script: "(the path to the shortBRED quantify_script)"
+marker_fastq: "(path to the marker fastq we provided (or updated marker.fastq if using your own reference))."
+usearch: "the path to your usearch installation."

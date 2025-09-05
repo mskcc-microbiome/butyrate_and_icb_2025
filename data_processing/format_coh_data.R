@@ -25,13 +25,9 @@ genelist <- data.frame(rbind(cbind(l_pyruvate, "pyruvate"),
                              cbind(l_glutarate, "gluatarate"),
                              cbind(l_fouraminobutyrate, "fouraminobutyrate"),
                              cbind(l_lysine, "lysine")))
-genelist <- genelist %>%
+result_df <- genelist %>%
   rename("gene_family_id" = "l_pyruvate" ,"gene_path_true" = "V2") %>%
   mutate(gene_family_id = as.numeric(gene_family_id))
-
-
-result_df <- result_df %>%
-  left_join(genelist)
 
 
 ####
