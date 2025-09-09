@@ -205,8 +205,7 @@ ul.task-list li input[type="checkbox"] {
   <ul>
   <li><a href="#what-is-shortbred-and-what-did-we-use-it-for" id="toc-what-is-shortbred-and-what-did-we-use-it-for" class="nav-link active" data-scroll-target="#what-is-shortbred-and-what-did-we-use-it-for">What is ShortBRED? (and what did we use it for?)</a>
   <ul class="collapse">
-  <li><a href="#steps-for-running-our-shortbred-analysis" id="toc-steps-for-running-our-shortbred-analysis" class="nav-link" data-scroll-target="#steps-for-running-our-shortbred-analysis">Steps for running our ShortBRED analysis:</a></li>
-  <li><a href="#run-an-example" id="toc-run-an-example" class="nav-link" data-scroll-target="#run-an-example">Run an example:</a></li>
+  <li><a href="#run-the-analysis" id="toc-run-the-analysis" class="nav-link" data-scroll-target="#run-the-analysis">Run the analysis:</a></li>
   </ul></li>
   <li><a href="#analysis-setup" id="toc-analysis-setup" class="nav-link" data-scroll-target="#analysis-setup">Analysis setup:</a>
   <ul class="collapse">
@@ -247,37 +246,8 @@ ul.task-list li input[type="checkbox"] {
 <p><a href="https://huttenhower.sph.harvard.edu/shortbred/">ShortBRED</a> is a tool developed by the Huttenhower group for profiling specific protein families of interest using shotgun metagenomic data.</p>
 <p>In this project it was used to profile genes involved in butyrate synthesis using a set of genes identified by Vital et al in their paper <a href="https://journals.asm.org/doi/10.1128/mbio.00889-14">Revealing the Bacterial Butyrate Synthesis Pathways by Analyzing (Meta)genomic Data</a>.</p>
 <p>Genes used in this analysis were downloaded from the <a href="https://img.jgi.doe.gov/">Integrated Microbial Genomes and Microbiomes database</a>. A fastq file which acted as our ShortBRED database for this analysis is included in <a href="https://github.com/mskcc-microbiome/butyrate_and_icb_2025/tree/main/data_processing/shortbred_analysis">the Github repo</a> for this project.</p>
-<section id="steps-for-running-our-shortbred-analysis" class="level3">
-<h3 class="anchored" data-anchor-id="steps-for-running-our-shortbred-analysis">Steps for running our ShortBRED analysis:</h3>
-<section id="step-0-get-software-etc" class="level4">
-<h4 class="anchored" data-anchor-id="step-0-get-software-etc">Step 0: Get software etc:</h4>
-<p>To get started - you will need:</p>
-<ul>
-<li>Code from our repo! Get this by cloning the repo (<code>git clone git@github.com:mskcc-microbiome/butyrate_and_icb_2025.git</code> (SSH) or <code>git clone https://github.com/mskcc-microbiome/butyrate_and_icb_2025.git</code> (HTTPS)) or by downloading the files required. In particular you will need:
-<ul>
-<li>the <code>data_processing/shortbred_analysis/</code> folder with our required scripts for running our <code>ShortBRED</code> analysis.</li>
-</ul></li>
-<li>Download (or locate) a copy of <a href="https://www.drive5.com/usearch/">usearch</a></li>
-<li>Download a copy of <a href="https://github.com/biobakery/shortbred">shortBRED</a></li>
-</ul>
-</section>
-<section id="step-1-update-config-file" class="level4">
-<h4 class="anchored" data-anchor-id="step-1-update-config-file">Step 1: Update config file:</h4>
-<ul>
-<li>Please open the config file in <code>data_processing/shortbred_analysis/config.yaml</code> and edit the following parameters:</li>
-</ul>
-</section>
-<section id="step-2-navigate-the-the-folder-and-run-it" class="level4">
-<h4 class="anchored" data-anchor-id="step-2-navigate-the-the-folder-and-run-it">Step 2 Navigate the the folder and run it!</h4>
-<ul>
-<li><code>snakemake --directory "./test_dir" --config sample=$SAMPLE_NAME sample_dir=$SAMPLE_DIR</code></li>
-<li>Sample Name should be the prefix of your sample (assuming it ends in R1)</li>
-<li>Sample dir is the directory.</li>
-</ul>
-</section>
-</section>
-<section id="run-an-example" class="level3">
-<h3 class="anchored" data-anchor-id="run-an-example">Run an example:</h3>
+<section id="run-the-analysis" class="level3">
+<h3 class="anchored" data-anchor-id="run-the-analysis">Run the analysis:</h3>
 <p>To run the example of this <code>shortBRED</code> code on one of the fastqs from this project:</p>
 <p><strong>Note <code>butyrate_pw_genes_aa_seqs.fa</code> is the fasta file we used to build the ShortBRED marker db. We also provide you with the pre-built marker db: <code>butyrate_pw_genes_markers.fa</code></strong></p>
 </section>

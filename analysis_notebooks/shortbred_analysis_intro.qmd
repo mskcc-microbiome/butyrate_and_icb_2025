@@ -17,29 +17,8 @@ In this project it was used to profile genes involved in butyrate synthesis usin
 
 Genes used in this analysis were downloaded from the [Integrated Microbial Genomes and Microbiomes database](https://img.jgi.doe.gov/).  A fastq file which acted as our ShortBRED database for this analysis is included in [the Github repo](https://github.com/mskcc-microbiome/butyrate_and_icb_2025/tree/main/data_processing/shortbred_analysis) for this project. 
 
-### Steps for running our ShortBRED analysis:
 
-#### Step 0: Get software etc:
-
-To get started - you will need:
-
-  - Code from our repo!  Get this by cloning the repo (`git clone git@github.com:mskcc-microbiome/butyrate_and_icb_2025.git` (SSH) or `git clone https://github.com/mskcc-microbiome/butyrate_and_icb_2025.git` (HTTPS)) or by downloading the files required.  In particular you will need:
-    - the `data_processing/shortbred_analysis/` folder with our required scripts for running our `ShortBRED` analysis.
-  - Download (or locate) a copy of [usearch](https://www.drive5.com/usearch/)
-  - Download a copy of [shortBRED](https://github.com/biobakery/shortbred)
-
-#### Step 1: Update config file:
-
-  - Please open the config file in `data_processing/shortbred_analysis/config.yaml` and edit the following parameters:
-  
-
-#### Step 2 Navigate the the folder and run it!
-
-- `snakemake --directory "./test_dir" --config sample=$SAMPLE_NAME sample_dir=$SAMPLE_DIR`
-- Sample Name should be the prefix of your sample (assuming it ends in R1)
-- Sample dir is the directory. 
-
-### Run an example:
+### Run the analysis:
 
 To run the example of this `shortBRED` code on one of the fastqs from this project:
 
