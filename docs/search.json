@@ -22,6 +22,28 @@
     ]
   },
   {
+    "objectID": "shortbred_analysis_intro.html#analysis-setup",
+    "href": "shortbred_analysis_intro.html#analysis-setup",
+    "title": " ShortBRED Analysis.",
+    "section": "Analysis setup:",
+    "text": "Analysis setup:\n\nInstall dependencies:\n(Note that we primarily use the SSH links for git clone. The HTTPS git clone commands are also provided in paranthesis)\n\nClone this repo to a machine with your raw data where you plan to do your analysis.\n\ngit clone git@github.com:mskcc-microbiome/butyrate_and_icb_2025.git (git clone https://github.com/mskcc-microbiome/butyrate_and_icb_2025.git)\n\nInstall usearch (just need v6.0.307 or later, we use v 11.0.667):\n\ncurl https://www.drive5.com/downloads/usearch11.0.667_i86linux32.gz --output usearch11.0.667_i86linux32.gz\ngunzip usearch11.0.667_i86linux32.gz\nNote: make sure you change the permissions if needed so that you have the rights to execute this file (chmod u+x usearch11.0.667_i86linux32)\n\nInstall Shortbred\n\ngit clone git@github.com:biobakery/shortbred.git (git clone https://github.com/biobakery/shortbred.git)",
+    "crumbs": [
+      "Analysis Notes",
+      "shortBRED Analysis Butyrate Gene Quantification"
+    ]
+  },
+  {
+    "objectID": "shortbred_analysis_intro.html#analysis-options",
+    "href": "shortbred_analysis_intro.html#analysis-options",
+    "title": " ShortBRED Analysis.",
+    "section": "Analysis Options:",
+    "text": "Analysis Options:\n\nBash script (easiest to get up and going):\n\nSet up Environment:\nFirst create and activate an environment with the correct installed packages:\nFrom the base dir of this repo:\nmamba env create -n shortbred_env -f data_processing/shortbred_analysis/envs/shortbred_env.yaml \nmamba activate shortbred_env\nMake sure this env is activated whenever you run this shortbred analysis!\n\n\nUpdate Config\nNow open data_processing/shortbred_analysis/config_params.sh and edit the following variables:\n\nUSEARCH - this should be the path to usearch that you installed in Analysis setup\nMARKER_FASTQ - this is the marker fastq we supplied for this analysis! Location: data_processing/shortbred_analysis/butyrate_pw_genes_markers.fa\nQUANTIFY_SCRIPT - the path to the shortbred_quantify.py script in your Shortbred installation.\n\n\n\nTest Run (recommended)\nSave data_processing/shortbred_analysis/shortbred_template.sh with a new name ie cp data_processing/shortbred_analysis/shortbred_template.sh data_processing/shortbred_analysis/shortbred_test_run.sh.\nEdit the header to add job specific details (note we use LSF headers, please update to whatever submission manager you use!)\n\n#BSUB -J -&gt; #BSUB -J test_shortbred_run\n#BSUB -o -&gt; #BSUB -o test_shortbred_run.stdout\n#BSUB -eo -&gt; #BSUB -eo test_shortbred_run.stderr\n#BSUB -n -&gt; #BSUB -n 1 (for example, can do more than this too, and set the threads parameter below to match.)\n\nManually edit the following parameters:\n\ninput: the fastq.gz file you are running your analysis on.\noutput: desired output file. ie: {$sample_name}_butyrate.txt”.\ntmp_dir: name of a temporary directory this analysis can use while running. (ie {$sample_name}_shortbred_tmp)\nthreads: treads used in test (can default to 1 if needed).\n\nsubmit the job!\nsh data_processing/shortbred_analysis/shortbred_test_run.sh or if submitting as a LSF job: bsub &lt; data_processing/shortbred_analysis/shortbred_test_run.sh.\n\n\nSubmit a list of jobs:\nGiven a folder of fastq.gz files, run a job to submit the shortbred analysis on all of them. We wrote an example script for doing this here:\ndata_processing/shortbred_analysis/shortbred_run_on_folder_example.sh\nYou may need to modify this for your exact use case.\nTo run it, modify the dir\n\n\n\nSnakemake:\nUsing the Snakefile in this folder you should be able to run this file locally or on an HPC. If you use LSF we have a Snakemake profile you can use for submissions.\nShortBRED has the following environmental requirements: - Python 2.7.9 - Biopython v1.65 - ncbi-blast-2.2.28+ - usearch v6.0.307 (Please make sure this is up to date. Earlier versions of usearch use a different command for making database than what is expected by ShortBRED.) - MUSCLE v3.8.31 - CD-HIT version 4.6\nThese environmental requirements are captured in the shortbred_env.yaml file used by the Snakefile for ShortBRED analysis.\nOur analysis currently assumes a structure where each sample has a directory containing R1 and R2 as fastq.gz files. The sample_dir and sample name will be provided as dynamic entries to the config.\nYou will also need to update the config file for the snakemake workflow for the following parameters: - quantify_script: (the path to the shortBRED quantify_script) - marker_fastq: (path to the marker fastq we provided (or updated marker.fastq if using your own reference)). - usearch: the path to your usearch installation.\n\nTest files:\n\nDownload a test file, ie: one of the fastqs from our paper\n\n\n\nCitations:\n\nKaminski J, Gibson MK, Franzosa EA, Segata N, Dantas G, Huttenhower C (2015) High-Specificity Targeted Functional Profiling in Microbial Communities with ShortBRED. PLoS Comput Biol 11(12): e1004557.",
+    "crumbs": [
+      "Analysis Notes",
+      "shortBRED Analysis Butyrate Gene Quantification"
+    ]
+  },
+  {
     "objectID": "index.html",
     "href": "index.html",
     "title": "Butyrate, the Microbiome and ICB Therapy",
@@ -220,28 +242,6 @@
     "crumbs": [
       "Main Figures",
       "Figure 2: ACoA Pathway and ICB/Survival Outcomes"
-    ]
-  },
-  {
-    "objectID": "shortbred_analysis_intro.html#analysis-setup",
-    "href": "shortbred_analysis_intro.html#analysis-setup",
-    "title": " ShortBRED Analysis.",
-    "section": "Analysis setup:",
-    "text": "Analysis setup:\n\nInstall dependencies:\n(Note that we primarily use the SSH links for git clone. The HTTPS git clone commands are also provided in paranthesis)\n\nClone this repo to a machine with your raw data where you plan to do your analysis.\n\ngit clone git@github.com:mskcc-microbiome/butyrate_and_icb_2025.git (git clone https://github.com/mskcc-microbiome/butyrate_and_icb_2025.git)\n\nInstall usearch (just need v6.0.307 or later, we use v 11.0.667):\n\ncurl https://www.drive5.com/downloads/usearch11.0.667_i86linux32.gz --output usearch11.0.667_i86linux32.gz\ngunzip usearch11.0.667_i86linux32.gz\nNote: make sure you change the permissions if needed so that you have the rights to execute this file (chmod u+x usearch11.0.667_i86linux32)\n\nInstall Shortbred\n\ngit clone git@github.com:biobakery/shortbred.git (git clone https://github.com/biobakery/shortbred.git)",
-    "crumbs": [
-      "Analysis Notes",
-      "shortBRED Analysis Butyrate Gene Quantification"
-    ]
-  },
-  {
-    "objectID": "shortbred_analysis_intro.html#analysis-options",
-    "href": "shortbred_analysis_intro.html#analysis-options",
-    "title": " ShortBRED Analysis.",
-    "section": "Analysis Options:",
-    "text": "Analysis Options:\n\nBash script (easiest to get up and going):\n\nSet up Environment:\nFirst create and activate an environment with the correct installed packages:\nFrom the base dir of this repo:\nmamba env create -n shortbred_env -f data_processing/shortbred_analysis/envs/shortbred_env.yaml \nmamba activate shortbred_env\nMake sure this env is activated whenever you run this shortbred analysis!\n\n\nUpdate Config\nNow open data_processing/shortbred_analysis/config_params.sh and edit the following variables:\n\nUSEARCH - this should be the path to usearch that you installed in Analysis setup\nMARKER_FASTQ - this is the marker fastq we supplied for this analysis! Location: data_processing/shortbred_analysis/butyrate_pw_genes_markers.fa\nQUANTIFY_SCRIPT - the path to the shortbred_quantify.py script in your Shortbred installation.\n\n\n\nTest Run (recommended)\nSave data_processing/shortbred_analysis/shortbred_template.sh with a new name ie cp data_processing/shortbred_analysis/shortbred_template.sh data_processing/shortbred_analysis/shortbred_test_run.sh.\nEdit the header to add job specific details (note we use LSF headers, please update to whatever submission manager you use!)\n\n#BSUB -J -&gt; #BSUB -J test_shortbred_run\n#BSUB -o -&gt; #BSUB -o test_shortbred_run.stdout\n#BSUB -eo -&gt; #BSUB -eo test_shortbred_run.stderr\n#BSUB -n -&gt; #BSUB -n 1 (for example, can do more than this too, and set the threads parameter below to match.)\n\nManually edit the following parameters:\n\ninput: the fastq.gz file you are running your analysis on.\noutput: desired output file. ie: {$sample_name}_butyrate.txt”.\ntmp_dir: name of a temporary directory this analysis can use while running. (ie {$sample_name}_shortbred_tmp)\nthreads: treads used in test (can default to 1 if needed).\n\nsubmit the job!\nsh data_processing/shortbred_analysis/shortbred_test_run.sh or if submitting as a LSF job: bsub &lt; data_processing/shortbred_analysis/shortbred_test_run.sh.\n\n\nSubmit a list of jobs:\nGiven a folder of fastq.gz files, run a job to submit the shortbred analysis on all of them. We wrote an example script for doing this here:\ndata_processing/shortbred_analysis/shortbred_run_on_folder_example.sh\nYou may need to modify this for your exact use case.\nTo run it, modify the dir\n\n\n\nSnakemake:\nUsing the Snakefile in this folder you should be able to run this file locally or on an HPC. If you use LSF we have a Snakemake profile you can use for submissions.\nShortBRED has the following environmental requirements: - Python 2.7.9 - Biopython v1.65 - ncbi-blast-2.2.28+ - usearch v6.0.307 (Please make sure this is up to date. Earlier versions of usearch use a different command for making database than what is expected by ShortBRED.) - MUSCLE v3.8.31 - CD-HIT version 4.6\nThese environmental requirements are captured in the shortbred_env.yaml file used by the Snakefile for ShortBRED analysis.\nOur analysis currently assumes a structure where each sample has a directory containing R1 and R2 as fastq.gz files. The sample_dir and sample name will be provided as dynamic entries to the config.\nYou will also need to update the config file for the snakemake workflow for the following parameters: - quantify_script: (the path to the shortBRED quantify_script) - marker_fastq: (path to the marker fastq we provided (or updated marker.fastq if using your own reference)). - usearch: the path to your usearch installation.\n\nTest files:\n\nDownload a test file, ie: one of the fastqs from our paper\n\n\n\nCitations:\n\nKaminski J, Gibson MK, Franzosa EA, Segata N, Dantas G, Huttenhower C (2015) High-Specificity Targeted Functional Profiling in Microbial Communities with ShortBRED. PLoS Comput Biol 11(12): e1004557.",
-    "crumbs": [
-      "Analysis Notes",
-      "shortBRED Analysis Butyrate Gene Quantification"
     ]
   }
 ]
