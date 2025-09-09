@@ -208,6 +208,15 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#steps-for-running-our-shortbred-analysis" id="toc-steps-for-running-our-shortbred-analysis" class="nav-link" data-scroll-target="#steps-for-running-our-shortbred-analysis">Steps for running our ShortBRED analysis:</a></li>
   <li><a href="#run-an-example" id="toc-run-an-example" class="nav-link" data-scroll-target="#run-an-example">Run an example:</a></li>
   </ul></li>
+  <li><a href="#analysis-setup" id="toc-analysis-setup" class="nav-link" data-scroll-target="#analysis-setup">Analysis setup:</a>
+  <ul class="collapse">
+  <li><a href="#install-dependencies" id="toc-install-dependencies" class="nav-link" data-scroll-target="#install-dependencies">Install dependencies:</a></li>
+  </ul></li>
+  <li><a href="#analysis-options" id="toc-analysis-options" class="nav-link" data-scroll-target="#analysis-options">Analysis Options:</a>
+  <ul class="collapse">
+  <li><a href="#bash-script-easiest-to-get-up-and-going" id="toc-bash-script-easiest-to-get-up-and-going" class="nav-link" data-scroll-target="#bash-script-easiest-to-get-up-and-going">Bash script (easiest to get up and going):</a></li>
+  <li><a href="#snakemake" id="toc-snakemake" class="nav-link" data-scroll-target="#snakemake">Snakemake:</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -270,22 +279,92 @@ ul.task-list li input[type="checkbox"] {
 <section id="run-an-example" class="level3">
 <h3 class="anchored" data-anchor-id="run-an-example">Run an example:</h3>
 <p>To run the example of this <code>shortBRED</code> code on one of the fastqs from this project:</p>
-<section id="step-0" class="level4">
-<h4 class="anchored" data-anchor-id="step-0">Step 0:</h4>
+<p><strong>Note <code>butyrate_pw_genes_aa_seqs.fa</code> is the fasta file we used to build the ShortBRED marker db. We also provide you with the pre-built marker db: <code>butyrate_pw_genes_markers.fa</code></strong></p>
+</section>
+</section>
+<section id="analysis-setup" class="level2">
+<h2 class="anchored" data-anchor-id="analysis-setup">Analysis setup:</h2>
+<section id="install-dependencies" class="level3">
+<h3 class="anchored" data-anchor-id="install-dependencies">Install dependencies:</h3>
+<p><strong><em>(Note that we primarily use the SSH links for <code>git clone</code>. The HTTPS git clone commands are also provided in paranthesis)</em></strong></p>
 <ul>
-<li>Follow the steps in setup or in the <code>data_processing/shortbred_analysis/README.md</code> to set up your environment for running this code.</li>
+<li>Clone this repo to a machine with your raw data where you plan to do your analysis.
+<ul>
+<li><code>git clone git@github.com:mskcc-microbiome/butyrate_and_icb_2025.git</code> (<code>git clone https://github.com/mskcc-microbiome/butyrate_and_icb_2025.git</code>)</li>
+</ul></li>
+<li>Install <a href="https://www.drive5.com/usearch/download.html">usearch</a> (just need v6.0.307 or later, we use v 11.0.667):
+<ul>
+<li><code>curl https://www.drive5.com/downloads/usearch11.0.667_i86linux32.gz --output usearch11.0.667_i86linux32.gz</code></li>
+<li><code>gunzip usearch11.0.667_i86linux32.gz</code></li>
+<li><strong><em>Note: make sure you change the permissions if needed so that you have the rights to execute this file</em></strong> (<code>chmod u+x usearch11.0.667_i86linux32</code>)</li>
+</ul></li>
+<li>Install <a href="https://huttenhower.sph.harvard.edu/shortbred/">Shortbred</a>
+<ul>
+<li><code>git clone git@github.com:biobakery/shortbred.git</code> (<code>git clone https://github.com/biobakery/shortbred.git</code>)</li>
+</ul></li>
 </ul>
 </section>
-<section id="step-1" class="level4">
-<h4 class="anchored" data-anchor-id="step-1">Step 1:</h4>
+</section>
+<section id="analysis-options" class="level2">
+<h2 class="anchored" data-anchor-id="analysis-options">Analysis Options:</h2>
+<section id="bash-script-easiest-to-get-up-and-going" class="level3">
+<h3 class="anchored" data-anchor-id="bash-script-easiest-to-get-up-and-going">Bash script (easiest to get up and going):</h3>
+<section id="set-up-environment" class="level4">
+<h4 class="anchored" data-anchor-id="set-up-environment">Set up Environment:</h4>
+<p>First create and activate an environment with the correct installed packages:</p>
+<p>From the base dir of this repo:</p>
+<pre><code>mamba env create -n shortbred_env -f data_processing/shortbred_analysis/envs/shortbred_env.yaml </code></pre>
+<pre><code>mamba activate shortbred_env</code></pre>
+<p>Make sure this env is activated whenever you run this shortbred analysis!</p>
+</section>
+<section id="update-config" class="level4">
+<h4 class="anchored" data-anchor-id="update-config">Update Config</h4>
+<p>Now open <code>data_processing/shortbred_analysis/config_params.sh</code> and edit the following variables:</p>
 <ul>
-<li>Download a test file, ie: one of the fastqs from <a href="https://www.ncbi.nlm.nih.gov/bioproject/?term=PRJNA1190411">this paper</a></li>
+<li><code>USEARCH</code> - this should be the path to usearch that you installed in Analysis setup</li>
+<li><code>MARKER_FASTQ</code> - this is the marker fastq we supplied for this analysis! Location: <code>data_processing/shortbred_analysis/butyrate_pw_genes_markers.fa</code></li>
+<li><code>QUANTIFY_SCRIPT</code> - the path to the <code>shortbred_quantify.py</code> script in your Shortbred installation.</li>
 </ul>
 </section>
-<section id="step-2" class="level4">
-<h4 class="anchored" data-anchor-id="step-2">Step 2:</h4>
+<section id="test-run-recommended" class="level4">
+<h4 class="anchored" data-anchor-id="test-run-recommended">Test Run (recommended)</h4>
+<p>Save <code>data_processing/shortbred_analysis/shortbred_template.sh</code> with a new name ie <code>cp data_processing/shortbred_analysis/shortbred_template.sh data_processing/shortbred_analysis/shortbred_test_run.sh</code>.</p>
+<p>Edit the header to add job specific details (note we use LSF headers, please update to whatever submission manager you use!)</p>
 <ul>
-<li>Run our <code>Snakemake</code> pipeline on this file:</li>
+<li><code>#BSUB -J</code> -&gt; <code>#BSUB -J test_shortbred_run</code></li>
+<li><code>#BSUB -o</code> -&gt; <code>#BSUB -o test_shortbred_run.stdout</code></li>
+<li><code>#BSUB -eo</code> -&gt; <code>#BSUB -eo test_shortbred_run.stderr</code></li>
+<li><code>#BSUB -n</code> -&gt; <code>#BSUB -n 1</code> (for example, can do more than this too, and set the <code>threads</code> parameter below to match.)</li>
+</ul>
+<p>Manually edit the following parameters:</p>
+<ul>
+<li><code>input</code>: the <code>fastq.gz</code> file you are running your analysis on.</li>
+<li><code>output</code>: desired output file. ie: {$sample_name}_butyrate.txt”.</li>
+<li><code>tmp_dir</code>: name of a temporary directory this analysis can use while running. (ie {$sample_name}_shortbred_tmp)</li>
+<li><code>threads</code>: treads used in test (can default to 1 if needed).</li>
+</ul>
+<p>submit the job!</p>
+<p><code>sh data_processing/shortbred_analysis/shortbred_test_run.sh</code> or if submitting as a LSF job: <code>bsub &lt; data_processing/shortbred_analysis/shortbred_test_run.sh</code>.</p>
+</section>
+<section id="submit-a-list-of-jobs" class="level4">
+<h4 class="anchored" data-anchor-id="submit-a-list-of-jobs">Submit a list of jobs:</h4>
+<p>Given a folder of <code>fastq.gz</code> files, run a job to submit the shortbred analysis on all of them. We wrote an example script for doing this here:</p>
+<p><code>data_processing/shortbred_analysis/shortbred_run_on_folder_example.sh</code></p>
+<p>You may need to modify this for your exact use case.</p>
+<p>To run it, modify the dir</p>
+</section>
+</section>
+<section id="snakemake" class="level3">
+<h3 class="anchored" data-anchor-id="snakemake">Snakemake:</h3>
+<p>Using the Snakefile in this folder you should be able to run this file locally or on an HPC. If you use LSF we have a <a href="https://github.com/vdblab/vdblab-profile">Snakemake profile</a> you can use for submissions.</p>
+<p>ShortBRED has the following environmental requirements: - Python 2.7.9 - Biopython v1.65 - ncbi-blast-2.2.28+ - usearch v6.0.307 (Please make sure this is up to date. Earlier versions of usearch use a different command for making database than what is expected by ShortBRED.) - MUSCLE v3.8.31 - CD-HIT version 4.6</p>
+<p>These environmental requirements are captured in the <code>shortbred_env.yaml</code> file used by the <code>Snakefile</code> for <code>ShortBRED</code> analysis.</p>
+<p>Our analysis currently assumes a structure where each sample has a directory containing R1 and R2 as <code>fastq.gz</code> files. The <code>sample_dir</code> and <code>sample</code> name will be provided as dynamic entries to the config.</p>
+<p>You will also need to update the config file for the snakemake workflow for the following parameters: - <code>quantify_script</code>: (the path to the shortBRED quantify_script) - <code>marker_fastq</code>: (path to the marker fastq we provided (or updated marker.fastq if using your own reference)). - <code>usearch</code>: the path to your usearch installation.</p>
+<section id="test-files" class="level4">
+<h4 class="anchored" data-anchor-id="test-files">Test files:</h4>
+<ul>
+<li>Download a test file, ie: one of the fastqs from <a href="https://www.ncbi.nlm.nih.gov/bioproject/?term=PRJNA1190411">our paper</a></li>
 </ul>
 
 
