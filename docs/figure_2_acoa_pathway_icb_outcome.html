@@ -383,18 +383,19 @@ Panel C
 </h3>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>ps <span class="sc">%&gt;%</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ps_filter</span>(SAMPID.x <span class="sc">%in%</span> acoa_df<span class="sc">$</span>SAMPID) <span class="sc">%&gt;%</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ps_filter</span>(SAMPID <span class="sc">%in%</span> acoa_df<span class="sc">$</span>SAMPID) <span class="sc">%&gt;%</span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tax_fix</span>() <span class="sc">%&gt;%</span></span>
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tax_transform</span>(<span class="at">trans =</span> <span class="st">"compositional"</span>, <span class="at">rank =</span> <span class="st">"Species"</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dist_calc</span>(<span class="st">"aitchison"</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ord_calc</span>(<span class="st">"PCoA"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ord_plot</span>(<span class="at">fill =</span> <span class="st">"log_acoa.x"</span>, <span class="at">size =</span> <span class="dv">4</span>, <span class="at">shape=</span><span class="dv">21</span>, <span class="at">alpha=</span><span class="fl">0.6</span>,</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ord_plot</span>(<span class="at">fill =</span> <span class="st">"log_acoa"</span>, <span class="at">size =</span> <span class="dv">4</span>, <span class="at">shape=</span><span class="dv">21</span>, <span class="at">alpha=</span><span class="fl">0.6</span>,</span>
 <span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>           <span class="at">plot_taxa =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>)) <span class="sc">+</span></span>
 <span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_gradientn</span>(<span class="at">colours=</span><span class="fu">c</span>(<span class="st">"#2b3f76"</span>, <span class="st">"#f0f0f0"</span>, <span class="st">"#b2182b"</span>), <span class="at">values=</span><span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.5</span>, <span class="dv">1</span>)) <span class="sc">+</span></span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>() <span class="sc">+</span> </span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"Log ACOA"</span></span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>() <span class="sc">+</span>  </span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_reverse</span>() <span class="sc">+</span> </span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"Log ACOA"</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -407,7 +408,7 @@ Panel C
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>rum_ps <span class="ot">&lt;-</span> ps</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sample_data</span>(rum_ps)<span class="sc">$</span>log_rum <span class="ot">=</span> <span class="fu">log</span>(<span class="fu">sample_data</span>(ps)<span class="sc">$</span>Ruminococcaceae <span class="sc">+</span> <span class="fl">0.0001</span>)</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>rum_ps <span class="sc">%&gt;%</span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ps_filter</span>(SAMPID.x <span class="sc">%in%</span> acoa_df<span class="sc">$</span>SAMPID) <span class="sc">%&gt;%</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ps_filter</span>(SAMPID <span class="sc">%in%</span> acoa_df<span class="sc">$</span>SAMPID) <span class="sc">%&gt;%</span></span>
 <span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tax_fix</span>() <span class="sc">%&gt;%</span></span>
 <span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tax_transform</span>(<span class="at">trans =</span> <span class="st">"compositional"</span>, <span class="at">rank =</span> <span class="st">"Species"</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dist_calc</span>(<span class="st">"aitchison"</span>) <span class="sc">%&gt;%</span></span>
@@ -416,9 +417,10 @@ Panel C
 <span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>           <span class="at">plot_taxa =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>)) <span class="sc">+</span></span>
 <span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_gradientn</span>(<span class="at">colours=</span><span class="fu">c</span>(<span class="st">"#2b3f76"</span>, <span class="st">"#f0f0f0"</span>, <span class="st">"#b2182b"</span>), <span class="at">values=</span><span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.65</span>, <span class="dv">1</span>)) <span class="sc">+</span></span>
 <span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>()<span class="sc">+</span></span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"Log10 Rel Abund.</span><span class="sc">\n</span><span class="st">Ruminococcaceae"</span></span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_reverse</span>() <span class="sc">+</span> </span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"Log10 Rel Abund.</span><span class="sc">\n</span><span class="st">Ruminococcaceae"</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -431,7 +433,7 @@ Panel C
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>bac_ps <span class="ot">&lt;-</span> ps</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sample_data</span>(bac_ps)<span class="sc">$</span>log_bac <span class="ot">=</span> <span class="fu">log</span>(<span class="fu">sample_data</span>(ps)<span class="sc">$</span>Bacteroidaceae <span class="sc">+</span> <span class="fl">0.0001</span>)</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>bac_ps <span class="sc">%&gt;%</span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ps_filter</span>(SAMPID.x <span class="sc">%in%</span> acoa_df<span class="sc">$</span>SAMPID) <span class="sc">%&gt;%</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ps_filter</span>(SAMPID <span class="sc">%in%</span> acoa_df<span class="sc">$</span>SAMPID) <span class="sc">%&gt;%</span></span>
 <span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tax_fix</span>() <span class="sc">%&gt;%</span></span>
 <span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tax_transform</span>(<span class="at">trans =</span> <span class="st">"compositional"</span>, <span class="at">rank =</span> <span class="st">"Species"</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dist_calc</span>(<span class="st">"aitchison"</span>) <span class="sc">%&gt;%</span></span>
@@ -440,9 +442,10 @@ Panel C
 <span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>           <span class="at">plot_taxa =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>)) <span class="sc">+</span></span>
 <span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_gradientn</span>(<span class="at">colours=</span><span class="fu">c</span>(<span class="st">"#2b3f76"</span>, <span class="st">"#f0f0f0"</span>, <span class="st">"#b2182b"</span>), <span class="at">values=</span><span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.75</span>, <span class="dv">1</span>)) <span class="sc">+</span></span>
 <span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>() <span class="sc">+</span></span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"Log10 Rel Abund.</span><span class="sc">\n</span><span class="st">Bacteroidaceae"</span></span>
-<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_reverse</span>() <span class="sc">+</span> </span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"Log10 Rel Abund.</span><span class="sc">\n</span><span class="st">Bacteroidaceae"</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -454,6 +457,75 @@ Panel C
 <h3 class="nogo anchored">
 Panel D Verification on External Dataset
 </h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>coh_base_ni <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">"../data/coh_butyrate.rds"</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co">#Figure 2D</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(coh_base_ni, <span class="fu">aes</span>(<span class="at">x =</span> response, <span class="at">y =</span> pyruvate)) <span class="sc">+</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">width =</span> <span class="fl">0.4</span>, <span class="at">outlier.shape =</span> <span class="cn">NA</span>, <span class="at">linewidth =</span> <span class="fl">0.6</span>, <span class="at">color =</span> <span class="st">"black"</span>) <span class="sc">+</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="fu">aes</span>(<span class="at">fill =</span> response), <span class="at">shape =</span> <span class="dv">21</span>, <span class="at">width =</span> <span class="fl">0.15</span>, <span class="at">size =</span> <span class="fl">1.8</span>, <span class="at">stroke =</span> <span class="fl">0.3</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"#999999"</span>, <span class="st">"#E69F00"</span>)) <span class="sc">+</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_discrete</span>(<span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Non-responder"</span>, <span class="st">"Responder"</span>)) <span class="sc">+</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>(<span class="at">base_size =</span> <span class="dv">9</span>) <span class="sc">+</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">8</span>),</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">9</span>),</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.position =</span> <span class="st">"none"</span>,</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.line =</span> <span class="fu">element_line</span>(<span class="at">color =</span> <span class="st">"black"</span>, <span class="at">linewidth =</span> <span class="fl">0.5</span>),</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.ticks =</span> <span class="fu">element_line</span>(<span class="at">color =</span> <span class="st">"black"</span>, <span class="at">linewidth =</span> <span class="fl">0.5</span>)</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">""</span>) <span class="sc">+</span></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"ACoA pathway gene abundance (RPKM)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="figure_2_acoa_pathway_icb_outcome_files/figure-html/panel_d-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">wilcox.test</span>(coh_base_ni<span class="sc">$</span>pyruvate <span class="sc">~</span> coh_base_ni<span class="sc">$</span>response)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Wilcoxon rank sum exact test
+
+data:  coh_base_ni$pyruvate by coh_base_ni$response
+W = 36, p-value = 0.002129
+alternative hypothesis: true location shift is not equal to 0</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>group_n <span class="ot">&lt;-</span> coh_base_ni <span class="sc">%&gt;%</span> <span class="fu">count</span>(response)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(group_n)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 2
+  response     n
+  &lt;chr&gt;    &lt;int&gt;
+1 N           16
+2 Y           13</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co">#adjusted for CMB588</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">glm</span>(response01 <span class="sc">~</span> <span class="fu">log1p</span>(pyruvate) <span class="sc">+</span> cbm588, <span class="at">data =</span> coh_base_ni , <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">"logit"</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = response01 ~ log1p(pyruvate) + cbm588, family = binomial(link = "logit"), 
+    data = coh_base_ni)
+
+Coefficients:
+                Estimate Std. Error z value Pr(&gt;|z|)  
+(Intercept)      -15.157      7.325  -2.069   0.0385 *
+log1p(pyruvate)    2.491      1.160   2.148   0.0318 *
+cbm588no-CBM      -1.439      1.022  -1.407   0.1593  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 39.892  on 28  degrees of freedom
+Residual deviance: 26.776  on 26  degrees of freedom
+AIC: 32.776
+
+Number of Fisher Scoring iterations: 6</code></pre>
+</div>
+</div>
 </section>
 <section id="univariate-cox-survival-analysis" class="level2">
 <h2 class="anchored" data-anchor-id="univariate-cox-survival-analysis">Univariate Cox Survival Analysis</h2>
@@ -462,56 +534,56 @@ Panel E External Data
 </h3>
 <p>Univariate Cox regression analyses PFS relationship to ACoA gene abundance in external cohort.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>wargo_surv_df <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">"../data/cleaned_data/wargo_pfs_data_for_univariate_model.RDS"</span>)</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>model1_wargo <span class="ot">&lt;-</span> <span class="fu">coxph</span>(<span class="fu">Surv</span>(pfs_d, pfsevent)<span class="sc">~</span><span class="fu">log</span>(rum), wargo_surv_df)</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>model2_wargo <span class="ot">&lt;-</span> <span class="fu">coxph</span>(<span class="fu">Surv</span>(pfs_d, pfsevent)<span class="sc">~</span><span class="fu">log</span>(rum_lach), wargo_surv_df)</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>model3_wargo <span class="ot">&lt;-</span> <span class="fu">coxph</span>(<span class="fu">Surv</span>(pfs_d, pfsevent)<span class="sc">~</span><span class="fu">log</span>(clostridiales), wargo_surv_df)</span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>model4_wargo <span class="ot">&lt;-</span> <span class="fu">coxph</span>(<span class="fu">Surv</span>(pfs_d, pfsevent)<span class="sc">~</span><span class="fu">log</span>(clostridia), wargo_surv_df)</span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>model5_wargo <span class="ot">&lt;-</span> <span class="fu">coxph</span>(<span class="fu">Surv</span>(pfs_d, pfsevent)<span class="sc">~</span><span class="fu">log</span>(<span class="fu">eval</span>(faecalibacterium_prausnitzii<span class="fl">+1e-7</span>)), wargo_surv_df)</span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>model6_wargo <span class="ot">&lt;-</span> <span class="fu">coxph</span>(<span class="fu">Surv</span>(pfs_d, pfsevent)<span class="sc">~</span><span class="fu">log1p</span>(pyruvate), wargo_surv_df)</span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>models <span class="ot">&lt;-</span> <span class="fu">list</span>(model1_wargo, model2_wargo, model3_wargo, model4_wargo, model5_wargo, model6_wargo)</span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>results_df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>()</span>
-<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_along</span>(models)) {</span>
-<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>  model <span class="ot">&lt;-</span> models[[i]]</span>
-<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>  summary_model <span class="ot">&lt;-</span> <span class="fu">summary</span>(model)</span>
-<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>  hr <span class="ot">&lt;-</span> summary_model<span class="sc">$</span>coefficients[, <span class="st">"exp(coef)"</span>]</span>
-<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>  lower_ci <span class="ot">&lt;-</span> summary_model<span class="sc">$</span>conf.int[, <span class="st">"lower .95"</span>]</span>
-<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>  upper_ci <span class="ot">&lt;-</span> summary_model<span class="sc">$</span>conf.int[, <span class="st">"upper .95"</span>]</span>
-<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>  pvalue <span class="ot">&lt;-</span> summary_model<span class="sc">$</span>coefficients[, <span class="st">"Pr(&gt;|z|)"</span>]</span>
-<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>  results_df <span class="ot">&lt;-</span> <span class="fu">rbind</span>(results_df, <span class="fu">data.frame</span>(</span>
-<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">Model =</span> <span class="fu">paste0</span>(<span class="st">"model"</span>, i),</span>
-<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">HR =</span> hr,</span>
-<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">Lower_CI =</span> lower_ci,</span>
-<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">Upper_CI =</span> upper_ci,</span>
-<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">pvalue =</span> pvalue</span>
-<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a>  ))</span>
-<span id="cb8-36"><a href="#cb8-36" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb8-37"><a href="#cb8-37" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-38"><a href="#cb8-38" aria-hidden="true" tabindex="-1"></a>results_df<span class="sc">$</span>source <span class="ot">=</span> <span class="fu">rep</span>(<span class="st">"wargo"</span>, <span class="dv">6</span>)</span>
-<span id="cb8-39"><a href="#cb8-39" aria-hidden="true" tabindex="-1"></a>results_df<span class="sc">$</span>modelname <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"log(Ruminococcaceae)"</span>, <span class="st">"log(Ruminococcacaeae + Lachnospiraceae)"</span>,</span>
-<span id="cb8-40"><a href="#cb8-40" aria-hidden="true" tabindex="-1"></a>                             <span class="st">"log(Clostridiales)"</span>, <span class="st">"log(Clostridia)"</span>, <span class="st">"log(F prausnitizii + 1e-7)"</span>, <span class="st">"log(ACoA"</span>)</span>
-<span id="cb8-41"><a href="#cb8-41" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-42"><a href="#cb8-42" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-43"><a href="#cb8-43" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(results_df) <span class="sc">+</span></span>
-<span id="cb8-44"><a href="#cb8-44" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y=</span><span class="fu">fct_rev</span>(<span class="fu">fct_reorder</span>(modelname, HR)), <span class="at">x=</span>HR)) <span class="sc">+</span></span>
-<span id="cb8-45"><a href="#cb8-45" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_errorbarh</span>(<span class="fu">aes</span>(<span class="at">y=</span><span class="fu">fct_rev</span>(<span class="fu">fct_reorder</span>(modelname, HR)), <span class="at">xmin=</span>Lower_CI, <span class="at">xmax=</span>Upper_CI), <span class="at">height=</span><span class="fl">0.5</span>)<span class="sc">+</span></span>
-<span id="cb8-46"><a href="#cb8-46" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept=</span><span class="dv">1</span>, <span class="at">lty=</span><span class="dv">2</span>, <span class="at">col=</span><span class="st">"gray70"</span>) <span class="sc">+</span></span>
-<span id="cb8-47"><a href="#cb8-47" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">trans=</span><span class="st">"log"</span>) <span class="sc">+</span></span>
-<span id="cb8-48"><a href="#cb8-48" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>() <span class="sc">+</span></span>
-<span id="cb8-49"><a href="#cb8-49" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"HR (95% CI) univariable Cox"</span>,</span>
-<span id="cb8-50"><a href="#cb8-50" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span><span class="st">""</span>, <span class="at">y=</span><span class="st">"Variable"</span>, <span class="at">x=</span><span class="st">"HR"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>wargo_surv_df <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">"../data/cleaned_data/wargo_pfs_data_for_univariate_model.RDS"</span>)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>model1_wargo <span class="ot">&lt;-</span> <span class="fu">coxph</span>(<span class="fu">Surv</span>(pfs_d, pfsevent)<span class="sc">~</span><span class="fu">log</span>(rum), wargo_surv_df)</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>model2_wargo <span class="ot">&lt;-</span> <span class="fu">coxph</span>(<span class="fu">Surv</span>(pfs_d, pfsevent)<span class="sc">~</span><span class="fu">log</span>(rum_lach), wargo_surv_df)</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>model3_wargo <span class="ot">&lt;-</span> <span class="fu">coxph</span>(<span class="fu">Surv</span>(pfs_d, pfsevent)<span class="sc">~</span><span class="fu">log</span>(clostridiales), wargo_surv_df)</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>model4_wargo <span class="ot">&lt;-</span> <span class="fu">coxph</span>(<span class="fu">Surv</span>(pfs_d, pfsevent)<span class="sc">~</span><span class="fu">log</span>(clostridia), wargo_surv_df)</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>model5_wargo <span class="ot">&lt;-</span> <span class="fu">coxph</span>(<span class="fu">Surv</span>(pfs_d, pfsevent)<span class="sc">~</span><span class="fu">log</span>(<span class="fu">eval</span>(faecalibacterium_prausnitzii<span class="fl">+1e-7</span>)), wargo_surv_df)</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>model6_wargo <span class="ot">&lt;-</span> <span class="fu">coxph</span>(<span class="fu">Surv</span>(pfs_d, pfsevent)<span class="sc">~</span><span class="fu">log1p</span>(pyruvate), wargo_surv_df)</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>models <span class="ot">&lt;-</span> <span class="fu">list</span>(model1_wargo, model2_wargo, model3_wargo, model4_wargo, model5_wargo, model6_wargo)</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>results_df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>()</span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_along</span>(models)) {</span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>  model <span class="ot">&lt;-</span> models[[i]]</span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>  summary_model <span class="ot">&lt;-</span> <span class="fu">summary</span>(model)</span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a>  hr <span class="ot">&lt;-</span> summary_model<span class="sc">$</span>coefficients[, <span class="st">"exp(coef)"</span>]</span>
+<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a>  lower_ci <span class="ot">&lt;-</span> summary_model<span class="sc">$</span>conf.int[, <span class="st">"lower .95"</span>]</span>
+<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a>  upper_ci <span class="ot">&lt;-</span> summary_model<span class="sc">$</span>conf.int[, <span class="st">"upper .95"</span>]</span>
+<span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a>  pvalue <span class="ot">&lt;-</span> summary_model<span class="sc">$</span>coefficients[, <span class="st">"Pr(&gt;|z|)"</span>]</span>
+<span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-28"><a href="#cb15-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-29"><a href="#cb15-29" aria-hidden="true" tabindex="-1"></a>  results_df <span class="ot">&lt;-</span> <span class="fu">rbind</span>(results_df, <span class="fu">data.frame</span>(</span>
+<span id="cb15-30"><a href="#cb15-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">Model =</span> <span class="fu">paste0</span>(<span class="st">"model"</span>, i),</span>
+<span id="cb15-31"><a href="#cb15-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">HR =</span> hr,</span>
+<span id="cb15-32"><a href="#cb15-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">Lower_CI =</span> lower_ci,</span>
+<span id="cb15-33"><a href="#cb15-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">Upper_CI =</span> upper_ci,</span>
+<span id="cb15-34"><a href="#cb15-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">pvalue =</span> pvalue</span>
+<span id="cb15-35"><a href="#cb15-35" aria-hidden="true" tabindex="-1"></a>  ))</span>
+<span id="cb15-36"><a href="#cb15-36" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb15-37"><a href="#cb15-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-38"><a href="#cb15-38" aria-hidden="true" tabindex="-1"></a>results_df<span class="sc">$</span>source <span class="ot">=</span> <span class="fu">rep</span>(<span class="st">"wargo"</span>, <span class="dv">6</span>)</span>
+<span id="cb15-39"><a href="#cb15-39" aria-hidden="true" tabindex="-1"></a>results_df<span class="sc">$</span>modelname <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"log(Ruminococcaceae)"</span>, <span class="st">"log(Ruminococcacaeae + Lachnospiraceae)"</span>,</span>
+<span id="cb15-40"><a href="#cb15-40" aria-hidden="true" tabindex="-1"></a>                             <span class="st">"log(Clostridiales)"</span>, <span class="st">"log(Clostridia)"</span>, <span class="st">"log(F prausnitizii + 1e-7)"</span>, <span class="st">"log(ACoA"</span>)</span>
+<span id="cb15-41"><a href="#cb15-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-42"><a href="#cb15-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-43"><a href="#cb15-43" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(results_df) <span class="sc">+</span></span>
+<span id="cb15-44"><a href="#cb15-44" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y=</span><span class="fu">fct_rev</span>(<span class="fu">fct_reorder</span>(modelname, HR)), <span class="at">x=</span>HR)) <span class="sc">+</span></span>
+<span id="cb15-45"><a href="#cb15-45" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_errorbarh</span>(<span class="fu">aes</span>(<span class="at">y=</span><span class="fu">fct_rev</span>(<span class="fu">fct_reorder</span>(modelname, HR)), <span class="at">xmin=</span>Lower_CI, <span class="at">xmax=</span>Upper_CI), <span class="at">height=</span><span class="fl">0.5</span>)<span class="sc">+</span></span>
+<span id="cb15-46"><a href="#cb15-46" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept=</span><span class="dv">1</span>, <span class="at">lty=</span><span class="dv">2</span>, <span class="at">col=</span><span class="st">"gray70"</span>) <span class="sc">+</span></span>
+<span id="cb15-47"><a href="#cb15-47" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">trans=</span><span class="st">"log"</span>) <span class="sc">+</span></span>
+<span id="cb15-48"><a href="#cb15-48" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>() <span class="sc">+</span></span>
+<span id="cb15-49"><a href="#cb15-49" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"HR (95% CI) univariable Cox"</span>,</span>
+<span id="cb15-50"><a href="#cb15-50" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span><span class="st">""</span>, <span class="at">y=</span><span class="st">"Variable"</span>, <span class="at">x=</span><span class="st">"HR"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -525,56 +597,56 @@ Panel E MSK Data
 </h3>
 <p>Univariate Cox regression analyses PFS relationship to ACoA gene abundance in MSK Observational Data.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>msk_df <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">"../data/cleaned_data/interal_msk_data_for_univariate_model.RDS"</span>)</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>model1_msk <span class="ot">&lt;-</span> <span class="fu">coxph</span>(<span class="fu">Surv</span>(tt_pfs_d, pfs_event)<span class="sc">~</span><span class="fu">log</span>(rum), msk_df)</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>model2_msk <span class="ot">&lt;-</span> <span class="fu">coxph</span>(<span class="fu">Surv</span>(tt_pfs_d, pfs_event)<span class="sc">~</span><span class="fu">log</span>(rum_lach), msk_df)</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>model3_msk <span class="ot">&lt;-</span> <span class="fu">coxph</span>(<span class="fu">Surv</span>(tt_pfs_d, pfs_event)<span class="sc">~</span><span class="fu">log</span>(clostridiales), msk_df)</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>model4_msk <span class="ot">&lt;-</span> <span class="fu">coxph</span>(<span class="fu">Surv</span>(tt_pfs_d, pfs_event)<span class="sc">~</span><span class="fu">log</span>(clostridia), msk_df)</span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>model5_msk <span class="ot">&lt;-</span> <span class="fu">coxph</span>(<span class="fu">Surv</span>(tt_pfs_d, pfs_event)<span class="sc">~</span><span class="fu">log</span>(<span class="fu">eval</span>(faecalibacterium_prausnitzii<span class="fl">+1e-4</span>)), msk_df)</span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>model6_msk <span class="ot">&lt;-</span> <span class="fu">coxph</span>(<span class="fu">Surv</span>(tt_pfs_d, pfs_event)<span class="sc">~</span><span class="fu">log1p</span>(pyruvate), msk_df)</span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>models <span class="ot">&lt;-</span> <span class="fu">list</span>(model1_msk, model2_msk, model3_msk, model4_msk, model5_msk, model6_msk)</span>
-<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>results_df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>()</span>
-<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_along</span>(models)) {</span>
-<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>  model <span class="ot">&lt;-</span> models[[i]]</span>
-<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>  summary_model <span class="ot">&lt;-</span> <span class="fu">summary</span>(model)</span>
-<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>  hr <span class="ot">&lt;-</span> summary_model<span class="sc">$</span>coefficients[, <span class="st">"exp(coef)"</span>]</span>
-<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>  lower_ci <span class="ot">&lt;-</span> summary_model<span class="sc">$</span>conf.int[, <span class="st">"lower .95"</span>]</span>
-<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>  upper_ci <span class="ot">&lt;-</span> summary_model<span class="sc">$</span>conf.int[, <span class="st">"upper .95"</span>]</span>
-<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>  pvalue <span class="ot">&lt;-</span> summary_model<span class="sc">$</span>coefficients[, <span class="st">"Pr(&gt;|z|)"</span>]</span>
-<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>  results_df <span class="ot">&lt;-</span> <span class="fu">rbind</span>(results_df, <span class="fu">data.frame</span>(</span>
-<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">Model =</span> <span class="fu">paste0</span>(<span class="st">"model"</span>, i),</span>
-<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">HR =</span> hr,</span>
-<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">Lower_CI =</span> lower_ci,</span>
-<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">Upper_CI =</span> upper_ci,</span>
-<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">pvalue =</span> pvalue</span>
-<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a>  ))</span>
-<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a>results_df<span class="sc">$</span>source <span class="ot">=</span> <span class="fu">rep</span>(<span class="st">"msk"</span>, <span class="dv">6</span>)</span>
-<span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a>results_df<span class="sc">$</span>modelname <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"log(Ruminococcaceae)"</span>, <span class="st">"log(Ruminococcacaeae + Lachnospiraceae)"</span>,</span>
-<span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a>                             <span class="st">"log(Clostridiales)"</span>, <span class="st">"log(Clostridia)"</span>, <span class="st">"log(F prausnitizii + 1e-7)"</span>, <span class="st">"log(ACoA"</span>)</span>
-<span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-42"><a href="#cb9-42" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-43"><a href="#cb9-43" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(results_df) <span class="sc">+</span></span>
-<span id="cb9-44"><a href="#cb9-44" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y=</span><span class="fu">fct_rev</span>(<span class="fu">fct_reorder</span>(modelname, HR)), <span class="at">x=</span>HR)) <span class="sc">+</span></span>
-<span id="cb9-45"><a href="#cb9-45" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_errorbarh</span>(<span class="fu">aes</span>(<span class="at">y=</span><span class="fu">fct_rev</span>(<span class="fu">fct_reorder</span>(modelname, HR)), <span class="at">xmin=</span>Lower_CI, <span class="at">xmax=</span>Upper_CI), <span class="at">height=</span><span class="fl">0.5</span>)<span class="sc">+</span></span>
-<span id="cb9-46"><a href="#cb9-46" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept=</span><span class="dv">1</span>, <span class="at">lty=</span><span class="dv">2</span>, <span class="at">col=</span><span class="st">"gray70"</span>) <span class="sc">+</span></span>
-<span id="cb9-47"><a href="#cb9-47" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">trans=</span><span class="st">"log"</span>) <span class="sc">+</span></span>
-<span id="cb9-48"><a href="#cb9-48" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>() <span class="sc">+</span></span>
-<span id="cb9-49"><a href="#cb9-49" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"HR (95% CI) univariable Cox"</span>,</span>
-<span id="cb9-50"><a href="#cb9-50" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span><span class="st">""</span>, <span class="at">y=</span><span class="st">"Variable"</span>, <span class="at">x=</span><span class="st">"HR"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>msk_df <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">"../data/cleaned_data/interal_msk_data_for_univariate_model.RDS"</span>)</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>model1_msk <span class="ot">&lt;-</span> <span class="fu">coxph</span>(<span class="fu">Surv</span>(tt_pfs_d, pfs_event)<span class="sc">~</span><span class="fu">log</span>(rum), msk_df)</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>model2_msk <span class="ot">&lt;-</span> <span class="fu">coxph</span>(<span class="fu">Surv</span>(tt_pfs_d, pfs_event)<span class="sc">~</span><span class="fu">log</span>(rum_lach), msk_df)</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>model3_msk <span class="ot">&lt;-</span> <span class="fu">coxph</span>(<span class="fu">Surv</span>(tt_pfs_d, pfs_event)<span class="sc">~</span><span class="fu">log</span>(clostridiales), msk_df)</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>model4_msk <span class="ot">&lt;-</span> <span class="fu">coxph</span>(<span class="fu">Surv</span>(tt_pfs_d, pfs_event)<span class="sc">~</span><span class="fu">log</span>(clostridia), msk_df)</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>model5_msk <span class="ot">&lt;-</span> <span class="fu">coxph</span>(<span class="fu">Surv</span>(tt_pfs_d, pfs_event)<span class="sc">~</span><span class="fu">log</span>(<span class="fu">eval</span>(faecalibacterium_prausnitzii<span class="fl">+1e-4</span>)), msk_df)</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>model6_msk <span class="ot">&lt;-</span> <span class="fu">coxph</span>(<span class="fu">Surv</span>(tt_pfs_d, pfs_event)<span class="sc">~</span><span class="fu">log1p</span>(pyruvate), msk_df)</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>models <span class="ot">&lt;-</span> <span class="fu">list</span>(model1_msk, model2_msk, model3_msk, model4_msk, model5_msk, model6_msk)</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>results_df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>()</span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_along</span>(models)) {</span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>  model <span class="ot">&lt;-</span> models[[i]]</span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>  summary_model <span class="ot">&lt;-</span> <span class="fu">summary</span>(model)</span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a>  hr <span class="ot">&lt;-</span> summary_model<span class="sc">$</span>coefficients[, <span class="st">"exp(coef)"</span>]</span>
+<span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a>  lower_ci <span class="ot">&lt;-</span> summary_model<span class="sc">$</span>conf.int[, <span class="st">"lower .95"</span>]</span>
+<span id="cb16-25"><a href="#cb16-25" aria-hidden="true" tabindex="-1"></a>  upper_ci <span class="ot">&lt;-</span> summary_model<span class="sc">$</span>conf.int[, <span class="st">"upper .95"</span>]</span>
+<span id="cb16-26"><a href="#cb16-26" aria-hidden="true" tabindex="-1"></a>  pvalue <span class="ot">&lt;-</span> summary_model<span class="sc">$</span>coefficients[, <span class="st">"Pr(&gt;|z|)"</span>]</span>
+<span id="cb16-27"><a href="#cb16-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-28"><a href="#cb16-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-29"><a href="#cb16-29" aria-hidden="true" tabindex="-1"></a>  results_df <span class="ot">&lt;-</span> <span class="fu">rbind</span>(results_df, <span class="fu">data.frame</span>(</span>
+<span id="cb16-30"><a href="#cb16-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">Model =</span> <span class="fu">paste0</span>(<span class="st">"model"</span>, i),</span>
+<span id="cb16-31"><a href="#cb16-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">HR =</span> hr,</span>
+<span id="cb16-32"><a href="#cb16-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">Lower_CI =</span> lower_ci,</span>
+<span id="cb16-33"><a href="#cb16-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">Upper_CI =</span> upper_ci,</span>
+<span id="cb16-34"><a href="#cb16-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">pvalue =</span> pvalue</span>
+<span id="cb16-35"><a href="#cb16-35" aria-hidden="true" tabindex="-1"></a>  ))</span>
+<span id="cb16-36"><a href="#cb16-36" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb16-37"><a href="#cb16-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-38"><a href="#cb16-38" aria-hidden="true" tabindex="-1"></a>results_df<span class="sc">$</span>source <span class="ot">=</span> <span class="fu">rep</span>(<span class="st">"msk"</span>, <span class="dv">6</span>)</span>
+<span id="cb16-39"><a href="#cb16-39" aria-hidden="true" tabindex="-1"></a>results_df<span class="sc">$</span>modelname <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"log(Ruminococcaceae)"</span>, <span class="st">"log(Ruminococcacaeae + Lachnospiraceae)"</span>,</span>
+<span id="cb16-40"><a href="#cb16-40" aria-hidden="true" tabindex="-1"></a>                             <span class="st">"log(Clostridiales)"</span>, <span class="st">"log(Clostridia)"</span>, <span class="st">"log(F prausnitizii + 1e-7)"</span>, <span class="st">"log(ACoA"</span>)</span>
+<span id="cb16-41"><a href="#cb16-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-42"><a href="#cb16-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-43"><a href="#cb16-43" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(results_df) <span class="sc">+</span></span>
+<span id="cb16-44"><a href="#cb16-44" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y=</span><span class="fu">fct_rev</span>(<span class="fu">fct_reorder</span>(modelname, HR)), <span class="at">x=</span>HR)) <span class="sc">+</span></span>
+<span id="cb16-45"><a href="#cb16-45" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_errorbarh</span>(<span class="fu">aes</span>(<span class="at">y=</span><span class="fu">fct_rev</span>(<span class="fu">fct_reorder</span>(modelname, HR)), <span class="at">xmin=</span>Lower_CI, <span class="at">xmax=</span>Upper_CI), <span class="at">height=</span><span class="fl">0.5</span>)<span class="sc">+</span></span>
+<span id="cb16-46"><a href="#cb16-46" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept=</span><span class="dv">1</span>, <span class="at">lty=</span><span class="dv">2</span>, <span class="at">col=</span><span class="st">"gray70"</span>) <span class="sc">+</span></span>
+<span id="cb16-47"><a href="#cb16-47" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">trans=</span><span class="st">"log"</span>) <span class="sc">+</span></span>
+<span id="cb16-48"><a href="#cb16-48" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>() <span class="sc">+</span></span>
+<span id="cb16-49"><a href="#cb16-49" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"HR (95% CI) univariable Cox"</span>,</span>
+<span id="cb16-50"><a href="#cb16-50" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span><span class="st">""</span>, <span class="at">y=</span><span class="st">"Variable"</span>, <span class="at">x=</span><span class="st">"HR"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
