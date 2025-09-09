@@ -11,7 +11,9 @@ format:
 
 ## What is ShortBRED? (and what did we use it for?)
 
-[ShortBRED](https://huttenhower.sph.harvard.edu/shortbred/) is a tool developed by the Huttenhower group for profiling specific protein families of interest using shotgun metagenomic data.  
+[ShortBRED](https://huttenhower.sph.harvard.edu/shortbred/) is a tool developed by the Huttenhower group for profiling specific protein families of interest using shotgun metagenomic data.  Here is an image taken from [their paper](https://doi.org/10.1371/journal.pcbi.1004557)* explaining the process:
+
+<img src="./images/shortbred_summary.png" width="90%" style="margin-left:5%"/>
 
 In this project it was used to profile genes involved in butyrate synthesis using a set of genes identified by Vital et al in their paper [Revealing the Bacterial Butyrate Synthesis Pathways by Analyzing (Meta)genomic Data](https://journals.asm.org/doi/10.1128/mbio.00889-14).  
 
@@ -124,4 +126,6 @@ You will also need to update the config file for the snakemake workflow for the 
 
 - Download a test file, ie: one of the fastqs from [our paper](https://www.ncbi.nlm.nih.gov/bioproject/?term=PRJNA1190411)
 
+#### Citations:
 
+* Kaminski J, Gibson MK, Franzosa EA, Segata N, Dantas G, Huttenhower C (2015) High-Specificity Targeted Functional Profiling in Microbial Communities with ShortBRED. PLoS Comput Biol 11(12): e1004557.
