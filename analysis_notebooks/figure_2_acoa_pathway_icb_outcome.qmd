@@ -22,6 +22,7 @@ library(microViz)
 library(survival)
 library(survminer)
 library(viridis)
+library(gtsummary)
 library(yingtools2)
 source("utility_funcs.R")
 
@@ -154,15 +155,16 @@ ps <- readRDS("../public_data/sequencing_data/plotting_phyloseq_deidentified.rds
 #| warning: false
 #| label: panel_c_part_1
 ps %>%
-  ps_filter(SAMPID.x %in% acoa_df$SAMPID) %>%
+  ps_filter(SAMPID %in% acoa_df$SAMPID) %>%
   tax_fix() %>%
   tax_transform(trans = "compositional", rank = "Species") %>%
   dist_calc("aitchison") %>%
   ord_calc("PCoA") %>%
-  ord_plot(fill = "log_acoa.x", size = 4, shape=21, alpha=0.6,
+  ord_plot(fill = "log_acoa", size = 4, shape=21, alpha=0.6,
            plot_taxa = c(1:5)) +
   scale_fill_gradientn(colours=c("#2b3f76", "#f0f0f0", "#b2182b"), values=c(0, 0.5, 1)) +
-  theme_classic() + 
+  theme_classic() +  
+  scale_x_reverse() + 
   labs(
     fill = "Log ACOA"
   )
@@ -174,7 +176,7 @@ ps %>%
 rum_ps <- ps
 sample_data(rum_ps)$log_rum = log(sample_data(ps)$Ruminococcaceae + 0.0001)
 rum_ps %>%
-  ps_filter(SAMPID.x %in% acoa_df$SAMPID) %>%
+  ps_filter(SAMPID %in% acoa_df$SAMPID) %>%
   tax_fix() %>%
   tax_transform(trans = "compositional", rank = "Species") %>%
   dist_calc("aitchison") %>%
@@ -183,6 +185,7 @@ rum_ps %>%
            plot_taxa = c(1:5)) +
   scale_fill_gradientn(colours=c("#2b3f76", "#f0f0f0", "#b2182b"), values=c(0, 0.65, 1)) +
   theme_classic()+
+  scale_x_reverse() + 
   labs(
     fill = "Log10 Rel Abund.\nRuminococcaceae"
   )
@@ -195,7 +198,7 @@ rum_ps %>%
 bac_ps <- ps
 sample_data(bac_ps)$log_bac = log(sample_data(ps)$Bacteroidaceae + 0.0001)
 bac_ps %>%
-  ps_filter(SAMPID.x %in% acoa_df$SAMPID) %>%
+  ps_filter(SAMPID %in% acoa_df$SAMPID) %>%
   tax_fix() %>%
   tax_transform(trans = "compositional", rank = "Species") %>%
   dist_calc("aitchison") %>%
@@ -204,6 +207,7 @@ bac_ps %>%
            plot_taxa = c(1:5)) +
   scale_fill_gradientn(colours=c("#2b3f76", "#f0f0f0", "#b2182b"), values=c(0, 0.75, 1)) +
   theme_classic() +
+  scale_x_reverse() + 
   labs(
     fill = "Log10 Rel Abund.\nBacteroidaceae"
   )
@@ -215,7 +219,34 @@ bac_ps %>%
 #| warning: false
 #| label: panel_d
 
+coh_base_ni <- readRDS("../data/coh_butyrate.rds")
 
+#Figure 2D
+ggplot(coh_base_ni, aes(x = response, y = pyruvate)) +
+  geom_boxplot(width = 0.4, outlier.shape = NA, linewidth = 0.6, color = "black") +
+  geom_jitter(aes(fill = response), shape = 21, width = 0.15, size = 1.8, stroke = 0.3, color = "black", alpha = 0.7) +
+  scale_fill_manual(values = c("#999999", "#E69F00")) +
+  scale_x_discrete(labels = c("Non-responder", "Responder")) +
+  theme_classic(base_size = 9) +
+  theme(
+    axis.text = element_text(size = 8),
+    axis.title = element_text(size = 9),
+    legend.position = "none",
+    axis.line = element_line(color = "black", linewidth = 0.5),
+    axis.ticks = element_line(color = "black", linewidth = 0.5)
+  ) +
+  xlab("") +
+  ylab("ACoA pathway gene abundance (RPKM)")
+
+
+wilcox.test(coh_base_ni$pyruvate ~ coh_base_ni$response)
+
+
+group_n <- coh_base_ni %>% count(response)
+print(group_n)
+
+#adjusted for CMB588
+summary(glm(response01 ~ log1p(pyruvate) + cbm588, data = coh_base_ni , family = binomial(link = "logit")))
 ```
 
 ## Univariate Cox Survival Analysis
