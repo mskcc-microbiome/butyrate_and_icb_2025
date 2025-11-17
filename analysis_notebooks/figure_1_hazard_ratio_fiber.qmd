@@ -18,6 +18,11 @@ library(survminer)
 library(forestplot)
 source("utility_funcs.R")
 library(Hmisc)
+
+ggsave_workaround <- function(g){survminer:::.build_ggsurvplot(x = g,
+                                                               surv.plot.height = NULL,
+                                                               risk.table.height = NULL,
+                                                               ncensor.plot.height = NULL)}
 ```
 
 The data we are visualizing here has the following structure:

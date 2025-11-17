@@ -1,0 +1,341 @@
+--- 
+title: |
+  <img src="./images/fiber_beaker_image_food.jpg" width="250px" style="margin-left:5%; margin-right:5%"/>
+  Extended Figure 1: PFS vs Fiber by Disease Type
+---
+
+
+
+```{r}
+#| echo: false
+#| warning: false
+#| include: false
+#| label: library_data_imports
+
+library(dplyr)
+library(survival)
+library(survminer)
+library(forestplot)
+source("utility_funcs.R")
+```
+
+The data we are visualizing here has the following structure:
+
+
+```{r}
+#| warning: false
+#| include: false
+#| label: load_data
+
+
+all_metadata_fiber <- readRDS("../public_data/fiber_data/all_metadata_fiber.RDS")
+data <- readRDS("../public_data/fiber_data/fiber_data_clean_labels.RDS")
+
+# Pull out different sub-groups from this data:
+
+UCdata=filter(data,cancer_type!=4)
+UCdata$TMBhigherThan10<-ifelse(UCdata$Impact.TMB.Score>=10,1,0)
+UCdata<-mutate(UCdata,TMBhigherThan10.Imputed = case_when(is.na(TMBhigherThan10)==FALSE~TMBhigherThan10,
+                                                          is.na(TMBhigherThan10)==TRUE~0))
+mUCdata=filter(UCdata,io_regimen!=6 & io_regimen!=13 & io_regimen!=15)
+mUCdataFiber=filter(mUCdata,((calor>=600 & calor<=4200 & sex.factor=="Male") 
+                    |(calor>=500 & calor<=3500 & sex.factor=="Female"))&(nblank<=70))
+
+
+RCdata=filter(data,cancer_type==4)
+mRCdata=filter(RCdata,io_regimen!=7 & io_regimen!=15 & io_regimen!=99)
+mRCdataFiber=filter(mRCdata,((calor>=600 & calor<=4200 & sex.factor=="Male") 
+                             |(calor>=500 & calor<=3500 & sex.factor=="Female"))&(nblank<=70))
+
+AllMetdata=filter(data,io_regimen!=6 & io_regimen!=13 & io_regimen!=7 & io_regimen!=15)
+
+
+AllMetdataFiber=filter(AllMetdata,((calor>=600 & calor<=4200 & sex.factor=="Male") 
+                                   |(calor>=500 & calor<=3500 & sex.factor=="Female"))&(nblank<=70))
+AllMetdataFiber <- mutate(AllMetdataFiber, WhiteRace = if_else(race.factor=="White",1,0))
+AllMetdataFiber <- mutate(AllMetdataFiber, kcalor = calor/1000)
+
+AllMetdataFiber <- mutate(AllMetdataFiber, gram_fiber_per_Kcal = aofib/kcalor)
+
+AllMetdataFiber <- mutate(AllMetdataFiber,  gram_fiber_per_Kcal_aboveRecommended = case_when(gram_fiber_per_Kcal>=15~1,
+                                                                                             gram_fiber_per_Kcal<15~0))
+
+```
+
+## Panel A
+
+Mortality Hazard for PFS by daily average fiber intake, visualized via partial smoothing spline for pateints with Renal Cell Cancer.  Ticks along the x axis represent individual patients. 
+
+```{r}
+#| warning: false
+#| include: true
+#| label: panel_a_prep
+
+cox_pfs_allMet_mv <-coxph(Surv(pfs_mo,
+                               pod_status)~ fiber_dichotomized + 
+                            ageby10 + 
+                            ecog_1to5_final +
+                            cancer_RCCvsUC_NAME,
+                          all_metadata_fiber)
+
+summary(cox_pfs_allMet_mv)
+
+
+cox_pfs_allMet_mv2 <-coxph(Surv(pfs_mo,
+                                pod_status)~ fiber_dichotomized + 
+                             calor +
+                             ageby10 + 
+                             ecog_1to5_final +
+                             cancer_RCCvsUC_NAME,
+                           all_metadata_fiber)
+
+summary(cox_pfs_allMet_mv2)
+
+
+cox_pfs_allMet_mv3 <-coxph(Surv(pfs_mo,
+                                pod_status)~ fiber_dichotomized + 
+                             Impact.TMB.Imputed +
+                             ageby10 + 
+                             ecog_1to5_final +
+                             cancer_RCCvsUC_NAME,
+                           all_metadata_fiber)
+
+summary(cox_pfs_allMet_mv3)
+```
+```{r}
+#| warning: false
+#| include: true
+#| label: panel_a
+
+kmPFS<-survfit(Surv(pfs_mo, pod_status)~fiber_dichotomized,
+               type="kaplan-meier", data=mRCdataFiber)
+
+pfs_rcc <- ggsurvplot(kmPFS,risk.table=TRUE,
+           xlab="Time (months)", 
+           ylab="Progression-free survival",
+           #pval = TRUE,
+           legend="none",
+           title="Patients with renal cell cancer on ICB",
+           legend.title="Fiber intake",
+           legend.labs=c("<15 g/day","15+ g/day"),
+           #surv.median.line = "hv",
+           conf.int=TRUE,
+           break.x.by=6,
+           axes.offset=FALSE,
+           #xlim=c(0,16),
+           data = mRCdataFiber) 
+rcc_plt <- ggsave_workaround(pfs_rcc)
+ggsave("svg/extended_figure_1_part_a_RCC_PFS.svg", plot =rcc_plt, w=8, h = 5)
+```
+
+## Panel B
+
+Mortality Hazard for PFS by daily average fiber intake, visualized via partial smoothing spline for pateints with Urothelial Cancer.  Ticks along the x axis represent individual patients. 
+
+```{r}
+#| warning: false
+#| include: true
+#| label: panel_b
+
+
+#Extended Data Figure 2
+kmPFS<-survfit(Surv(pfs_mo, pod_status)~fiber_dichotomized,
+               type="kaplan-meier", data=mUCdataFiber)
+
+pfs_uc <- ggsurvplot(kmPFS,risk.table=TRUE,
+           xlab="Time (months)", 
+           ylab="Progression-free survival",
+           #pval = TRUE,
+           legend="none",
+           title="Patients with urothelial cancer on ICB",
+           legend.title="Fiber intake",
+           legend.labs=c("<15 g/day","15+ g/day"),
+           #surv.median.line = "hv",
+           conf.int=TRUE,
+           break.x.by=6,
+           axes.offset=FALSE,
+           xlim=c(0,16),
+           data = mUCdataFiber)
+print(pfs_uc)
+uc_plt <- ggsave_workaround(pfs_uc)
+ggsave("svg/extended_figure_1_part_b_UC_PFS.svg", plot = uc_plt, w=8, h = 5)
+```
+
+## Panel C
+
+Multivariate Model Progression Free Survival Sensitivity Analysis
+
+```{r}
+#| warning: false
+#| include: true
+#| label: panel_c
+AllMetdataFiber <- mutate(AllMetdataFiber,  fiber_dichotomized_12 = case_when(aofib>=12~1,
+                                                                              aofib<12~0))
+
+AllMetdataFiber <- mutate(AllMetdataFiber,  fiber_dichotomized_14 = case_when(aofib>=14~1,
+                                                                              aofib<14~0))
+
+AllMetdataFiber <- mutate(AllMetdataFiber,  fiber_dichotomized_16 = case_when(aofib>=16~1,
+                                                                              aofib<16~0))
+
+AllMetdataFiber <- mutate(AllMetdataFiber,  fiber_dichotomized_18 = case_when(aofib>=18~1,
+                                                                              aofib<18~0))
+
+AllMetdataFiber <- mutate(AllMetdataFiber,  fiber_dichotomized_20 = case_when(aofib>=20~1,
+                                                                              aofib<20~0))
+
+AllMetdataFiber <- mutate(AllMetdataFiber,  fiber_dichotomized_22 = case_when(aofib>=22~1,
+                                                                              aofib<22~0))
+
+AllMetdataFiber <- mutate(AllMetdataFiber,  fiber_dichotomized_24 = case_when(aofib>=24~1,
+                                                                              aofib<24~0))
+
+AllMetdataFiber <- mutate(AllMetdataFiber,  fiber_dichotomized_26 = case_when(aofib>=26~1,
+                                                                              aofib<26~0))
+
+AllMetdataFiber <- mutate(AllMetdataFiber,  fiber_dichotomized_28 = case_when(aofib>=28~1,
+                                                                              aofib<28~0))
+
+
+###multivariable PFS
+
+cox_pfs_12_uv <-coxph(Surv(pfs_mo,pod_status)~ fiber_dichotomized_12 +
+                        ageby10 + ecog_1to5_final + cancer_RCCvsUC,
+                      AllMetdataFiber)
+summary(cox_pfs_12_uv)
+
+cox_pfs_14_uv <-coxph(Surv(pfs_mo,pod_status)~ fiber_dichotomized_14 +
+                        ageby10 + ecog_1to5_final + cancer_RCCvsUC,
+                      AllMetdataFiber)
+summary(cox_pfs_14_uv)
+
+cox_pfs_15_uv <-coxph(Surv(pfs_mo,pod_status)~ fiber_dichotomized +
+                        ageby10 + ecog_1to5_final + cancer_RCCvsUC,
+                      AllMetdataFiber)
+summary(cox_pfs_15_uv)
+
+cox_pfs_16_uv <-coxph(Surv(pfs_mo,pod_status)~ fiber_dichotomized_16 +
+                        ageby10 + ecog_1to5_final + cancer_RCCvsUC,
+                      AllMetdataFiber)
+summary(cox_pfs_16_uv)
+
+cox_pfs_18_uv <-coxph(Surv(pfs_mo,pod_status)~ fiber_dichotomized_18 +
+                        ageby10 + ecog_1to5_final + cancer_RCCvsUC,
+                      AllMetdataFiber)
+summary(cox_pfs_18_uv)
+
+cox_pfs_20_uv <-coxph(Surv(pfs_mo,pod_status)~ fiber_dichotomized_20 + 
+                        ageby10 + ecog_1to5_final + cancer_RCCvsUC,
+                      AllMetdataFiber)
+summary(cox_pfs_20_uv)
+
+cox_pfs_22_uv <-coxph(Surv(pfs_mo,pod_status)~ fiber_dichotomized_22 +
+                        ageby10 + ecog_1to5_final + cancer_RCCvsUC,
+                      AllMetdataFiber)
+summary(cox_pfs_22_uv)
+
+cox_pfs_24_uv <-coxph(Surv(pfs_mo,pod_status)~ fiber_dichotomized_24 +
+                        ageby10 + ecog_1to5_final + cancer_RCCvsUC,
+                      AllMetdataFiber)
+summary(cox_pfs_24_uv)
+
+cox_pfs_26_uv <-coxph(Surv(pfs_mo,pod_status)~ fiber_dichotomized_26+
+                        ageby10 + ecog_1to5_final + cancer_RCCvsUC,
+                      AllMetdataFiber)
+summary(cox_pfs_26_uv)
+
+cox_pfs_28_uv <-coxph(Surv(pfs_mo,pod_status)~ fiber_dichotomized_28+
+                        ageby10 + ecog_1to5_final + cancer_RCCvsUC,
+                      AllMetdataFiber)
+summary(cox_pfs_28_uv)
+
+
+#Calculating number of patients categorized as "high fiber" as a function of each dichotomization threshold
+sum(AllMetdataFiber$fiber_dichotomized_12) #70
+sum(AllMetdataFiber$fiber_dichotomized_14) #62
+sum(AllMetdataFiber$fiber_dichotomized) #57
+sum(AllMetdataFiber$fiber_dichotomized_16) #52
+sum(AllMetdataFiber$fiber_dichotomized_18) #41
+sum(AllMetdataFiber$fiber_dichotomized_20) #31
+sum(AllMetdataFiber$fiber_dichotomized_22) #27
+sum(AllMetdataFiber$fiber_dichotomized_24) #22
+sum(AllMetdataFiber$fiber_dichotomized_26) #17
+sum(AllMetdataFiber$fiber_dichotomized_28) #14
+
+forestplot_data <- tibble::tibble(mean  = c(0.5195, 0.4423, 0.4388, 0.5683, 0.6072, 0.7322, 0.6315, 0.7231, 0.7613, 0.7424),
+                                  lower = c(0.2732, 0.2466, 0.2477, 0.3303, 0.3518, 0.4150, 0.3463, 0.3867, 0.3814, 0.3485),
+                                  upper = c(0.9879, 0.7935, 0.7772, 0.9779, 1.048, 1.292, 1.152, 1.352, 1.520, 1.582),
+                                  study = c("12", "14", "15", "16", "18", "20", "22", "24", "26", "28"),
+                                  HighFiber  = c("70","62","57","52","41","31","27","22","17","14"),
+                                  #events = c("57","57","57","57"),
+                                  HR = c("0.52", "0.44", "0.44", "0.57", "0.61", "0.73","0.63","0.72", "0.76", "0.74"))
+svg("svg/extended_figure_1_part_c_forest_plt.svg", w = 8, h = 4)
+forestplot_data |>
+  forestplot(labeltext = c(study, HighFiber,HR),
+             clip = c(0.09, 2.5),
+             xlog = TRUE,
+             xlab = "Hazard ratio for PFS (95% CI)",
+             #xticks = c(log(0.25),log(0.5),log(1.0),log(2.5)),
+             title = "Multivariable progression-free survival sensitivity analyis") |>
+  fp_set_style(box = "royalblue",
+               line = "darkblue",
+               summary = "royalblue") |> 
+  fp_add_header(study = c("Fiber threshold (g/day)"),
+                HighFiber = c("High-fiber patients (n)"),
+                #n = c("n"),
+                #events = c("Events"),
+                HR = c("HR"))
+
+dev.copy(svg, "svg/extended_figure_1_part_c_forest_plt.svg")
+dev.off()
+```
+
+
+## Panel D
+
+Smoothing spline for PFS as a function of avg grams of daily fiber/avg daily kCal.  Each tick corresponds to a patient. 
+
+```{r}
+#| warning: false
+#| include: true
+#| label: panel_d
+
+#gram_fiber_per_Kcal_aboveRecommended
+
+
+multivariate_cox_fiber_per_kCal <-coxph(Surv(pfs_mo,pod_status)~ fiber_dichotomized +
+                        ageby10 + ecog_1to5_final + cancer_RCCvsUC + kcalor,
+                      AllMetdataFiber)
+
+summary(multivariate_cox_fiber_per_kCal)
+
+univariate_cox_fiber_per_kCal <-coxph(Surv(pfs_mo,pod_status)~ gram_fiber_per_Kcal_aboveRecommended,
+                      AllMetdataFiber)
+
+summary(univariate_cox_fiber_per_kCal)
+
+univariate_cox_fiber_per_kCal <-coxph(Surv(pfs_mo,pod_status)~ aofib,
+                      AllMetdataFiber)
+
+summary(univariate_cox_fiber_per_kCal)
+
+p<- makeSpline(AllMetdataFiber, AllMetdataFiber$pfs_mo, AllMetdataFiber$pod_status, 
+           AllMetdataFiber$gram_fiber_per_Kcal,
+           xlab = "(Average daily grams of fiber)/(Average daily kilocalories)", ylab="Hazard ratio (95% CI)",
+           title="Smoothing spline for progression-free survival",
+           knots=3)
+p + 
+ theme(
+     axis.text = element_text(size = 18), # Adjust axis labels
+     axis.title = element_text(size = 20), # Adjust axis titles
+     plot.title = element_text(size = 24),  # Adjust plot title
+     legend.text = element_text(size = 18),  # Adjust legend text
+     legend.title = element_text(size = 20), # Adjust legend titleMetronidazole
+     strip.text.x = element_text(size = 18),
+     strip.text.y = element_text(size = 18) 
+ ) 
+
+ggsave("svg/extended_figure_1_part_d_spline.svg", w=8, h = 5)
+
+```
+

@@ -1,0 +1,127 @@
+--- 
+title: |
+  <img src="./images/liquid_scale.jpg" width="250px" style="margin-left:5%; margin-right:5%"/>
+  Figure 2 - Butyrate Production Capacity from ACoA Pathway and ICB outcome
+format:
+  html:
+    css: styles.css
+---
+```{r}
+#| echo: false
+#| warning: false
+#| include: false
+#| label: library_data_imports
+#| eval: false
+
+library(tidyverse)
+library(ggplot2)
+library(phyloseq)
+library(maaslin3)
+
+data_folder = "C:\\Users\\baichom1\\Documents\\Github\\butyrate_and_icb_2025"
+```
+
+```{r}
+#| eval: false
+ps <- readRDS(paste0(data_folder, "/public_data/sequencing_data/plotting_phyloseq_deidentified.rds"))
+acoa_df <- readRDS(paste0(data_folder, "/data/cleaned_data/acoa_data.rds"))
+
+ps_family <- tax_glom(ps, taxrank = "Family")
+tax_table(ps_family)[, "Family"] <- gsub("[^a-zA-Z0-9]", "_", tax_table(ps_family)[, "Family"])
+family_names <- make.unique(tax_table(ps_family)[, "Family"])
+taxa_names(ps_family) <- family_names
+# Extract feature table (transpose to samples x features)
+if (taxa_are_rows(ps_family)) {
+  feature_table <- as.data.frame(t(otu_table(ps_family)))
+} else {
+  feature_table <- as.data.frame(otu_table(ps_family))
+}
+
+# Extract metadata
+metadata <- sample_data(ps_family) %>%
+  as.matrix() %>%
+  as.data.frame() %>% 
+  rownames_to_column("tmp_row_names") %>%
+  mutate(SAMPID = as.integer(SAMPID)) %>%
+  left_join(acoa_df %>% select(c(pyruvate, SAMPID)), by = "SAMPID") %>%
+  rename(acoa = pyruvate) %>% 
+  column_to_rownames("tmp_row_names")  # Note that the "pyruvate" generating pathway is associated with ACOA, apologies for the inconsistent names
+  
+metadata <- metadata[match(rownames(metadata), rownames(feature_table)), ]
+
+# Check that sample names match
+stopifnot(identical(rownames(feature_table), rownames(metadata)))
+
+#output at the species level
+#raw ACoA input here since log transform is included in the maaslin algorithm
+fit_out <- maaslin3(input_data = feature_table,
+                    input_metadata = metadata,
+                    output = 'maaslin_output_family_level_abundance',
+                    formula = '~ acoa',
+                    normalization = 'TSS',
+                    transform = 'LOG',
+                    max_significance = 0.1,
+                    median_comparison_abundance = TRUE,
+                    warn_prevalence = FALSE,
+                    min_abundance = 0.1,
+                    evaluate_only = 'abundance',
+                    max_pngs = 250,
+                    cores = 1)
+
+```
+```{r}
+#| eval: false
+new_metadata <- readRDS(paste0(data_folder, "/data/cleaned_data/wargo_phylo.rds")) %>%
+  microViz::ps_melt() %>% 
+  mutate(acoa = pyruvate + .001) %>%
+    select(c(Sample, acoa)) %>%
+  unique() %>%
+  column_to_rownames("Sample") %>%
+  phyloseq::sample_data()
+
+ps_wargo <- merge_phyloseq(readRDS(paste0(data_folder, "/data/cleaned_data/wargo_phylo.rds")), new_metadata)
+#same for Wargo!
+# Collapse taxa to the Family level
+ps_wargo_f <- tax_glom(ps_wargo, taxrank = "Family")
+
+# Optional: keep only named families
+ps_wargo_f <- subset_taxa(ps_wargo_f, !is.na(Family) & Family != "")
+
+# Replace NAs and tidy family names
+tax_table(ps_wargo_f)[, "Family"] <- gsub("[^a-zA-Z0-9]", "_", tax_table(ps_wargo_f)[, "Family"])
+family_names <- make.unique(tax_table(ps_wargo_f)[, "Family"])
+taxa_names(ps_wargo_f) <- family_names
+
+
+# Extract feature table (transpose to samples x features)
+feature_table <- as.data.frame(t(otu_table(ps_wargo_f)))
+if (taxa_are_rows(ps_wargo_f)) {
+  feature_table <- as.data.frame(t(otu_table(ps_wargo_f)))
+} else {
+  feature_table <- as.data.frame(otu_table(ps_wargo_f))
+}
+
+# Extract metadata
+metadata <- data.frame(sample_data(ps_wargo_f))
+
+
+# Check that sample names match
+stopifnot(identical(rownames(feature_table), rownames(metadata)))
+
+
+fit_out <- maaslin3(input_data = feature_table,
+                    input_metadata = metadata,
+                    output = 'wargo_maaslin_output_family_level_abundance',
+                    formula = '~ acoa',
+                    normalization = 'TSS',
+                    transform = 'LOG',
+                    max_significance = 0.1,
+                    median_comparison_abundance = TRUE,
+                    warn_prevalence = FALSE,
+                    min_abundance = 0.1,
+                    evaluate_only = 'abundance',
+                    max_pngs = 250,
+                    cores = 1)
+
+
+```

@@ -54,7 +54,7 @@ makeSpline <- function(df, survtime, survevent, var,
     geom_rug(sides = "b") +  # Add rug plot at the bottom ('b') of the plot
     scale_y_log10() +  # Log scale for y-axis
     labs(x = xlab, y = ylab, title=title) +
-    theme_minimal()
+    theme_minimal(base_size = 12)
 }
 
 

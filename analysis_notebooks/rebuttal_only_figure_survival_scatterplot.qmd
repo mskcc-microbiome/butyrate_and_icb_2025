@@ -1,0 +1,87 @@
+--- 
+title: |
+  <img src="./images/liquid_scale.jpg" width="250px" style="margin-left:5%; margin-right:5%"/>
+  Figure 2 - Butyrate Production Capacity from ACoA Pathway and ICB outcome
+format:
+  html:
+    css: styles.css
+---
+
+
+
+```{r}
+#| echo: false
+#| warning: false
+#| include: false
+#| label: library_data_imports
+
+library(tidyverse)
+library(ggplot2)
+library(phyloseq)
+library(microViz)
+library(survival)
+library(survminer)
+library(rms)
+library(viridis)
+library(gtsummary)
+library(splines)
+source("utility_funcs.R")
+
+
+```
+
+Because  scatterplots cannot account for time spent at risk for the outcome, which is a duration more than a discrete point in time, nor for censoring.  For these reasons, we feel it would be more statistically rigorous to analyze and plot time-dependent outcomes using hazard ratios, splines, and Kaplan-Meier plots.  We generated thse plots as part of a rebuttal letter. 
+```{r}
+#| warning: false
+#| include: false
+#| label: prepare_data_panel_c
+
+# Load in our prepared deidentified survival outcome data:
+
+msk_df <- readRDS("../data/cleaned_data/interal_msk_data_for_univariate_model.RDS") %>%
+  mutate(time_os_months = tt_os_d/30) %>%
+  mutate(os_status = ifelse(event_os == 1, "OS event", "Censored")) %>%
+  mutate(time_pfs_months = tt_pfs_d/30) %>%
+  mutate(pfs_status = ifelse(pfs_event == 1, "PFS event", "Censored"))
+
+my_palette = c("red", "steelblue")
+
+```
+
+
+```{r}
+#| warning: false
+#| label: os_vs_acoa_abundance
+
+msk_df %>%
+  mutate(Status = os_status) %>%
+  ggplot(aes(x = pyruvate, y = time_os_months, color = Status, shape = Status)) +
+  geom_point(size = 3) +
+  scale_color_manual(values = my_palette) +
+  theme_minimal() +
+  labs(
+    x = "ACoA pathway gene abundance, RPKM",
+    y = "OS months",
+  ) +
+  theme(text = element_text(size = 16))
+
+```
+
+```{r}
+#| warning: false
+#| label: pfs_vs_acoa_abundance
+
+msk_df %>%
+  mutate(Status = pfs_status) %>%
+  filter(!is.na(Status)) %>%
+  ggplot(aes(x = pyruvate, y = time_pfs_months, color = Status, shape = Status)) +
+  geom_point(size = 3) +
+  scale_color_manual(values = my_palette) +
+  theme_minimal() +
+  labs(
+    x = "ACoA pathway gene abundance, RPKM",
+    y = "PFS months",
+  )+
+  theme(text = element_text(size = 16))
+
+```

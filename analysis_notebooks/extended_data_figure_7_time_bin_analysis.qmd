@@ -1,0 +1,194 @@
+--- 
+title: |
+  <img src="./images/liquid_scale.jpg" width="250px" style="margin-left:5%; margin-right:5%"/>
+  Figure 2 - Butyrate Production Capacity from ACoA Pathway and ICB outcome
+format:
+  html:
+    css: styles.css
+---
+
+
+
+```{r}
+#| echo: false
+#| warning: false
+#| include: false
+#| label: library_data_imports
+
+library(tidyverse)
+library(ggplot2)
+library(phyloseq)
+library(microViz)
+library(survival)
+library(survminer)
+library(rms)
+library(viridis)
+library(gtsummary)
+library(splines)
+source("utility_funcs.R")
+
+
+```
+
+
+```{r}
+#| warning: false
+#| include: false
+#| label: prepare_data_panel_c
+
+# Load in our prepared deidentified ps and survival outcome data:
+
+ps <- readRDS("../public_data/sequencing_data/plotting_phyloseq_deidentified.rds")
+msk_df <- readRDS("../data/cleaned_data/interal_msk_data_for_univariate_model.RDS")
+
+
+# Add in beta and alpha diversity metrics:
+
+alpha_div <- estimate_richness(ps, measures = c("Simpson"))
+alpha_div$Inverse_Simpson <- 1 / alpha_div$Simpson
+metadata <- as.data.frame(sample_data(ps))
+beta_div <- distance(ps, method = "bray")
+ordination <- ordinate(ps, method = "PCoA", distance = beta_div)
+beta_coords <- as.data.frame(ordination$vectors[, 1:2])  # Use the first two dimensions
+explained_pc1 <- round(ordination$values$Relative_eig[1]*100, digits = 1)
+explained_pc2 <- round(ordination$values$Relative_eig[2]*100, digits = 1)
+colnames(beta_coords) <- c("PCoA1", "PCoA2")
+diversity_df <- cbind(metadata, alpha_div, beta_coords) %>%
+  mutate(tmpt_cut = cut(TMPT, c(-Inf, -10, -5, 0, 5, 10, 15, 20, Inf),
+                             c("pre -10", "-9 to -5", "-4 to 0", "1 to 5", "6 to 10", "11 to 15", "16 to 20", "beyond 20"))) %>%
+  group_by(tmpt_cut) %>%
+  mutate(tmpt_n = n()) %>%
+  ungroup() %>%
+  mutate(tmpt_labels = paste(tmpt_cut, "\n(n=", tmpt_n, ")", sep = ""),
+         prepost = cut(TMPT, c(-Inf, 0, Inf)),
+         prepost_label = if_else(prepost == "(0, Inf]", "Post ICB", "Pre ICB")) %>%
+  mutate(tmpt_labels_f = factor(tmpt_labels, 
+                             levels =  c("pre -10\n(n=5)",
+                                         "-9 to -5\n(n=5)",
+                                         "-4 to 0\n(n=28)",
+                                         "1 to 5\n(n=67)",
+                                         "6 to 10\n(n=25)",
+                                         "11 to 15\n(n=6)",
+                                         "16 to 20\n(n=4)",
+                                         "beyond 20\n(n=7)")))
+
+#check out the permanova distance of pre vs post:
+adonis_result <- vegan::adonis2(beta_div ~ prepost, data = diversity_df)
+adonis_pval <- round(adonis_result$`Pr(>F)`[1], digits = 3)
+
+```
+
+
+```{r}
+#| warning: false
+#| label: alpha_div_boxplot_time_rel_ICB
+
+ggplot(diversity_df, aes(x=tmpt_labels_f, y =Inverse_Simpson, fill = tmpt_labels_f)) +
+  geom_boxplot() +
+  scale_y_log10() +
+  theme_classic() +
+  labs(x = "Days relative to initiation of treatment", y = "Alpha diversity\n(1/Simpson)") +
+  theme(axis.text = element_text(size=12), 
+        text = element_text(size=12),
+        legend.position = "none") +
+ theme(
+     axis.text = element_text(size = 20), # Adjust axis labels
+     axis.title = element_text(size = 24), # Adjust axis titles
+     plot.title = element_text(size = 24),  # Adjust plot title
+     legend.text = element_text(size = 18),  # Adjust legend text
+     legend.title = element_text(size = 20), # Adjust legend titleMetronidazole
+     strip.text.x = element_text(size = 20),
+     strip.text.y = element_text(size = 20) 
+ ) + 
+theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+ggsave("svg/extended_figure_7_part_a_alpha_diversity_bins.svg", w = 8, h = 4)
+```
+
+```{r}
+#| warning: false
+#| label: beta_div_colored_by_timepoint
+
+ggplot(diversity_df, aes(
+    x = PCoA1,
+    y = PCoA2,
+    color = tmpt_cut,
+    shape = prepost_label)) +
+  geom_point(size = 3) +
+  annotate("text", x = .2, y = .3, label = paste("Permanova\nPre vs Post, p =", adonis_pval), color = "black", size = 4) +
+  scale_color_brewer(palette="RdBu") +
+  labs(
+    title = "β-Diversity (Bray-Curis distance) by relative\nday of sample collection.",
+    x = paste0("PCoA1 [", explained_pc1, "%]"),
+    y = paste0("PCoA2 [", explained_pc2, "%]"),
+    color = "Time window\nrelative to\ninitiation of\ntreatment",
+    shape = "") +
+  theme_minimal() +
+ theme(
+     axis.text = element_text(size = 20), # Adjust axis labels
+     axis.title = element_text(size = 24), # Adjust axis titles
+     plot.title = element_text(size = 24),  # Adjust plot title
+     legend.text = element_text(size = 18),  # Adjust legend text
+     legend.title = element_text(size = 20), # Adjust legend titleMetronidazole
+     strip.text.x = element_text(size = 20),
+     strip.text.y = element_text(size = 20) 
+ ) 
+
+ggsave("svg/extended_figure_7_part_b_beta_diversity.svg", w = 7.6, h = 5.5)
+```
+```{r}
+#| warning: false
+#| label: spline_sensitivity_to_day_of_sample_collection
+
+get_spline_data <- function(data_df, use_500 = F){
+  model_spline_os <- coxph(Surv(tt_os_d, event_os)~rcs(pyruvate,4)+age10+strata(cohort)+ecog, data_df)
+  ptemp <- termplot(model_spline_os, se=T, plot=F)
+  buterm <- ptemp$pyruvate
+  if(use_500){
+    closest_to_500_index <- which.min(abs(buterm$x - 500))
+    center <- buterm$y[closest_to_500_index]
+  }else{
+    center <- buterm$y[which(buterm$y == median(buterm$y))]
+  }
+  ytemp <- buterm$y + outer(buterm$se, c(0, -1.96, 1.96), '*')
+  exp_ytemp <- exp(ytemp - center)
+
+  spline_data <- data.frame(buty = buterm$x, Estimate = exp_ytemp[,1],
+                          Lower = exp_ytemp[,2], Upper = exp_ytemp[,3])
+  return(spline_data)
+  
+}
+
+msk_df_pre <- msk_df %>% filter(TMPT <= 0)
+msk_df_preplus <- msk_df %>% filter(TMPT <= 5)
+
+
+spline_data_all <- get_spline_data(msk_df)
+spline_data_pre <- get_spline_data(msk_df_pre)
+spline_data_preplus <- get_spline_data(msk_df_preplus, use_500 = T)
+
+ggplot()+
+  geom_ribbon(data=spline_data_all, aes(x=buty, ymin = Lower, ymax = Upper), fill = "grey80", alpha = 0.5) +
+  geom_ribbon(data=spline_data_preplus, aes(x=buty, ymin = Lower, ymax = Upper), fill = "pink", alpha = 0.5, lty=2) +
+  #geom_ribbon(data=spline_data_pre, aes(x=buty, ymin = Lower, ymax = Upper), fill = "lightblue", alpha = 0.25) +
+  geom_line(data=spline_data_all, aes(x=buty, y = Estimate), color = "blue") +
+  geom_line(data=spline_data_preplus, aes(x=buty, y = Estimate), color = "red", lty=2) +
+  geom_line(data=spline_data_pre, aes(x=buty, y = Estimate), color = "darkgreen", lty=2.5) +
+
+  geom_rug(data=spline_data_all, aes(x=buty), sides = "b") +  # Add rug plot at the bottom ('b') of the plot
+  geom_rug(data=spline_data_preplus, aes(x=buty), sides = "b", color="red", alpha=0.5) +  # Add rug plot at the bottom ('b') of the plot
+  geom_rug(data=spline_data_pre, aes(x=buty), sides = "b", color="darkgreen", alpha=0.5) +
+  annotate("text", x = 1650, y = 1.6, label = paste0("All samples (n=", nrow(msk_df), ")"), color = "black", size = 5) +
+  annotate("text", x = 1300, y = .6, label = paste0("Day ≤ 5 (n=", nrow(msk_df_preplus), ")"), color = "black", size = 5) +
+  annotate("text", x = 1420, y = .02, label = paste0("Day ≤ 0 only (n=", nrow(msk_df_pre), ")"), color = "black", size =5) +
+  scale_y_log10() +  # Log scale for y-axis
+  labs(
+    x = "ACoA-pathway genes present",
+    y = "Hazard ratio",
+    title = "Sensitivity analysis - day of sample collection relative to start of therapy") +
+  theme_minimal() +
+  theme(text = element_text(size=20),
+        title = element_blank())
+
+ggsave("svg/extended_figure_7_part_c_sensitivity_time.svg", w = 8, h = 4)
+```

@@ -36,10 +36,10 @@ fasta_file_path <- paste0( ici_folder, "data/raw/butyrate_genes.fa")
 # Process the FASTA file
 result_df <- process_fasta_headers(fasta_file_path)
 
-pyruvate <- read_xlsx(paste0( ici_folder, "genelist.xlsx"), sheet = 1)
-glutarate <- read_xlsx(paste0( ici_folder, "genelist.xlsx"), sheet = 2)
-fouraminobutyrate <- read_xlsx(paste0( ici_folder, "genelist.xlsx"), sheet = 3)
-lysine <- read_xlsx(paste0( ici_folder, "genelist.xlsx"), sheet = 4)
+pyruvate <- readxl::read_xlsx(paste0( ici_folder, "genelist.xlsx"), sheet = 1)
+glutarate <- readxl::read_xlsx(paste0( ici_folder, "genelist.xlsx"), sheet = 2)
+fouraminobutyrate <- readxl::read_xlsx(paste0( ici_folder, "genelist.xlsx"), sheet = 3)
+lysine <- readxl::read_xlsx(paste0( ici_folder, "genelist.xlsx"), sheet = 4)
 
 l_pyruvate <- unlist(pyruvate[,1:10], use.names=F)
 l_pyruvate <- l_pyruvate[which(!is.na(l_pyruvate))]
@@ -113,8 +113,7 @@ sample_data(raw_mpa_phy) <- sample_data(sampletable)
 
 
 taxa_table <- as.data.frame(tax_table(raw_mpa_phy))
-taxa_table <- taxa_table %>%
-  mutate(Family = if_else(Order == "Bacteroidales", "Bacteroidales (order)", Family))
+taxa_table <- taxa_table 
 tax_table(raw_mpa_phy) <- tax_table(as.matrix(taxa_table))
 raw_mpa_phy_icb <- subset_samples(raw_mpa_phy, treatment != "other systemic", )
 

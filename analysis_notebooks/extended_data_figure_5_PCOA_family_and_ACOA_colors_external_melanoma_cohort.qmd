@@ -1,0 +1,166 @@
+--- 
+title: |
+  <img src="./images/fiber_beaker_image_food.jpg" width="250px" style="margin-left:5%; margin-right:5%"/>
+  Extended Figure 4 \nA deeper dive into relationship between ACOA pathway abundance and microbiome taxonomy.
+format:
+  html:
+    css: styles.css
+---
+
+
+
+```{r}
+#| echo: false
+#| warning: false
+#| include: false
+#| label: library_data_imports
+
+library(tidyverse)
+library(ggplot2)
+library(phyloseq)
+library(microViz)
+library(survival)
+library(survminer)
+library(viridis)
+library(yingtools2)
+source("utility_funcs.R")
+
+
+```
+
+Some of these cells will be executable using only the public data.  These section panels <span class="executable" > Look like this</span>.  Other sections rely on data we are not able to make public (for example patient-level survival data).  These section panels <span class="nogo" > Look like this</span>.
+
+
+```{r}
+#| warning: false
+#| echo: false
+#| label: load_and_prep_data
+
+new_metadata <- readRDS("../data/cleaned_data/wargo_phylo.rds") %>%
+  ps_melt() %>% 
+  mutate(log_acoa = log(pyruvate + .001)) %>%
+  group_by(Sample,log_acoa) %>% 
+    mutate(
+      Abundance = Abundance/sum(Abundance) + .0001,
+      log_rum = log(sum(Abundance[Family == "Ruminococcaceae"])),
+      log_bac = log(sum(Abundance[Family == "Bacteroidaceae"]))
+      ) %>%
+  ungroup() %>%
+    select(c(Sample, log_acoa, log_rum, log_bac)) %>%
+  unique() %>%
+  column_to_rownames("Sample") %>%
+  phyloseq::sample_data()
+
+ps <- merge_phyloseq(readRDS("../data/cleaned_data/wargo_phylo.rds"), new_metadata)
+
+ps_ord <- ps %>%
+  tax_fix() %>%
+  tax_transform(trans = "compositional", rank = "Species") %>%
+  dist_calc("aitchison") %>%
+  ord_calc("PCoA")
+
+eig = ps_ord@ord$CA$eig
+pcoa_1 = round(100*eig[1]/sum(eig), digits = 1)
+pcoa_2 = round(100*eig[2]/sum(eig), digits = 1)
+
+```
+
+## PCoA of External Melanoma Cohort, Colored with Relevant Variables
+<h2 class="executable" >Panel A</h2>
+
+PCOA of External Melanoma Cohort Samples, with points colored in by each sample's log-scaled ACoA RPKM. 
+
+```{r}
+#| warning: false
+#| label: panel_a_Lachnospiraceae
+
+
+ps %>%
+  tax_fix() %>%
+  tax_transform(trans = "compositional", rank = "Species") %>%
+  dist_calc("aitchison") %>%
+  ord_calc("PCoA") %>%
+  ord_plot(fill = "log_acoa", size = 2, shape=21, alpha=0.9,
+           plot_taxa = c(1:5)) +
+  scale_fill_gradientn(colours=c("#2b3f76", "#f0f0f0", "#b2182b"), values=c(0,.7,1)) +
+  theme_classic() +  
+  scale_y_reverse() + 
+  labs(
+    fill = "Log ACoA",
+    x = paste("PCoA 1 [", pcoa_1, "%]"),
+    y = paste("PCoA 2 [", pcoa_2, "%]"),
+    caption = ""
+  ) +
+  theme(
+    legend.position = "None"
+  )
+
+ ggsave("svg/extended_figure_5_part_a_log_acoa.svg", w=3, h = 3)
+```
+
+<h2 class="executable" >Panel B</h2>
+
+PCOA of External Melanoma Cohort Samples, with points colored in by each sample's log-scaled Ruminococcaceae Relative Abundance. 
+
+```{r}
+#| warning: false
+#| label: panel_b_ruminococcaceae
+
+
+ps %>%
+  tax_fix() %>%
+  tax_transform(trans = "compositional", rank = "Species") %>%
+  dist_calc("aitchison") %>%
+  ord_calc("PCoA") %>%
+  ord_plot(fill = "log_rum", size = 2, shape=21, alpha=0.9,
+           plot_taxa = c(1:5)) +
+  scale_fill_gradientn(colours=c("#2b3f76", "#f0f0f0", "#b2182b"), values=c(0,.55,1)) +
+  theme_classic() +  
+  scale_y_reverse() + 
+  labs(
+    fill = "   Log\nRel. Abund.",
+    x = paste("PCoA 1 [", pcoa_1, "%]"),
+    y = paste("PCoA 2 [", pcoa_2, "%]"),
+    caption = ""
+  ) +
+  theme(
+    legend.position = "None"
+  )
+
+ggsave("svg/extended_figure_5_part_b_log_ruminococcaceae.svg", w=3, h = 3)
+
+```
+
+
+
+<h2 class="executable" >Panel C</h2>
+
+PCOA of External Melanoma Cohort Samples, with points colored in by each sample's log-scaled Bacteroidaceae Relative Abundance. 
+
+```{r}
+#| warning: false
+#| label: panel_c_bacteroidacea
+
+
+ps %>%
+  tax_fix() %>%
+  tax_transform(trans = "compositional", rank = "Species") %>%
+  dist_calc("aitchison") %>%
+  ord_calc("PCoA") %>%
+  ord_plot(fill = "log_bac", size = 2, shape=21, alpha=0.9,
+           plot_taxa = c(1:5)) +
+  scale_fill_gradientn(colours=c("#2b3f76", "#f0f0f0", "#b2182b"), values=c(0,.8,1)) +
+  theme_classic() +  
+  scale_y_reverse() + 
+  labs(
+    fill = "   Log\nRel. Abund.",
+    x = paste("PCoA 1 [", pcoa_1, "%]"),
+    y = paste("PCoA 2 [", pcoa_2, "%]"),
+    caption = ""
+  ) + 
+  theme(
+    legend.position = "None"
+  )
+ggsave("svg/extended_figure_5_part_c_log_Bacteroidaceae.svg", w=3, h = 3)
+```
+

@@ -65,7 +65,17 @@ ggplot(spline_data, aes(x = buty)) +
   geom_rug(sides = "b") +  # Add rug plot at the bottom ('b') of the plot
   scale_y_log10() +  # Log scale for y-axis
   labs(x = "Total butyrate-pathway genes present", y = "Hazard ratio") +
-  theme_minimal()
+  theme_minimal() +
+ theme(
+     axis.text = element_text(size = 24), # Adjust axis labels
+     axis.title = element_text(size = 24), # Adjust axis titles
+     plot.title = element_text(size = 24),  # Adjust plot title
+     legend.text = element_text(size = 18),  # Adjust legend text
+     legend.title = element_text(size = 20), # Adjust legend titleMetronidazole
+     strip.text.x = element_text(size = 20),
+     strip.text.y = element_text(size = 20)
+ ) 
+ggsave("svg/extended_figure_2_part_a_HR_tot_butyrate.svg", w = 6.5, h = 4)  
 ```
 <h2 class="nogo" >Panel B</h2>
 
@@ -104,6 +114,16 @@ forest_os %>%
   scale_x_continuous(transform = "log", breaks=round(exp(seq(-2,1.5,0.5)),1)) +
   theme_classic() +
   coord_cartesian(xlim=exp(c(-2, 0.3))) + 
-  labs(y = "")
-  
+  labs(y = "") +
+ theme(
+     axis.text = element_text(size = 20), # Adjust axis labels
+     axis.title = element_text(size = 20), # Adjust axis titles
+     plot.title = element_text(size = 20),  # Adjust plot title
+     legend.text = element_text(size = 18),  # Adjust legend text
+     legend.title = element_text(size = 18), # Adjust legend titleMetronidazole
+     strip.text.x = element_text(size = 18),
+     strip.text.y = element_text(size = 18)
+ ) + 
+theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+ggsave("svg/extended_figure_2_part_b_forest_plt.svg", w = 6.5, h = 4)  
 ```

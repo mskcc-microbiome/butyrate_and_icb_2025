@@ -1,0 +1,52 @@
+--- 
+title: |
+  <img src="./images/fiber_beaker_image_food.jpg" width="250px" style="margin-left:5%; margin-right:5%"/>
+  Extended Figure 4 \nA deeper dive into relationship between ACOA pathway abundance and microbiome taxonomy.
+format:
+  html:
+    css: styles.css
+---
+
+
+
+```{r}
+#| echo: false
+#| warning: false
+#| include: false
+#| label: library_data_imports
+
+library(tidyverse)
+library(ggplot2)
+library(phyloseq)
+library(microViz)
+library(survival)
+library(survminer)
+library(viridis)
+library(yingtools2)
+source("utility_funcs.R")
+
+
+```
+
+Some of these cells will be executable using only the public data.  These section panels <span class="executable" > Look like this</span>.  Other sections rely on data we are not able to make public (for example patient-level survival data).  These section panels <span class="nogo" > Look like this</span>.
+
+
+<h2 class="executable" >Panel A</h2>
+
+
+Acetyle CoA Gene abundance and butyric acid relationship
+
+```{r}
+#| warning: false
+#| label: panel_c
+
+metabolomics_db <- readRDS("../data/cleaned_data/metabolomics_data.rds")
+
+ggplot(metabolomics_db) +
+  geom_smooth(aes(x=log(pyruvate), y=Butyric.acid), method=lm, color="#e05f5f") +
+  geom_point(aes(x=log(pyruvate), y=Butyric.acid),
+             shape=21, size=3, fill="#e05f5f", alpha=0.8) +
+  theme_classic()
+cor.test(metabolomics_db$Butyric.acid, log(metabolomics_db$pyruvate))
+  
+```

@@ -78,7 +78,8 @@ coh_base <- c_meta_s %>%
   select(-include_exclude) #relevant to COH analysis not to this project
 
 coh_base_ni <- coh_base %>%
-  filter(treatment == "Nivo-Ipi")
+  filter(treatment == "Nivo-Ipi") %>%
+  mutate(response01 = ifelse(response == 'Y', 1, 0))
 
 write_rds(coh_base_ni, "data/coh_butyrate.rds")
 

@@ -1,0 +1,110 @@
+2025-11-06 12:07:45.101352 INFO::Writing function arguments to log file
+2025-11-06 12:07:45.108577 DEBUG::Function arguments
+2025-11-06 12:07:45.109934 DEBUG::Output folder: maaslin_output_family_level_abundance
+2025-11-06 12:07:45.111233 DEBUG::Formula: ~ acoa
+2025-11-06 12:07:45.11255 DEBUG::Fixed effects:
+2025-11-06 12:07:45.113869 DEBUG::Reference:
+2025-11-06 12:07:45.115383 DEBUG::Random effects:
+2025-11-06 12:07:45.116834 DEBUG::Group effects:
+2025-11-06 12:07:45.118234 DEBUG::Ordered effects:
+2025-11-06 12:07:45.119582 DEBUG::Strata effects:
+2025-11-06 12:07:45.120976 DEBUG::Min Abundance: 0.100000
+2025-11-06 12:07:45.122501 DEBUG::Min Prevalence: 0.000000
+2025-11-06 12:07:45.12381 DEBUG::Zero Threshold: 0.000000
+2025-11-06 12:07:45.125047 DEBUG::Min variance: 0.000000
+2025-11-06 12:07:45.12629 DEBUG::Max significance: 0.100000
+2025-11-06 12:07:45.127537 DEBUG::Normalization: TSS
+2025-11-06 12:07:45.128784 DEBUG::Transform: LOG
+2025-11-06 12:07:45.130026 DEBUG::Correction method: BH
+2025-11-06 12:07:45.131491 DEBUG::Standardize: TRUE
+2025-11-06 12:07:45.132812 DEBUG::Abundance median comparison: TRUE
+2025-11-06 12:07:45.134102 DEBUG::Prevalence median comparison: FALSE
+2025-11-06 12:07:45.135508 DEBUG::Abundance median comparison threshold: 0
+2025-11-06 12:07:45.136987 DEBUG::Prevalence median comparison threshold: 0
+2025-11-06 12:07:45.138407 DEBUG::Subtract median: FALSE
+2025-11-06 12:07:45.139821 DEBUG::Warn prevalence: FALSE
+2025-11-06 12:07:45.141213 DEBUG::Small random effects: FALSE
+2025-11-06 12:07:45.142603 DEBUG::Augment: TRUE
+2025-11-06 12:07:45.143989 DEBUG::Evaluate only: abundance
+2025-11-06 12:07:45.145331 DEBUG::Cores: 1
+2025-11-06 12:07:45.146707 DEBUG::Balanced Summary plot: FALSE
+2025-11-06 12:07:45.14811 INFO::Verifying options selected are valid
+2025-11-06 12:07:45.151003 INFO::Determining format of input files
+2025-11-06 12:07:45.153422 INFO::Input format is data samples as rows and metadata samples as rows
+2025-11-06 12:07:45.155778 DEBUG::A total of 147 samples were found in both the data and metadata
+2025-11-06 12:07:45.157043 DEBUG::Reordering data/metadata to use same sample ordering
+2025-11-06 12:07:45.159768 INFO::Running selected normalization method: TSS
+2025-11-06 12:07:45.167001 INFO::Writing normalized data to file maaslin_output_family_level_abundance/features/data_norm.tsv
+2025-11-06 12:07:45.253793 INFO::Filter data based on min abundance and min prevalence
+2025-11-06 12:07:45.256811 INFO::Total samples in data: 147
+2025-11-06 12:07:45.259478 INFO::Min samples required with min abundance for a feature not to be filtered: 0.000000
+2025-11-06 12:07:45.278034 INFO::Total filtered features: 162
+2025-11-06 12:07:45.282205 INFO::Filtered feature names from abundance and prevalence filtering: Methanobacteriaceae, Eubacteriaceae, Eggerthellaceae, Desulfovibrionaceae, Streptococcaceae, FGB1798, Synergistaceae, FGB1298, FGB1425, FGB2916, Christensenellaceae, FGB2950, FGB1218, FGB3048, FGB12277, FGB42691, Candidatus_Saccharibacteria_unclassified, Oscillospiraceae, FGB9370, Candidatus_Borkfalkiaceae, Coriobacteriia_unclassified, Clostridiales_unclassified, FGB9501, FGB3053, Promicromonosporaceae, Candidatus_Sacchiramonaceaea, FGB12541, Candidatus_Gastranaerophilales_unclassified, Micrococcaceae, Sutterellaceae, Peptostreptococcaceae, Firmicutes_unclassified, FGB1217, Catabacteriaceae, FGB3608, Marinilabiliaceae, Clostridiales_Family_XIII_Incertae_Sedis, Rhodobacteraceae, FGB3047, FGB1434, Flavobacteriales_unclassified, FGB3035, FGB3546, FGB9830, Porphyromonadaceae, FGB10719, Hafniaceae, FGB42358, Pasteurellaceae, FGB25373, Propionibacteriaceae, FGB1340, Alphaproteobacteria_unclassified, Barnesiellaceae, Phyllobacteriaceae, Peptococcaceae, Eukaryota_unclassified, Victivallaceae, Methanomassiliicoccaceae, Leuconostocaceae, FGB11371, FGB3606, FGB4356, Kytococcaceae, Bacillales_unclassified, Peptoniphilaceae, FGB40183, FGB11875, Enterococcaceae, Candidatus_Nanogingivalaceae, FGB4549, Campylobacteraceae, Candidatus_Nanoperiomorbaceae, FGB2397, Actinomycetaceae, Lentisphaeria_unclassified, Oxalobacteraceae, FGB1538, FGB2394, Opitutales_unclassified, FGB602, FGB11481, FGB40382, FGB2882, FGB9612, Puniceicoccaceae, Muribaculaceae, FGB25442, FGB618, Methanomassiliicoccales_unclassified, FGB1424, Candidatus_Methanomethylophilaceae, FGB2164, FGB1456, FGB11737, FGB16911, Selenomonadales_unclassified, FGB12952, FGB8129, FGB4355, Pirellulaceae, Microbacteriaceae, FGB8157, FGB12855, FGB1302, Fusobacteriaceae, FGB4469, FGB2897, Corynebacteriaceae, FGB24517, Selenomonadaceae, Carnobacteriaceae, Aerococcaceae, FGB1872, FGB1788, FGB41366, Bacillaceae, FGB2395, Lactobacillaceae, Alcaligenaceae, Tissierellaceae, FGB12479, FGB1192, FGB343, FGB9475, FGB6128, FGB9736, FGB9860, FGB11478, Atopobiaceae, Acholeplasmatales_unclassified, FGB3011, FGB1470, Staphylococcaceae, Prochloraceae, FGB14246, Bacteria_unclassified, Thermofilaceae, FGB636, Yersiniaceae, FGB9158, FGB8972, FGB1677, Neisseriaceae, Lactobacillales_unclassified, Coriobacteriales_unclassified, Brachyspiraceae, Succinivibrionaceae, FGB544, Actinobacteria_unclassified, FGB637, FGB9732, Morganellaceae, Aeromonadaceae, Moraxellaceae, Tissierellia_unclassified, Leptotrichiaceae, FGB41715, Elusimicrobiales_unclassified, FGB20074, FGB9572, FGB9659
+2025-11-06 12:07:45.286606 INFO::Total features filtered by non-zero variance filtering: 0
+2025-11-06 12:07:45.290317 INFO::Filtered feature names from variance filtering:
+2025-11-06 12:07:45.29347 INFO::Writing filtered data to file maaslin_output_family_level_abundance/features/filtered_data.tsv
+2025-11-06 12:07:45.3043 INFO::Running selected transform method: LOG
+2025-11-06 12:07:45.308848 INFO::Writing normalized, filtered, transformed data to file maaslin_output_family_level_abundance/features/data_transformed.tsv
+2025-11-06 12:07:45.319905 INFO::Applying z-score to standardize continuous metadata
+2025-11-06 12:07:45.331802 INFO::Running the linear model component
+2025-11-06 12:07:45.340376 DEBUG::Object: augment, Size: 56
+2025-11-06 12:07:45.343141 DEBUG::Object: cluster, Size: 0
+2025-11-06 12:07:45.344888 DEBUG::Object: cores, Size: 56
+2025-11-06 12:07:45.346425 DEBUG::Object: correction, Size: 112
+2025-11-06 12:07:45.348613 DEBUG::Object: extract_out, Size: 1136
+2025-11-06 12:07:45.350241 DEBUG::Object: feature_specific_covariate, Size: 0
+2025-11-06 12:07:45.351906 DEBUG::Object: feature_specific_covariate_name, Size: 0
+2025-11-06 12:07:45.35362 DEBUG::Object: feature_specific_covariate_record, Size: 0
+2025-11-06 12:07:45.35567 DEBUG::Object: features, Size: 37416
+2025-11-06 12:07:45.357745 DEBUG::Object: formula, Size: 728
+2025-11-06 12:07:45.359945 DEBUG::Object: fun_list, Size: 58768
+2025-11-06 12:07:45.361648 DEBUG::Object: func_to_run, Size: 435336
+2025-11-06 12:07:45.363141 DEBUG::Object: groups, Size: 48
+2025-11-06 12:07:45.364683 DEBUG::Object: median_comparison, Size: 56
+2025-11-06 12:07:45.366352 DEBUG::Object: median_comparison_threshold, Size: 56
+2025-11-06 12:07:45.368103 DEBUG::Object: metadata, Size: 255976
+2025-11-06 12:07:45.369654 DEBUG::Object: model, Size: 112
+2025-11-06 12:07:45.371452 DEBUG::Object: model_function, Size: 8864
+2025-11-06 12:07:45.37318 DEBUG::Object: ordereds, Size: 48
+2025-11-06 12:07:45.374981 DEBUG::Object: random_effects_formula, Size: 0
+2025-11-06 12:07:45.376588 DEBUG::Object: ranef_function, Size: 0
+2025-11-06 12:07:45.378038 DEBUG::Object: save_models, Size: 56
+2025-11-06 12:07:45.379468 DEBUG::Object: small_random_effects, Size: 56
+2025-11-06 12:07:45.380853 DEBUG::Object: strata, Size: 48
+2025-11-06 12:07:45.382885 DEBUG::Object: subtract_median, Size: 56
+2025-11-06 12:07:45.384667 DEBUG::Object: summary_function, Size: 49424
+2025-11-06 12:07:45.386317 DEBUG::Object: func_to_run, Size: 435336
+2025-11-06 12:07:45.390646 INFO::Fitting model to feature number 1, Bacilli_unclassified
+2025-11-06 12:07:45.399831 INFO::Fitting model to feature number 2, Tannerellaceae
+2025-11-06 12:07:45.407596 INFO::Fitting model to feature number 3, Enterobacteriaceae
+2025-11-06 12:07:45.416149 INFO::Fitting model to feature number 4, Rikenellaceae
+2025-11-06 12:07:45.423672 INFO::Fitting model to feature number 5, Bacteroidales_unclassified
+2025-11-06 12:07:45.43077 INFO::Fitting model to feature number 6, Bacteroidaceae
+2025-11-06 12:07:45.440785 INFO::Fitting model to feature number 7, Lachnospiraceae
+2025-11-06 12:07:45.449174 INFO::Fitting model to feature number 8, Akkermansiaceae
+2025-11-06 12:07:45.45904 INFO::Fitting model to feature number 9, Clostridia_unclassified
+2025-11-06 12:07:45.472254 INFO::Fitting model to feature number 10, Coriobacteriaceae
+2025-11-06 12:07:45.483083 INFO::Fitting model to feature number 11, Clostridiaceae
+2025-11-06 12:07:45.491415 INFO::Fitting model to feature number 12, Bifidobacteriaceae
+2025-11-06 12:07:45.501609 INFO::Fitting model to feature number 13, Erysipelotrichaceae
+2025-11-06 12:07:45.510159 INFO::Fitting model to feature number 14, Ruminococcaceae
+2025-11-06 12:07:45.522547 INFO::Fitting model to feature number 15, Veillonellaceae
+2025-11-06 12:07:45.534443 INFO::Fitting model to feature number 16, Odoribacteraceae
+2025-11-06 12:07:45.544224 INFO::Fitting model to feature number 17, Acidaminococcaceae
+2025-11-06 12:07:45.554261 INFO::Fitting model to feature number 18, Pseudomonadaceae
+2025-11-06 12:07:45.564594 INFO::Fitting model to feature number 19, Prevotellaceae
+2025-11-06 12:07:45.573525 INFO::Fitting model to feature number 20, FGB1062
+2025-11-06 12:07:45.584097 INFO::Performing tests against medians
+2025-11-06 12:07:45.876769 INFO::Counting total values for each feature
+2025-11-06 12:07:45.887162 WARNING::Deleting existing residuals file: maaslin_output_family_level_abundance/fits/residuals_linear.rds
+2025-11-06 12:07:45.891076 INFO::Writing residuals to file maaslin_output_family_level_abundance/fits/residuals_linear.rds
+2025-11-06 12:07:45.896445 WARNING::Deleting existing fitted file: maaslin_output_family_level_abundance/fits/fitted_linear.rds
+2025-11-06 12:07:45.901422 INFO::Writing fitted values to file maaslin_output_family_level_abundance/fits/fitted_linear.rds
+2025-11-06 12:07:45.906924 INFO::Writing all the results to file (ordered 
+            by increasing individual q-values): maaslin_output_family_level_abundance/all_results.tsv
+2025-11-06 12:07:45.911731 INFO::Writing the significant results without errors (those which have joint q-values less than or equal to the threshold of 0.100000 ) to file (ordered by increasing individual q-values): maaslin_output_family_level_abundance/significant_results.tsv
+2025-11-06 12:07:45.917831 INFO::Writing summary plot of significant
+                        results to file: maaslin_output_family_level_abundance/figures/summary_plot.pdf
+2025-11-06 12:07:46.672118 INFO::Writing association plots (one for each significant association) to output folder: maaslin_output_family_level_abundance/figures
+2025-11-06 12:07:46.675814 INFO::All associations had errors 
+                                or were insignificant.

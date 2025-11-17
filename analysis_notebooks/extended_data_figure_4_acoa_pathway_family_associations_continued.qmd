@@ -34,74 +34,113 @@ Some of these cells will be executable using only the public data.  These sectio
 ```{r}
 #| warning: false
 #| echo: false
-#| label: load_data
+#| label: load_and_prep_data
 
-ps <- readRDS("../data/cleaned_data/plotting_phyloseq_deidentified.rds")
+plotting_ps <- readRDS("../data/cleaned_data/plotting_phyloseq_deidentified.rds") %>%
+  ps_melt() %>% 
+  mutate(acoa = exp(log_acoa)) %>%
+  group_by(Sample, Family, acoa) %>%
+  summarize(Abundance = sum(Abundance)) %>%
+  ungroup()
 
 ```
 
-## Survival plots as a function of pyruvate gene abundance:
-
+## Relationfhip between relative abundance of top families and Acetyl-CoA pathway abundance
 <h2 class="executable" >Panel A</h2>
 
-Relationship between Rel Abundance of Bacteroidales and Acetyle-CoA pathway abundance. 
+Relationship between Rel Abundance of Lachnospiraceae and Acetyle-CoA pathway abundance. 
 
 ```{r}
 #| warning: false
-#| label: panel_a
+#| label: panel_a_Lachnospiraceae
 
 
-# We will take the information we need out the phyloseq, and convert it to a dataframe for plotting: 
-
-family_ps <- readRDS("../data/cleaned_data/deid_family_ps.rds")
-
-family_ps %>%
-  filter(grepl("Bacteroidales", Family)) %>%
+plotting_ps %>%
+  filter(grepl("Lachnospiraceae", Family)) %>%
   ggplot() +
-  geom_smooth(aes(x=pyruvate, y=total_family), method=lm, color="firebrick2") +
-  geom_point(aes(x=pyruvate, y=total_family),
+  geom_smooth(aes(x=acoa, y=Abundance), method=lm, color="steelblue") +
+  geom_point(aes(x=acoa, y=Abundance),
+             shape=21, size=3, fill="steelblue", alpha=0.8) +
+  theme_classic() + 
+  labs(
+    x = "Acetyl-CoA pathway gene abundance (RPKM)",
+    y = "Lachnospiraceae"
+  )
+
+ggsave("svg/extended_figure_4_part_a_Lachnospiraceae.svg", w=5, h = 5)
+```
+
+```{r}
+#|warning: false
+#|label: p_value_panel_a
+fit <- lm(Abundance ~ acoa, plotting_ps %>%
+  filter(grepl("Lachnospiraceae", Family)))
+summary(fit)
+```
+
+<h2 class="executable" >Panel B</h2>
+
+Relationship between Rel Abundance of Ruminococcacae and Acetyle-CoA pathway abundance. 
+
+```{r}
+#| warning: false
+#| label: panel_b_ruminococcaceae
+
+
+plotting_ps %>%
+  filter(grepl("Ruminococcaceae", Family)) %>%
+  ggplot() +
+  geom_smooth(aes(x=acoa, y=Abundance), method=lm, color="goldenrod") +
+  geom_point(aes(x=acoa, y=Abundance),
+             shape=21, size=3, fill="goldenrod", alpha=0.8) +
+  theme_classic() + 
+  labs(
+    x = "Acetyl-CoA pathway gene abundance (RPKM)",
+    y = "Ruminococcaceae"
+  )
+
+ggsave("svg/extended_figure_4_part_b_Ruminococcaceae.svg", w=5, h = 5)
+
+```
+
+```{r}
+#|warning: false
+#|label: p_value_panel_b
+fit <- lm(Abundance ~ acoa, plotting_ps %>%
+  filter(grepl("Ruminococcaceae", Family)))
+summary(fit)
+```
+
+
+
+<h2 class="executable" >Panel C</h2>
+
+Relationship between Rel Abundance of Ruminococcacae and Acetyle-CoA pathway abundance. 
+
+```{r}
+#| warning: false
+#| label: panel_c_bacteroidacea
+
+
+plotting_ps %>%
+  filter(grepl("Bacteroidaceae", Family)) %>%
+  ggplot() +
+  geom_smooth(aes(x=acoa, y=Abundance), method=lm, color="firebrick2") +
+  geom_point(aes(x=acoa, y=Abundance),
              shape=21, size=3, fill="firebrick2", alpha=0.8) +
   theme_classic() + 
   labs(
     x = "Acetyl-CoA pathway gene abundance (RPKM)",
-    y = "Bacteroidales"
+    y = "Bacteroidaceae"
   )
-```
-<h2 class="executable" >Panel B</h2>
 
-PCOA external Cohort 
-
-```{r}
-#| warning: false
-#| label: panel_b
-
-raw_mpa_phy_icb <- readRDS("../data/cleaned_data/wargo_phylo.RDS")
-
-raw_mpa_phy_icb %>%
-  tax_fix() %>%
-  tax_transform(trans = "compositional", rank = "Family") %>%
-  ord_calc("PCA") %>%
-  ord_plot(fill = "log_acoa", size = 4, shape=21, alpha=0.6,
-           plot_taxa = 1:3) + #c("Lachnospiraceae", "Bacteroidaceae", "Ruminococcaceae")) +
-  scale_fill_viridis(option="C", begin = 0, end=1, na.value="white") +
-  theme_classic()
+ggsave("svg/extended_figure_4_part_c_Bacteroidaceae.svg", w=5, h = 5)
 ```
 
-<h2 class="executable" >Panel C</h2>
-
-Acetyle CoA Gene abundance and butyric acid relationship
-
 ```{r}
-#| warning: false
-#| label: panel_c
-
-metabolomics_db <- readRDS("../data/cleaned_data/metabolomics_data.rds")
-
-ggplot(metabolomics_db) +
-  geom_smooth(aes(x=log(pyruvate), y=Butyric.acid), method=lm, color="#e05f5f") +
-  geom_point(aes(x=log(pyruvate), y=Butyric.acid),
-             shape=21, size=3, fill="#e05f5f", alpha=0.8) +
-  theme_classic()
-cor.test(metabolomics_db$Butyric.acid, log(metabolomics_db$pyruvate))
-  
+#|warning: false
+#|label: p_value_panel_c
+fit <- lm(Abundance ~ acoa, plotting_ps %>%
+  filter(grepl("Bacteroidaceae", Family)))
+summary(fit)
 ```
