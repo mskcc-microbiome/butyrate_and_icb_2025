@@ -30,7 +30,7 @@ website:
           - text: "Extended Figure 2: Butyrate Genes and OS"
             href: extended_data_figure_2_butyrate_genes_overall_survival.qmd
           - text: "Extended Figure 3: Maaslin Analysis"
-            href: extended_data_figure_3_maasline_acoa_analysis.qmd
+            href: extended_data_figure_3_maaslin_acoa_analysis.qmd
           - text: "Extended Figure 4: Deeper Look at ACOA genes and taxonomy"
             href: extended_data_figure_4_acoa_pathway_family_associations_continued.qmd
           - text: "Extended Figure 5: External Melanoma Cohort Beta Diversity"

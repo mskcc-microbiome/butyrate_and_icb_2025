@@ -67,7 +67,16 @@ fit_out <- maaslin3(input_data = feature_table,
                     max_pngs = 250,
                     cores = 1)
 
+
 ```
+
+### Panel A
+
+Results of Maaslin 3 run on MSKCC Cohort
+
+<iframe src="maaslin_output_family_level_abundance/figures/summary_plot.pdf" width="100%" height="600px" style="border:none;"></iframe>
+
+
 ```{r}
 #| eval: false
 new_metadata <- readRDS(paste0(data_folder, "/data/cleaned_data/wargo_phylo.rds")) %>%
@@ -124,3 +133,8 @@ fit_out <- maaslin3(input_data = feature_table,
 
 
 ```
+
+### Panel B
+
+Results of Maaslin 3 run on the External Validation Cohort 
+<iframe src="wargo_maaslin_output_family_level_abundance/figures/summary_plot.pdf" width="100%" height="600px" style="border:none;"></iframe>

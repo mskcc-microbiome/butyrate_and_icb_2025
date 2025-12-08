@@ -76,7 +76,7 @@ adonis_result <- vegan::adonis2(beta_div ~ prepost, data = diversity_df)
 adonis_pval <- round(adonis_result$`Pr(>F)`[1], digits = 3)
 
 ```
-
+### Panel A
 
 ```{r}
 #| warning: false
@@ -103,7 +103,7 @@ theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
 
 ggsave("svg/extended_figure_7_part_a_alpha_diversity_bins.svg", w = 8, h = 4)
 ```
-
+### Panel B
 ```{r}
 #| warning: false
 #| label: beta_div_colored_by_timepoint
@@ -135,6 +135,7 @@ ggplot(diversity_df, aes(
 
 ggsave("svg/extended_figure_7_part_b_beta_diversity.svg", w = 7.6, h = 5.5)
 ```
+### Panel C
 ```{r}
 #| warning: false
 #| label: spline_sensitivity_to_day_of_sample_collection

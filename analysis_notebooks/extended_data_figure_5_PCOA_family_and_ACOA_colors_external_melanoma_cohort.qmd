@@ -27,7 +27,7 @@ source("utility_funcs.R")
 
 ```
 
-Some of these cells will be executable using only the public data.  These section panels <span class="executable" > Look like this</span>.  Other sections rely on data we are not able to make public (for example patient-level survival data).  These section panels <span class="nogo" > Look like this</span>.
+
 
 
 ```{r}
@@ -64,8 +64,9 @@ pcoa_2 = round(100*eig[2]/sum(eig), digits = 1)
 
 ```
 
-## PCoA of External Melanoma Cohort, Colored with Relevant Variables
-<h2 class="executable" >Panel A</h2>
+### Panel A
+
+
 
 PCOA of External Melanoma Cohort Samples, with points colored in by each sample's log-scaled ACoA RPKM. 
 
@@ -97,7 +98,7 @@ ps %>%
  ggsave("svg/extended_figure_5_part_a_log_acoa.svg", w=3, h = 3)
 ```
 
-<h2 class="executable" >Panel B</h2>
+### Panel B
 
 PCOA of External Melanoma Cohort Samples, with points colored in by each sample's log-scaled Ruminococcaceae Relative Abundance. 
 
@@ -130,9 +131,7 @@ ggsave("svg/extended_figure_5_part_b_log_ruminococcaceae.svg", w=3, h = 3)
 
 ```
 
-
-
-<h2 class="executable" >Panel C</h2>
+### Panel C
 
 PCOA of External Melanoma Cohort Samples, with points colored in by each sample's log-scaled Bacteroidaceae Relative Abundance. 
 

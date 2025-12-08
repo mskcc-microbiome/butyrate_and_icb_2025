@@ -40,7 +40,8 @@ fouraminobutyrate, glutarate, lysine and pyruvate represent different parts of t
 #| echo: false
 #| label: load_data
 
-acoa_df <- readRDS("../data/cleaned_data/acoa_data.rds")
+acoa_df <- readRDS("../data/cleaned_data/acoa_data.rds") %>%
+  mutate(log_acoa = log10(pyruvate))
 colnames(acoa_df)
 ```
 
@@ -151,6 +152,14 @@ Principal components analysis (PCA) of Observational cohort sample (n = 147, 1 p
 
 ps <- readRDS("../public_data/sequencing_data/plotting_phyloseq_deidentified.rds")
 
+sample_data(ps) <- sample_data(ps) %>% 
+  as.matrix() %>%
+  as.data.frame() %>% 
+  mutate(SAMPID = as.character(SAMPID)) %>%
+  rownames_to_column("sampl_names") %>%
+  left_join(acoa_df %>% mutate(SAMPID = as.character(SAMPID)) %>% select(c(log_acoa, SAMPID)), by = "SAMPID") %>%
+  column_to_rownames("sampl_names") %>%
+  sample_data()
 ```
 First looking at how log ACOA distribution looks superimposed over the PCOA of Stool Samples:
 
@@ -178,7 +187,7 @@ Next looking at Ruminococcaeceae:
 #| warning: false
 #| label: panel_c_part_2
 rum_ps <- ps
-sample_data(rum_ps)$log_rum = log(sample_data(ps)$Ruminococcaceae + 0.0001)
+sample_data(rum_ps)$log_rum = log10(as.numeric(sample_data(ps)$Ruminococcaceae) + 0.0001)
 rum_ps %>%
   ps_filter(SAMPID %in% acoa_df$SAMPID) %>%
   tax_fix() %>%
@@ -201,7 +210,7 @@ Lastly looking at Bacteroidaceae:
 #| label: panel_c_part_3
 
 bac_ps <- ps
-sample_data(bac_ps)$log_bac = log(sample_data(ps)$Bacteroidaceae + 0.0001)
+sample_data(bac_ps)$log_bac = log10(as.numeric(sample_data(ps)$Bacteroidaceae) + 0.0001)
 bac_ps %>%
   ps_filter(SAMPID %in% acoa_df$SAMPID) %>%
   tax_fix() %>%

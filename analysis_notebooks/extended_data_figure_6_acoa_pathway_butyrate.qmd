@@ -27,10 +27,8 @@ source("utility_funcs.R")
 
 ```
 
-Some of these cells will be executable using only the public data.  These section panels <span class="executable" > Look like this</span>.  Other sections rely on data we are not able to make public (for example patient-level survival data).  These section panels <span class="nogo" > Look like this</span>.
 
-
-<h2 class="executable" >Panel A</h2>
+### Panel A
 
 
 Acetyle CoA Gene abundance and butyric acid relationship
