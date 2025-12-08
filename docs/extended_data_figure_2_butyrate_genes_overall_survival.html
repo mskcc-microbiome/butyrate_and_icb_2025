@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Butyrate, Microbiome and ICB Outcomes -  Extended Figure 4 deeper dive into relationship between ACOA pathway abundance and microbiome taxonomy.</title>
+<title>Butyrate, Microbiome and ICB Outcomes -  Extended Figure 3 Gene Abundance and Hazard Ration, and Univatiate Analysis of Butyrate Pathway.</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -138,7 +138,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./extended_data_figure_1_pfs_fiber_disease_type.html">Extended Figures</a></li><li class="breadcrumb-item"><a href="./extended_data_figure_4_acoa_pathway_family_associations_continued.html">Extended Figure 4: Deeper Look at ACOA genes and taxonomy</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./extended_data_figure_1_pfs_fiber_disease_type.html">Extended Figures</a></li><li class="breadcrumb-item"><a href="./extended_data_figure_2_butyrate_genes_overall_survival.html">Extended Figure 2: Butyrate Genes and OS</a></li></ol></nav>
         <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
@@ -215,13 +215,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./extended_data_figure_2_butyrate_genes_overall_survival.html" class="sidebar-item-text sidebar-link">
+  <a href="./extended_data_figure_2_butyrate_genes_overall_survival.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">Extended Figure 2: Butyrate Genes and OS</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./extended_data_figure_4_acoa_pathway_family_associations_continued.html" class="sidebar-item-text sidebar-link active">
+  <a href="./extended_data_figure_4_acoa_pathway_family_associations_continued.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Extended Figure 4: Deeper Look at ACOA genes and taxonomy</span></a>
   </div>
 </li>
@@ -255,16 +255,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#relationfhip-between-relative-abundance-of-top-families-and-acetyl-coa-pathway-abundance" id="toc-relationfhip-between-relative-abundance-of-top-families-and-acetyl-coa-pathway-abundance" class="nav-link active" data-scroll-target="#relationfhip-between-relative-abundance-of-top-families-and-acetyl-coa-pathway-abundance">Relationfhip between relative abundance of top families and Acetyl-CoA pathway abundance</a></li>
+  <li><a href="#survival-plots-as-a-function-of-pyruvate-gene-abundance" id="toc-survival-plots-as-a-function-of-pyruvate-gene-abundance" class="nav-link active" data-scroll-target="#survival-plots-as-a-function-of-pyruvate-gene-abundance">Survival plots as a function of pyruvate gene abundance:</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./extended_data_figure_1_pfs_fiber_disease_type.html">Extended Figures</a></li><li class="breadcrumb-item"><a href="./extended_data_figure_4_acoa_pathway_family_associations_continued.html">Extended Figure 4: Deeper Look at ACOA genes and taxonomy</a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./extended_data_figure_1_pfs_fiber_disease_type.html">Extended Figures</a></li><li class="breadcrumb-item"><a href="./extended_data_figure_2_butyrate_genes_overall_survival.html">Extended Figure 2: Butyrate Genes and OS</a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><p><img src="./images/fiber_beaker_image_food.jpg" width="250px" style="margin-left:5%; margin-right:5%"> Extended Figure 4 deeper dive into relationship between ACOA pathway abundance and microbiome taxonomy.</p></h1>
+<h1 class="title"><p><img src="./images/fiber_beaker_image_food.jpg" width="250px" style="margin-left:5%; margin-right:5%"> Extended Figure 3 Gene Abundance and Hazard Ration, and Univatiate Analysis of Butyrate Pathway.</p></h1>
 </div>
 
 
@@ -282,166 +282,114 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 <p>Some of these cells will be executable using only the public data. These section panels <span class="executable"> Look like this</span>. Other sections rely on data we are not able to make public (for example patient-level survival data). These section panels <span class="nogo"> Look like this</span>.</p>
-<section id="relationfhip-between-relative-abundance-of-top-families-and-acetyl-coa-pathway-abundance" class="level2">
-<h2 class="anchored" data-anchor-id="relationfhip-between-relative-abundance-of-top-families-and-acetyl-coa-pathway-abundance">Relationfhip between relative abundance of top families and Acetyl-CoA pathway abundance</h2>
-<h2 class="executable anchored">
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "blinded_subject_id"    "id_int"                "cohort"               
+ [4] "age"                   "impact_tmb_score"      "cpb_drug"             
+ [7] "ecog"                  "best_overall_response" "tt_pfs_d"             
+[10] "pfs_event"             "tt_os_d"               "event_os"             
+[13] "TMPT"                  "WMS_SGPID"             "SAMPID"               
+[16] "total"                 "samp_id"               "identifier.y"         
+[19] "Shannon"               "tx"                    "age10"                
+[22] "med_buty"              "fouraminobutyrate"     "gluatarate"           
+[25] "lysine"                "pyruvate"             </code></pre>
+</div>
+</div>
+<section id="survival-plots-as-a-function-of-pyruvate-gene-abundance" class="level2">
+<h2 class="anchored" data-anchor-id="survival-plots-as-a-function-of-pyruvate-gene-abundance">Survival plots as a function of pyruvate gene abundance:</h2>
+<h2 class="nogo anchored">
 Panel A
 </h2>
-<p>Relationship between Rel Abundance of Lachnospiraceae and Acetyle-CoA pathway abundance.</p>
+<p>Hazard Ratio of Overall Survival Evaluated with respect to Butyrate production gene RPKM.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>plotting_ps <span class="sc">%&gt;%</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">grepl</span>(<span class="st">"Lachnospiraceae"</span>, Family)) <span class="sc">%&gt;%</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="fu">aes</span>(<span class="at">x=</span>acoa, <span class="at">y=</span>Abundance), <span class="at">method=</span>lm, <span class="at">color=</span><span class="st">"steelblue"</span>) <span class="sc">+</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x=</span>acoa, <span class="at">y=</span>Abundance),</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>             <span class="at">shape=</span><span class="dv">21</span>, <span class="at">size=</span><span class="dv">3</span>, <span class="at">fill=</span><span class="st">"steelblue"</span>, <span class="at">alpha=</span><span class="fl">0.8</span>) <span class="sc">+</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>() <span class="sc">+</span> </span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Acetyl-CoA pathway gene abundance (RPKM)"</span>,</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Lachnospiraceae"</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>os_butyrate <span class="ot">&lt;-</span>  <span class="fu">coxph</span>(<span class="fu">Surv</span>(tt_os_d, event_os)<span class="sc">~</span>rms<span class="sc">::</span><span class="fu">rcs</span>(total,<span class="dv">4</span>)<span class="sc">+</span>age10<span class="sc">+</span><span class="fu">factor</span>(cohort)<span class="sc">+</span>ecog,, <span class="at">data =</span> acoa_df)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>ptemp <span class="ot">&lt;-</span> <span class="fu">termplot</span>(os_butyrate, <span class="at">se=</span>T, <span class="at">plot=</span>F)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>buterm <span class="ot">&lt;-</span> ptemp<span class="sc">$</span>total</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>center <span class="ot">&lt;-</span> buterm<span class="sc">$</span>y[<span class="fu">which</span>(buterm<span class="sc">$</span>y <span class="sc">==</span> <span class="fu">median</span>(buterm<span class="sc">$</span>y))]</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>ytemp <span class="ot">&lt;-</span> buterm<span class="sc">$</span>y <span class="sc">+</span> <span class="fu">outer</span>(buterm<span class="sc">$</span>se, <span class="fu">c</span>(<span class="dv">0</span>, <span class="sc">-</span><span class="fl">1.96</span>, <span class="fl">1.96</span>), <span class="st">'*'</span>)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>exp_ytemp <span class="ot">&lt;-</span> <span class="fu">exp</span>(ytemp <span class="sc">-</span> center)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>spline_data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">buty =</span> buterm<span class="sc">$</span>x, <span class="at">Estimate =</span> exp_ytemp[,<span class="dv">1</span>],</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>                          <span class="at">Lower =</span> exp_ytemp[,<span class="dv">2</span>], <span class="at">Upper =</span> exp_ytemp[,<span class="dv">3</span>])</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(spline_data, <span class="fu">aes</span>(<span class="at">x =</span> buty)) <span class="sc">+</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> Lower, <span class="at">ymax =</span> Upper), <span class="at">fill =</span> <span class="st">"grey80"</span>, <span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> Estimate), <span class="at">color =</span> <span class="st">"blue"</span>) <span class="sc">+</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_rug</span>(<span class="at">sides =</span> <span class="st">"b"</span>) <span class="sc">+</span>  <span class="co"># Add rug plot at the bottom ('b') of the plot</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_log10</span>() <span class="sc">+</span>  <span class="co"># Log scale for y-axis</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Total butyrate-pathway genes present"</span>, <span class="at">y =</span> <span class="st">"Hazard ratio"</span>) <span class="sc">+</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a> <span class="fu">theme</span>(</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>     <span class="at">axis.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">24</span>), <span class="co"># Adjust axis labels</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>     <span class="at">axis.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">24</span>), <span class="co"># Adjust axis titles</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>     <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">24</span>),  <span class="co"># Adjust plot title</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>     <span class="at">legend.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">18</span>),  <span class="co"># Adjust legend text</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>     <span class="at">legend.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">20</span>), <span class="co"># Adjust legend titleMetronidazole</span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>     <span class="at">strip.text.x =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">20</span>),</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>     <span class="at">strip.text.y =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">20</span>)</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a> ) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="extended_data_figure_4_acoa_pathway_family_associations_continued_files/figure-html/panel_a_Lachnospiraceae-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="extended_data_figure_2_butyrate_genes_overall_survival_files/figure-html/hr_spline_butyrate_genes-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="st">"svg/extended_figure_4_part_a_Lachnospiraceae.svg"</span>, <span class="at">w=</span><span class="dv">5</span>, <span class="at">h =</span> <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="st">"svg/extended_figure_2_part_a_HR_tot_butyrate.svg"</span>, <span class="at">w =</span> <span class="fl">6.5</span>, <span class="at">h =</span> <span class="dv">4</span>)  </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">#|warning: false</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co">#|label: p_value_panel_a</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(Abundance <span class="sc">~</span> acoa, plotting_ps <span class="sc">%&gt;%</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">grepl</span>(<span class="st">"Lachnospiraceae"</span>, Family)))</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-Call:
-lm(formula = Abundance ~ acoa, data = plotting_ps %&gt;% filter(grepl("Lachnospiraceae", 
-    Family)))
-
-Residuals:
-   Min     1Q Median     3Q    Max 
--9.982 -4.407 -1.105  2.090 37.986 
-
-Coefficients:
-            Estimate Std. Error t value Pr(&gt;|t|)    
-(Intercept) 8.418826   1.232703   6.830 2.17e-10 ***
-acoa        0.011170   0.001998   5.589 1.10e-07 ***
----
-Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-Residual standard error: 6.725 on 145 degrees of freedom
-Multiple R-squared:  0.1773,    Adjusted R-squared:  0.1716 
-F-statistic: 31.24 on 1 and 145 DF,  p-value: 1.096e-07</code></pre>
-</div>
-</div>
-<h2 class="executable anchored">
+<h2 class="nogo anchored">
 Panel B
 </h2>
-<p>Relationship between Rel Abundance of Ruminococcacae and Acetyle-CoA pathway abundance.</p>
+<p>Univariate model of OS as a function of total butyrate genes, and each major sub-pathway in the butyrate production gene pathways.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>plotting_ps <span class="sc">%&gt;%</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">grepl</span>(<span class="st">"Ruminococcaceae"</span>, Family)) <span class="sc">%&gt;%</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="fu">aes</span>(<span class="at">x=</span>acoa, <span class="at">y=</span>Abundance), <span class="at">method=</span>lm, <span class="at">color=</span><span class="st">"goldenrod"</span>) <span class="sc">+</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x=</span>acoa, <span class="at">y=</span>Abundance),</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>             <span class="at">shape=</span><span class="dv">21</span>, <span class="at">size=</span><span class="dv">3</span>, <span class="at">fill=</span><span class="st">"goldenrod"</span>, <span class="at">alpha=</span><span class="fl">0.8</span>) <span class="sc">+</span></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>() <span class="sc">+</span> </span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Acetyl-CoA pathway gene abundance (RPKM)"</span>,</span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Ruminococcaceae"</span></span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>univ2 <span class="ot">&lt;-</span> <span class="cf">function</span>(cox, <span class="at">k=</span><span class="dv">1</span>, <span class="at">l=</span><span class="dv">1</span>){</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  coef <span class="ot">&lt;-</span> <span class="fu">exp</span>(<span class="fu">coef</span>(cox))</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  confint <span class="ot">&lt;-</span> <span class="fu">exp</span>(<span class="fu">confint</span>(cox))</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  p <span class="ot">&lt;-</span> <span class="fu">summary</span>(cox)<span class="sc">$</span>coefficients[,<span class="dv">5</span>]</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  out <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="st">"HR"</span><span class="ot">=</span><span class="fu">round</span>(coef,<span class="dv">4</span>), <span class="fu">round</span>(confint,<span class="dv">4</span>), <span class="st">"p"</span><span class="ot">=</span><span class="fu">round</span>(p,<span class="dv">9</span>))</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  q <span class="ot">&lt;-</span> <span class="fu">nrow</span>(out)</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(l<span class="sc">==</span> <span class="sc">-</span><span class="dv">1</span>){out <span class="ot">&lt;-</span> out[q,]</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  }<span class="cf">else</span>{out <span class="ot">&lt;-</span> out[k<span class="sc">:</span>l,]}</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(out)</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>forest_os <span class="ot">&lt;-</span> <span class="fu">rbind</span>(</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="fu">univ2</span>(<span class="fu">coxph</span>(<span class="fu">Surv</span>(tt_os_d, event_os)<span class="sc">~</span><span class="fu">log</span>(total)<span class="sc">+</span>age10<span class="sc">+</span>cohort<span class="sc">+</span>ecog, acoa_df)),</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="fu">univ2</span>(<span class="fu">coxph</span>(<span class="fu">Surv</span>(tt_os_d, event_os)<span class="sc">~</span><span class="fu">log</span>(pyruvate)<span class="sc">+</span>age10<span class="sc">+</span>cohort<span class="sc">+</span>ecog, acoa_df)),</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a><span class="fu">univ2</span>(<span class="fu">coxph</span>(<span class="fu">Surv</span>(tt_os_d, event_os)<span class="sc">~</span><span class="fu">log</span>(lysine<span class="fl">+0.0000001</span>)<span class="sc">+</span>age10<span class="sc">+</span>cohort<span class="sc">+</span>ecog, acoa_df)),</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="fu">univ2</span>(<span class="fu">coxph</span>(<span class="fu">Surv</span>(tt_os_d, event_os)<span class="sc">~</span><span class="fu">log</span>(fouraminobutyrate<span class="fl">+0.000001</span>)<span class="sc">+</span>age10<span class="sc">+</span>cohort<span class="sc">+</span>ecog, acoa_df)),</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a><span class="fu">univ2</span>(<span class="fu">coxph</span>(<span class="fu">Surv</span>(tt_os_d, event_os)<span class="sc">~</span><span class="fu">log</span>(gluatarate<span class="fl">+0.000001</span>)<span class="sc">+</span>age10<span class="sc">+</span>cohort<span class="sc">+</span>ecog, acoa_df)))</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>forest_os <span class="sc">%&gt;%</span></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename_with</span>(<span class="sc">~</span> <span class="fu">c</span>(<span class="st">"HR"</span>, <span class="st">"CI_low"</span>, <span class="st">"CI_high"</span>, <span class="st">"p"</span>), <span class="at">.cols =</span> <span class="fu">everything</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rownames_to_column</span>(<span class="st">"scfa"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept=</span><span class="dv">1</span>, <span class="at">lty=</span><span class="dv">2</span>, <span class="at">size=</span><span class="fl">0.25</span>)<span class="sc">+</span></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x=</span>HR, <span class="at">y=</span><span class="fu">fct_reorder</span>(scfa, HR, <span class="at">.desc =</span> T)))<span class="sc">+</span></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_linerange</span>(<span class="fu">aes</span>(<span class="at">xmin=</span>CI_low, <span class="at">xmax=</span>CI_high, <span class="at">y=</span><span class="fu">fct_reorder</span>(scfa, HR)), <span class="at">size=</span><span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">transform =</span> <span class="st">"log"</span>, <span class="at">breaks=</span><span class="fu">round</span>(<span class="fu">exp</span>(<span class="fu">seq</span>(<span class="sc">-</span><span class="dv">2</span>,<span class="fl">1.5</span>,<span class="fl">0.5</span>)),<span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>() <span class="sc">+</span></span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_cartesian</span>(<span class="at">xlim=</span><span class="fu">exp</span>(<span class="fu">c</span>(<span class="sc">-</span><span class="dv">2</span>, <span class="fl">0.3</span>))) <span class="sc">+</span> </span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">""</span>) <span class="sc">+</span></span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a> <span class="fu">theme</span>(</span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>     <span class="at">axis.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">20</span>), <span class="co"># Adjust axis labels</span></span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>     <span class="at">axis.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">20</span>), <span class="co"># Adjust axis titles</span></span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>     <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">20</span>),  <span class="co"># Adjust plot title</span></span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>     <span class="at">legend.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">18</span>),  <span class="co"># Adjust legend text</span></span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>     <span class="at">legend.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">18</span>), <span class="co"># Adjust legend titleMetronidazole</span></span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>     <span class="at">strip.text.x =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">18</span>),</span>
+<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>     <span class="at">strip.text.y =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">18</span>)</span>
+<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a> ) <span class="sc">+</span> </span>
+<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a><span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">90</span>, <span class="at">vjust =</span> <span class="fl">0.5</span>, <span class="at">hjust=</span><span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="extended_data_figure_4_acoa_pathway_family_associations_continued_files/figure-html/panel_b_ruminococcaceae-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="extended_data_figure_2_butyrate_genes_overall_survival_files/figure-html/univariate_butyrate_pathway-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="st">"svg/extended_figure_4_part_b_Ruminococcaceae.svg"</span>, <span class="at">w=</span><span class="dv">5</span>, <span class="at">h =</span> <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">#|warning: false</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co">#|label: p_value_panel_b</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(Abundance <span class="sc">~</span> acoa, plotting_ps <span class="sc">%&gt;%</span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">grepl</span>(<span class="st">"Ruminococcaceae"</span>, Family)))</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-Call:
-lm(formula = Abundance ~ acoa, data = plotting_ps %&gt;% filter(grepl("Ruminococcaceae", 
-    Family)))
-
-Residuals:
-     Min       1Q   Median       3Q      Max 
--17.1756  -5.2271  -0.5834   4.2678  18.3653 
-
-Coefficients:
-            Estimate Std. Error t value Pr(&gt;|t|)    
-(Intercept) 6.310352   1.285751   4.908 2.45e-06 ***
-acoa        0.013612   0.002084   6.530 1.04e-09 ***
----
-Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-Residual standard error: 7.014 on 145 degrees of freedom
-Multiple R-squared:  0.2272,    Adjusted R-squared:  0.2219 
-F-statistic: 42.64 on 1 and 145 DF,  p-value: 1.037e-09</code></pre>
-</div>
-</div>
-<h2 class="executable anchored">
-Panel C
-</h2>
-<p>Relationship between Rel Abundance of Ruminococcacae and Acetyle-CoA pathway abundance.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>plotting_ps <span class="sc">%&gt;%</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">grepl</span>(<span class="st">"Bacteroidaceae"</span>, Family)) <span class="sc">%&gt;%</span></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="fu">aes</span>(<span class="at">x=</span>acoa, <span class="at">y=</span>Abundance), <span class="at">method=</span>lm, <span class="at">color=</span><span class="st">"firebrick2"</span>) <span class="sc">+</span></span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x=</span>acoa, <span class="at">y=</span>Abundance),</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>             <span class="at">shape=</span><span class="dv">21</span>, <span class="at">size=</span><span class="dv">3</span>, <span class="at">fill=</span><span class="st">"firebrick2"</span>, <span class="at">alpha=</span><span class="fl">0.8</span>) <span class="sc">+</span></span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>() <span class="sc">+</span> </span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Acetyl-CoA pathway gene abundance (RPKM)"</span>,</span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Bacteroidaceae"</span></span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="extended_data_figure_4_acoa_pathway_family_associations_continued_files/figure-html/panel_c_bacteroidacea-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="st">"svg/extended_figure_4_part_c_Bacteroidaceae.svg"</span>, <span class="at">w=</span><span class="dv">5</span>, <span class="at">h =</span> <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co">#|warning: false</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co">#|label: p_value_panel_c</span></span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(Abundance <span class="sc">~</span> acoa, plotting_ps <span class="sc">%&gt;%</span></span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">grepl</span>(<span class="st">"Bacteroidaceae"</span>, Family)))</span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-Call:
-lm(formula = Abundance ~ acoa, data = plotting_ps %&gt;% filter(grepl("Bacteroidaceae", 
-    Family)))
-
-Residuals:
-    Min      1Q  Median      3Q     Max 
--25.059  -7.357  -1.563   5.631  32.901 
-
-Coefficients:
-             Estimate Std. Error t value Pr(&gt;|t|)    
-(Intercept) 26.589662   1.891717   14.06  &lt; 2e-16 ***
-acoa        -0.020394   0.003067   -6.65 5.58e-10 ***
----
-Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-Residual standard error: 10.32 on 145 degrees of freedom
-Multiple R-squared:  0.2337,    Adjusted R-squared:  0.2284 
-F-statistic: 44.22 on 1 and 145 DF,  p-value: 5.577e-10</code></pre>
-</div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="st">"svg/extended_figure_2_part_b_forest_plt.svg"</span>, <span class="at">w =</span> <span class="fl">6.5</span>, <span class="at">h =</span> <span class="dv">4</span>)  </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 
 
