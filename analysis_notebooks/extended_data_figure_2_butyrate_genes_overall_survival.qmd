@@ -26,7 +26,6 @@ source("utility_funcs.R")
 
 ```
 
-Some of these cells will be executable using only the public data.  These section panels <span class="executable" > Look like this</span>.  Other sections rely on data we are not able to make public (for example patient-level survival data).  These section panels <span class="nogo" > Look like this</span>.
 
 
 ```{r}
@@ -38,9 +37,8 @@ acoa_df <- readRDS("../data/cleaned_data/acoa_data.rds")
 colnames(acoa_df)
 ```
 
-## Survival plots as a function of pyruvate gene abundance:
 
-<h2 class="nogo" >Panel A</h2>
+### Panel A
 
 Hazard Ratio of Overall Survival Evaluated with respect to Butyrate production gene RPKM. 
 
@@ -76,7 +74,7 @@ ggplot(spline_data, aes(x = buty)) +
  ) 
 ggsave("svg/extended_figure_2_part_a_HR_tot_butyrate.svg", w = 6.5, h = 4)  
 ```
-<h2 class="nogo" >Panel B</h2>
+### Panel B
 
 Univariate model of OS as a function of total butyrate genes, and each major sub-pathway in the butyrate production gene pathways. 
 

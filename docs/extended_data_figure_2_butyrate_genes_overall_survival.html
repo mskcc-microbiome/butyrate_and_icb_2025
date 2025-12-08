@@ -261,7 +261,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#survival-plots-as-a-function-of-pyruvate-gene-abundance" id="toc-survival-plots-as-a-function-of-pyruvate-gene-abundance" class="nav-link active" data-scroll-target="#survival-plots-as-a-function-of-pyruvate-gene-abundance">Survival plots as a function of pyruvate gene abundance:</a></li>
+  <li><a href="#panel-a" id="toc-panel-a" class="nav-link active" data-scroll-target="#panel-a">Panel A</a></li>
+  <li><a href="#panel-b" id="toc-panel-b" class="nav-link" data-scroll-target="#panel-b">Panel B</a></li>
   </ul>
 </nav>
     </div>
@@ -287,7 +288,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>Some of these cells will be executable using only the public data. These section panels <span class="executable"> Look like this</span>. Other sections rely on data we are not able to make public (for example patient-level survival data). These section panels <span class="nogo"> Look like this</span>.</p>
 <div class="cell">
 <div class="cell-output cell-output-stdout">
 <pre><code> [1] "blinded_subject_id"    "id_int"                "cohort"               
@@ -301,11 +301,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 [25] "lysine"                "pyruvate"             </code></pre>
 </div>
 </div>
-<section id="survival-plots-as-a-function-of-pyruvate-gene-abundance" class="level2">
-<h2 class="anchored" data-anchor-id="survival-plots-as-a-function-of-pyruvate-gene-abundance">Survival plots as a function of pyruvate gene abundance:</h2>
-<h2 class="nogo anchored">
-Panel A
-</h2>
+<section id="panel-a" class="level3">
+<h3 class="anchored" data-anchor-id="panel-a">Panel A</h3>
 <p>Hazard Ratio of Overall Survival Evaluated with respect to Butyrate production gene RPKM.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>os_butyrate <span class="ot">&lt;-</span>  <span class="fu">coxph</span>(<span class="fu">Surv</span>(tt_os_d, event_os)<span class="sc">~</span>rms<span class="sc">::</span><span class="fu">rcs</span>(total,<span class="dv">4</span>)<span class="sc">+</span>age10<span class="sc">+</span><span class="fu">factor</span>(cohort)<span class="sc">+</span>ecog,, <span class="at">data =</span> acoa_df)</span>
@@ -343,9 +340,9 @@ Panel A
 </div>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="st">"svg/extended_figure_2_part_a_HR_tot_butyrate.svg"</span>, <span class="at">w =</span> <span class="fl">6.5</span>, <span class="at">h =</span> <span class="dv">4</span>)  </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<h2 class="nogo anchored">
-Panel B
-</h2>
+</section>
+<section id="panel-b" class="level3">
+<h3 class="anchored" data-anchor-id="panel-b">Panel B</h3>
 <p>Univariate model of OS as a function of total butyrate genes, and each major sub-pathway in the butyrate production gene pathways.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>univ2 <span class="ot">&lt;-</span> <span class="cf">function</span>(cox, <span class="at">k=</span><span class="dv">1</span>, <span class="at">l=</span><span class="dv">1</span>){</span>

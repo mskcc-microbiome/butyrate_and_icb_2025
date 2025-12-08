@@ -29,7 +29,6 @@ source("utility_funcs.R")
 
 ```
 
-Some of these cells will be executable using only the public data.  These section panels <span class="executable" > Look like this</span>.  Other sections rely on data we are not able to make public (for example patient-level survival data).  These section panels <span class="nogo" > Look like this</span>.
 
 Here are the column names of the data we are plotting:
 
@@ -45,9 +44,7 @@ acoa_df <- readRDS("../data/cleaned_data/acoa_data.rds") %>%
 colnames(acoa_df)
 ```
 
-### Survival plots as a function of pyruvate gene abundance:
-
-<h2 class="nogo" >Panel A</h2>
+### Panel A
 
 Survival in Mixed Solid Tumor Cohort (n = 147) by ACoA pathway gene abundance in stool above/below the median.
 
@@ -81,6 +78,7 @@ p <- ggsurvplot(fit,  size = 1,  # change line size
 print(p)
 
 ```
+
 Then looking at Progression Free Survival (PFS) instead of OS:
 
 ```{r}
@@ -105,7 +103,7 @@ p <- ggsurvplot(fit,  size = 1,  # change line size
 print(p)
 ```
 
-<h2 class="nogo" >Panel B</h2>
+### Panel B
 
  Restricted cubic spline for Observational cohort adjusted for age, diagnosis, and performance status identifies increasing hazard of overall mortality associated with below-median (<504 RPKM) ACoA pathway gene abundance among ICB recipients. Ticks along the x-axis reflect individual samples. 
 
@@ -133,13 +131,12 @@ ggplot(spline_data, aes(x = buty)) +
 
 ```
 
-## Taxonomy breakdown plots:
 
 We will now plot some microbiome data, using a `phyloseq` object that contains our sequencing data.  This object contains a list of the taxonomy of organisms identified, the abundance in each sample, and any associated sample specific metadata in one object. 
 
 Principal components analysis (PCA) of Observational cohort sample (n = 147, 1 per patient) taxonomic abundance grouped at the family level shows increasing ACoA-pathway gene abundance from left to right along the first principal component (x-axis). Each point represents a single fecal sample. PCA loading vectors (arrows) identify increasing Ruminococcaceae and Lachnospiraceae abundance in the direction corresponding to increased ACoA-pathway gene abundance, versus greater Bacteroidales abundance (grouped at the order level) in the direction of decreased ACoA-pathway gene presence. 
 
-<h3 class="executable" >Panel C</h3>
+### Panel C
 
 
 
@@ -227,7 +224,7 @@ bac_ps %>%
   )
 ```
 
-<h3 class="nogo" >Panel D Verification on External Dataset</h3>
+### Panel D
 
 ACoA-pathway gene abundance was associated with response to ICB among patients with advanced renal cell cancer receiving ipilimumab plus nivolumab in the External Renal Cancer Cohort (n = 39). 
 
@@ -265,9 +262,8 @@ print(group_n)
 summary(glm(response01 ~ log1p(pyruvate) + cbm588, data = coh_base_ni , family = binomial(link = "logit")))
 ```
 
-## Univariate Cox Survival Analysis
+### Panel E
 
-<h3 class="nogo" >Panel E External Data</h3>
 Univariate Cox regression analyses PFS relationship to ACoA gene abundance in external cohort.
 
 ```{r}
