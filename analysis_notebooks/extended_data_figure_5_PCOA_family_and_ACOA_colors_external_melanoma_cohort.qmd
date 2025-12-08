@@ -1,7 +1,6 @@
 --- 
 title: |
-  <img src="./images/fiber_beaker_image_food.jpg" width="250px" style="margin-left:5%; margin-right:5%"/>
-  Extended Figure 4 \nA deeper dive into relationship between ACOA pathway abundance and microbiome taxonomy.
+  Extended Figure 5 \nA Beta Diversity Analysis and the External Melanoma Cohort.
 format:
   html:
     css: styles.css

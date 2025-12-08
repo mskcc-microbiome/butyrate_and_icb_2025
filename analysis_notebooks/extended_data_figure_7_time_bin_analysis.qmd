@@ -1,7 +1,6 @@
 --- 
 title: |
-  <img src="./images/liquid_scale.jpg" width="250px" style="margin-left:5%; margin-right:5%"/>
-  Figure 2 - Butyrate Production Capacity from ACoA Pathway and ICB outcome
+  Extended Figure 7 - Time Bin Sensitivity Analysis
 format:
   html:
     css: styles.css

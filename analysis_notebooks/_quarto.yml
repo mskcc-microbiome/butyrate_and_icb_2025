@@ -24,13 +24,21 @@ website:
           - text: "Figure 2: ACoA Pathway and ICB/Survival Outcomes"
             href: figure_2_acoa_pathway_icb_outcome.qmd
       - section: "Extended Figures"
-        contents: 
-          - text: "Extended Figure 2: PFS Fiber by Disease Type"
-            href: extended_data_figure_2_pfs_fiber_disease_type.qmd
-          - text: "Extended Figure 3: Butyrate Genes and OS"
-            href: extended_data_figure_3_butyrate_genes_overall_survival.qmd
+        contents:  
+          - text: "Extended Figure 1: PFS and OS by Disease Type"
+            href: extended_data_figure_1_pfs_fiber_disease_type.qmd
+          - text: "Extended Figure 2: Butyrate Genes and OS"
+            href: extended_data_figure_2_butyrate_genes_overall_survival.qmd
+          - text: "Extended Figure 3: Maaslin Analysis"
+            href: extended_data_figure_3_maasline_acoa_analysis.qmd
           - text: "Extended Figure 4: Deeper Look at ACOA genes and taxonomy"
             href: extended_data_figure_4_acoa_pathway_family_associations_continued.qmd
+          - text: "Extended Figure 5: External Melanoma Cohort Beta Diversity"
+            href: extended_data_figure_5_PCOA_family_and_ACOA_colors_external_melanoma_cohort.qmd
+          - text: "Extended Figure 6: ACOA Pathway Breakdown - Butyrate"
+            href: extended_data_figure_6_acoa_pathway_butyrate.qmd
+          - text: "Extended Figure 7: Time Bin Sensitivity Analysis"
+            href: extended_data_figure_7_time_bin_analysis.qmd
 
 format:
   html:

@@ -1,6 +1,5 @@
 --- 
 title: |
-  <img src="./images/fiber_beaker_image_food.jpg" width="250px" style="margin-left:5%; margin-right:5%"/>
   Extended Figure 1: PFS vs Fiber by Disease Type
 ---
 
@@ -124,8 +123,8 @@ pfs_rcc <- ggsurvplot(kmPFS,risk.table=TRUE,
            axes.offset=FALSE,
            #xlim=c(0,16),
            data = mRCdataFiber) 
-rcc_plt <- ggsave_workaround(pfs_rcc)
-ggsave("svg/extended_figure_1_part_a_RCC_PFS.svg", plot =rcc_plt, w=8, h = 5)
+#rcc_plt <- ggsave_workaround(pfs_rcc)
+#ggsave("svg/extended_figure_1_part_a_RCC_PFS.svg", plot =rcc_plt, w=8, h = 5)
 ```
 
 ## Panel B
@@ -157,8 +156,8 @@ pfs_uc <- ggsurvplot(kmPFS,risk.table=TRUE,
            xlim=c(0,16),
            data = mUCdataFiber)
 print(pfs_uc)
-uc_plt <- ggsave_workaround(pfs_uc)
-ggsave("svg/extended_figure_1_part_b_UC_PFS.svg", plot = uc_plt, w=8, h = 5)
+#uc_plt <- ggsave_workaround(pfs_uc)
+#ggsave("svg/extended_figure_1_part_b_UC_PFS.svg", plot = uc_plt, w=8, h = 5)
 ```
 
 ## Panel C

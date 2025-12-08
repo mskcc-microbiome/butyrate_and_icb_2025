@@ -1,7 +1,6 @@
 --- 
 title: |
-  <img src="./images/fiber_beaker_image_food.jpg" width="250px" style="margin-left:5%; margin-right:5%"/>
-  Extended Figure 3 \nButyrate Gene Abundance and Hazard Ration, and Univatiate Analysis of Butyrate Pathway.
+  Extended Figure 2 \nButyrate Gene Abundance and Hazard Ration, and Univatiate Analysis of Butyrate Pathway.
 format:
   html:
     css: styles.css
