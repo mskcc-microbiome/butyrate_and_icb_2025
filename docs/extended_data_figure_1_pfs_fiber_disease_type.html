@@ -1003,12 +1003,12 @@ Likelihood ratio test= 4.46  on 1 df,   p=0.03
 Wald test            = 4  on 1 df,   p=0.05
 Score (logrank) test = 4.04  on 1 df,   p=0.04</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a>p<span class="ot">&lt;-</span> <span class="fu">makeSpline</span>(AllMetdataFiber, AllMetdataFiber<span class="sc">$</span>pfs_mo, AllMetdataFiber<span class="sc">$</span>pod_status, </span>
+<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="fu">makeSpline</span>(AllMetdataFiber, AllMetdataFiber<span class="sc">$</span>pfs_mo, AllMetdataFiber<span class="sc">$</span>pod_status, </span>
 <span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a>           AllMetdataFiber<span class="sc">$</span>gram_fiber_per_Kcal,</span>
 <span id="cb59-3"><a href="#cb59-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">xlab =</span> <span class="st">"(Average daily grams of fiber)/(Average daily kilocalories)"</span>, <span class="at">ylab=</span><span class="st">"Hazard ratio (95% CI)"</span>,</span>
 <span id="cb59-4"><a href="#cb59-4" aria-hidden="true" tabindex="-1"></a>           <span class="at">title=</span><span class="st">"Smoothing spline for progression-free survival"</span>,</span>
-<span id="cb59-5"><a href="#cb59-5" aria-hidden="true" tabindex="-1"></a>           <span class="at">knots=</span><span class="dv">3</span>)</span>
-<span id="cb59-6"><a href="#cb59-6" aria-hidden="true" tabindex="-1"></a>p <span class="sc">+</span> </span>
+<span id="cb59-5"><a href="#cb59-5" aria-hidden="true" tabindex="-1"></a>           <span class="at">knots=</span><span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb59-6"><a href="#cb59-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">5</span>,<span class="dv">10</span>,<span class="dv">15</span>,<span class="dv">20</span>)) <span class="sc">+</span> </span>
 <span id="cb59-7"><a href="#cb59-7" aria-hidden="true" tabindex="-1"></a> <span class="fu">theme</span>(</span>
 <span id="cb59-8"><a href="#cb59-8" aria-hidden="true" tabindex="-1"></a>     <span class="at">axis.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">18</span>), <span class="co"># Adjust axis labels</span></span>
 <span id="cb59-9"><a href="#cb59-9" aria-hidden="true" tabindex="-1"></a>     <span class="at">axis.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">20</span>), <span class="co"># Adjust axis titles</span></span>

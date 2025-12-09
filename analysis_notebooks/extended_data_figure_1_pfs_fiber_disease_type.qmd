@@ -325,12 +325,12 @@ univariate_cox_fiber_per_kCal <-coxph(Surv(pfs_mo,pod_status)~ aofib,
 
 summary(univariate_cox_fiber_per_kCal)
 
-p<- makeSpline(AllMetdataFiber, AllMetdataFiber$pfs_mo, AllMetdataFiber$pod_status, 
+makeSpline(AllMetdataFiber, AllMetdataFiber$pfs_mo, AllMetdataFiber$pod_status, 
            AllMetdataFiber$gram_fiber_per_Kcal,
            xlab = "(Average daily grams of fiber)/(Average daily kilocalories)", ylab="Hazard ratio (95% CI)",
            title="Smoothing spline for progression-free survival",
-           knots=3)
-p + 
+           knots=3) +
+  scale_x_continuous(breaks = c(5,10,15,20)) + 
  theme(
      axis.text = element_text(size = 18), # Adjust axis labels
      axis.title = element_text(size = 20), # Adjust axis titles

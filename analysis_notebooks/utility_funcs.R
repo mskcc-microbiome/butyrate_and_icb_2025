@@ -15,16 +15,15 @@
 
 
 makeSpline <- function(df, survtime, survevent, var,
-                       knots=3, centerpoint = NULL,
+                       knots=knots, centerpoint = NULL,
                        title=paste("Spline with", knots, "knots"),
-                       xlab = "Covariate", ylab="Hazard ratio (95% CI)") {
+                       xlab = xlab, ylab=ylab,
+                       xticks = NULL) {
   
   require(survival)
   require(tidyverse)
-  require(rms)
-  require(splines)
   
-  model_spline <- coxph(Surv(survtime, survevent)~pspline(var,3), df) #
+  model_spline <- coxph(Surv(survtime, survevent)~pspline(var,knots), df) #
   ptemp <- termplot(model_spline, se=T, plot=F)
   
   splinem <- ptemp$var
@@ -53,8 +52,9 @@ makeSpline <- function(df, survtime, survevent, var,
     geom_line(aes(y = Estimate), color = "blue") +
     geom_rug(sides = "b") +  # Add rug plot at the bottom ('b') of the plot
     scale_y_log10() +  # Log scale for y-axis
+    scale_x_log10() +
     labs(x = xlab, y = ylab, title=title) +
-    theme_minimal(base_size = 12)
+    theme_classic()
 }
 
 

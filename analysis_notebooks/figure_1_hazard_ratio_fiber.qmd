@@ -91,7 +91,7 @@ makeSpline(all_metadata_fiber, all_metadata_fiber$pfs_mo, all_metadata_fiber$pod
            xlab = "Daily average fiber intake (g/day)", ylab="Hazard ratio (95% CI)",
            title="Smoothing spline for progression-free survival",
            knots=2,
-           centerpoint = 15)+
+           centerpoint = 15) +
   scale_x_log10()
 
 ```
