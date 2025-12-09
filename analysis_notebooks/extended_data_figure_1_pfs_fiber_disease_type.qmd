@@ -112,7 +112,7 @@ kmPFS<-survfit(Surv(pfs_mo, pod_status)~fiber_dichotomized,
 pfs_rcc <- ggsurvplot(kmPFS,risk.table=TRUE,
            xlab="Time (months)", 
            ylab="Progression-free survival",
-           #pval = TRUE,
+           pval = TRUE,
            legend="none",
            title="Patients with renal cell cancer on ICB",
            legend.title="Fiber intake",
@@ -123,6 +123,7 @@ pfs_rcc <- ggsurvplot(kmPFS,risk.table=TRUE,
            axes.offset=FALSE,
            #xlim=c(0,16),
            data = mRCdataFiber) 
+print(pfs_rcc)
 #rcc_plt <- ggsave_workaround(pfs_rcc)
 #ggsave("svg/extended_figure_1_part_a_RCC_PFS.svg", plot =rcc_plt, w=8, h = 5)
 ```
@@ -144,7 +145,7 @@ kmPFS<-survfit(Surv(pfs_mo, pod_status)~fiber_dichotomized,
 pfs_uc <- ggsurvplot(kmPFS,risk.table=TRUE,
            xlab="Time (months)", 
            ylab="Progression-free survival",
-           #pval = TRUE,
+           pval = TRUE,
            legend="none",
            title="Patients with urothelial cancer on ICB",
            legend.title="Fiber intake",
@@ -199,83 +200,88 @@ AllMetdataFiber <- mutate(AllMetdataFiber,  fiber_dichotomized_28 = case_when(ao
 ###multivariable PFS
 
 cox_pfs_12_uv <-coxph(Surv(pfs_mo,pod_status)~ fiber_dichotomized_12 +
-                        ageby10 + ecog_1to5_final + cancer_RCCvsUC,
+                        ageby10 + ecog_1to5_final + cancer_RCCvsUC + stage.simplified.factor,
                       AllMetdataFiber)
 summary(cox_pfs_12_uv)
 
 cox_pfs_14_uv <-coxph(Surv(pfs_mo,pod_status)~ fiber_dichotomized_14 +
-                        ageby10 + ecog_1to5_final + cancer_RCCvsUC,
+                        ageby10 + ecog_1to5_final + cancer_RCCvsUC + stage.simplified.factor,
                       AllMetdataFiber)
 summary(cox_pfs_14_uv)
 
 cox_pfs_15_uv <-coxph(Surv(pfs_mo,pod_status)~ fiber_dichotomized +
-                        ageby10 + ecog_1to5_final + cancer_RCCvsUC,
+                        ageby10 + ecog_1to5_final + cancer_RCCvsUC + stage.simplified.factor,
                       AllMetdataFiber)
 summary(cox_pfs_15_uv)
 
 cox_pfs_16_uv <-coxph(Surv(pfs_mo,pod_status)~ fiber_dichotomized_16 +
-                        ageby10 + ecog_1to5_final + cancer_RCCvsUC,
+                        ageby10 + ecog_1to5_final + cancer_RCCvsUC + stage.simplified.factor,
                       AllMetdataFiber)
 summary(cox_pfs_16_uv)
 
 cox_pfs_18_uv <-coxph(Surv(pfs_mo,pod_status)~ fiber_dichotomized_18 +
-                        ageby10 + ecog_1to5_final + cancer_RCCvsUC,
+                        ageby10 + ecog_1to5_final + cancer_RCCvsUC + stage.simplified.factor,
                       AllMetdataFiber)
 summary(cox_pfs_18_uv)
 
 cox_pfs_20_uv <-coxph(Surv(pfs_mo,pod_status)~ fiber_dichotomized_20 + 
-                        ageby10 + ecog_1to5_final + cancer_RCCvsUC,
+                        ageby10 + ecog_1to5_final + cancer_RCCvsUC + stage.simplified.factor,
                       AllMetdataFiber)
 summary(cox_pfs_20_uv)
 
 cox_pfs_22_uv <-coxph(Surv(pfs_mo,pod_status)~ fiber_dichotomized_22 +
-                        ageby10 + ecog_1to5_final + cancer_RCCvsUC,
+                        ageby10 + ecog_1to5_final + cancer_RCCvsUC + stage.simplified.factor,
                       AllMetdataFiber)
 summary(cox_pfs_22_uv)
 
 cox_pfs_24_uv <-coxph(Surv(pfs_mo,pod_status)~ fiber_dichotomized_24 +
-                        ageby10 + ecog_1to5_final + cancer_RCCvsUC,
+                        ageby10 + ecog_1to5_final + cancer_RCCvsUC + stage.simplified.factor,
                       AllMetdataFiber)
 summary(cox_pfs_24_uv)
 
 cox_pfs_26_uv <-coxph(Surv(pfs_mo,pod_status)~ fiber_dichotomized_26+
-                        ageby10 + ecog_1to5_final + cancer_RCCvsUC,
+                        ageby10 + ecog_1to5_final + cancer_RCCvsUC  + stage.simplified.factor,
                       AllMetdataFiber)
 summary(cox_pfs_26_uv)
 
 cox_pfs_28_uv <-coxph(Surv(pfs_mo,pod_status)~ fiber_dichotomized_28+
-                        ageby10 + ecog_1to5_final + cancer_RCCvsUC,
+                        ageby10 + ecog_1to5_final + cancer_RCCvsUC + stage.simplified.factor,
                       AllMetdataFiber)
 summary(cox_pfs_28_uv)
 
 
 #Calculating number of patients categorized as "high fiber" as a function of each dichotomization threshold
-sum(AllMetdataFiber$fiber_dichotomized_12) #70
-sum(AllMetdataFiber$fiber_dichotomized_14) #62
-sum(AllMetdataFiber$fiber_dichotomized) #57
-sum(AllMetdataFiber$fiber_dichotomized_16) #52
-sum(AllMetdataFiber$fiber_dichotomized_18) #41
-sum(AllMetdataFiber$fiber_dichotomized_20) #31
-sum(AllMetdataFiber$fiber_dichotomized_22) #27
-sum(AllMetdataFiber$fiber_dichotomized_24) #22
-sum(AllMetdataFiber$fiber_dichotomized_26) #17
-sum(AllMetdataFiber$fiber_dichotomized_28) #14
+sum(AllMetdataFiber$fiber_dichotomized_12) #69
+sum(AllMetdataFiber$fiber_dichotomized_14) #61
+sum(AllMetdataFiber$fiber_dichotomized) #56
+sum(AllMetdataFiber$fiber_dichotomized_16) #51
+sum(AllMetdataFiber$fiber_dichotomized_18) #40
+sum(AllMetdataFiber$fiber_dichotomized_20) #30
+sum(AllMetdataFiber$fiber_dichotomized_22) #26
+sum(AllMetdataFiber$fiber_dichotomized_24) #21
+sum(AllMetdataFiber$fiber_dichotomized_26) #16
+sum(AllMetdataFiber$fiber_dichotomized_28) #13
 
-forestplot_data <- tibble::tibble(mean  = c(0.5195, 0.4423, 0.4388, 0.5683, 0.6072, 0.7322, 0.6315, 0.7231, 0.7613, 0.7424),
-                                  lower = c(0.2732, 0.2466, 0.2477, 0.3303, 0.3518, 0.4150, 0.3463, 0.3867, 0.3814, 0.3485),
-                                  upper = c(0.9879, 0.7935, 0.7772, 0.9779, 1.048, 1.292, 1.152, 1.352, 1.520, 1.582),
-                                  study = c("12", "14", "15", "16", "18", "20", "22", "24", "26", "28"),
-                                  HighFiber  = c("70","62","57","52","41","31","27","22","17","14"),
-                                  #events = c("57","57","57","57"),
-                                  HR = c("0.52", "0.44", "0.44", "0.57", "0.61", "0.73","0.63","0.72", "0.76", "0.74"))
-svg("svg/extended_figure_1_part_c_forest_plt.svg", w = 8, h = 4)
+forestplot_data <- tibble::tibble(mean  = c(0.5372, 0.4573, 0.4561, 0.5931, 0.6348, 0.7771, 0.6661, 0.7746, 0.8386, 0.8371),
+                                  lower = c(0.2786, 0.2534, 0.2560, 0.3422, 0.3649, 0.4328, 0.3583, 0.4031, 0.4010, 0.3637),
+                                  upper = c(1.036, 0.8254, 0.8125,  1.028, 1.105, 1.395, 1.239, 1.489, 1.753, 1.927),
+                                  study = c("12", "14", "15", "16", "18", "20", "21", "24", "26", "28"),
+                                  HighFiber  = c("69","61","56","51","40","30","26","21","16","13"),
+                                  HR = c("0.54", "0.46", "0.46", "0.59", "0.63", "0.78","0.67","0.77", "0.84", "0.84"))
+
 forestplot_data |>
   forestplot(labeltext = c(study, HighFiber,HR),
              clip = c(0.09, 2.5),
              xlog = TRUE,
              xlab = "Hazard ratio for PFS (95% CI)",
-             #xticks = c(log(0.25),log(0.5),log(1.0),log(2.5)),
-             title = "Multivariable progression-free survival sensitivity analyis") |>
+             xticks = c(0.25,0.5,1.0,2.5),
+             title = "Multivariable progression-free survival sensitivity analysis",
+             boxsize = 0.5,
+             align = c("c", "c", "r"),
+             txt_gp = fpTxtGp(
+               xlab = gpar(cex = 1.2),  # Increase size of the x-axis title (e.g., to 120%)
+               ticks = gpar(cex = 1.1)  # Increase size of the x-axis tick labels (e.g., to 110%)
+             )) |>
   fp_set_style(box = "royalblue",
                line = "darkblue",
                summary = "royalblue") |> 
@@ -285,8 +291,9 @@ forestplot_data |>
                 #events = c("Events"),
                 HR = c("HR"))
 
-dev.copy(svg, "svg/extended_figure_1_part_c_forest_plt.svg")
-dev.off()
+
+#dev.copy(svg, "svg/extended_figure_1_part_c_forest_plt.svg")
+#dev.off()
 ```
 
 

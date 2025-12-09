@@ -84,7 +84,7 @@ Mortality Hazard for PFS by daily average fiber intake, visualized via partial s
 ```{r}
 #| warning: false
 #| include: true
-#| label: panel_a
+#| label: panel_b
 
 makeSpline(all_metadata_fiber, all_metadata_fiber$pfs_mo, all_metadata_fiber$pod_status, 
            all_metadata_fiber$aofib,
@@ -103,7 +103,7 @@ Mortality Hazard for OS by daily average fiber intake, visualized via partial sm
 ```{r}
 #| warning: false
 #| include: true
-#| label: panel_b
+#| label: panel_c
 
 makeSpline(all_metadata_fiber, all_metadata_fiber$os_mo, all_metadata_fiber$os_status, 
            all_metadata_fiber$aofib,
@@ -121,7 +121,7 @@ Kaplan-Meier PFS by daily average fiber intake, two groups >= 15 grams/day.
 ```{r}
 #| warning: false
 #| include: true
-#| label: panel_c
+#| label: panel_d
 
 kmPFS<-survfit(Surv(pfs_mo, pod_status)~fiber_dichotomized,
                type="kaplan-meier", data=all_metadata_fiber)
@@ -149,7 +149,7 @@ Kaplan-Meier OS by daily average fiber intake, two groups >= 15 grams/day.
 ```{r}
 #| warning: false
 #| include: true
-#| label: panel_d
+#| label: panel_e
 
 kmOS<-survfit(Surv(os_mo, os_status)~fiber_dichotomized,
               type="kaplan-meier", data=all_metadata_fiber)
@@ -176,10 +176,10 @@ Univariate HRs for PFS among clinically relavant subgroups.
 ```{r}
 #| warning: false
 #| include: true
-#| label: panel_e
+#| label: panel_f
 
 cox_pfs_all_uv <-coxph(Surv(pfs_mo,pod_status)~ fiber_dichotomized,
-                       all_metadata_fiber)
+                    all_metadata_fiber)
 summary(cox_pfs_all_uv)
 
 cox_pfs_RC <-coxph(Surv(pfs_mo,pod_status)~ fiber_dichotomized,
@@ -195,27 +195,27 @@ cox_pfs_RC_TKI_IO <-coxph(Surv(pfs_mo,pod_status)~ fiber_dichotomized,
 summary(cox_pfs_RC_TKI_IO)
 
 cox_pfs_UC <-coxph(Surv(pfs_mo,pod_status)~ fiber_dichotomized,
-                   mUCdataFiber)
+                           mUCdataFiber)
 summary(cox_pfs_UC)
 
 cox_pfs_UC_NOTavelumab <-coxph(Surv(pfs_mo,pod_status)~ fiber_dichotomized,
-                               dataUC_NOTavelumab)
+                   dataUC_NOTavelumabFiber)
 summary(cox_pfs_UC_NOTavelumab)
 
 cox_pfs_UC_avelumab <-coxph(Surv(pfs_mo,pod_status)~ fiber_dichotomized,
-                            dataUCavelumab)
+                            dataUCavelumabFiber)
 summary(cox_pfs_UC_avelumab)
 
 
-
-forestplot_data <- tibble::tibble(mean  = c(0.4409,0.3485, 0.4555, 0.3034, 0.6998, 0.8952, 0.8994),
-                                  lower = c(0.2582,0.1608, 0.1071, 0.09031, 0.3332, 0.3767, 0.1789),
-                                  upper = c(0.7528,0.7551, 1.937, 1.02, 1.47, 2.128, 4.521),
-                                  study = c("All","RCC", "RCC ipi-nivo", "RCC TKI-ICB",
-                                            "UC", "UC non-maintenance ICB", "UC maintenance ICB"),
-                                  n = c("88","48","15","24","40","26","14"),
-                                  events = c("57","28","8","12","29","21","8"),
-                                  HR = c("0.44","0.35", "0.46", "0.30", "0.70", "0.90", "0.90"))
+            
+forestplot_data <- tibble::tibble(mean  = c(0.4488,0.3485, 0.4555, 0.3034, 0.7346, 0.97029, 0.8994),
+                            lower = c(0.26032,0.1608, 0.1071, 0.09031, 0.3408, 0.3918, 0.1789),
+                            upper = c( 0.7739,0.7551, 1.937, 1.02, 1.584, 2.403, 4.521),
+                            study = c("All","RCC", "RCC ipi-nivo", "RCC TKI-ICB",
+                                      "UC", "UC non-maintenance ICB", "UC maintenance ICB"),
+                            n = c("86","48","15","24","38","24","14"),
+                            events = c("55","28","8","12","27","19","8"),
+                            HR = c("0.45","0.35", "0.46", "0.30", "0.73", "0.97", "0.90"))
 
 forestplot_data |>
   forestplot(labeltext = c(study, n, events, HR),
@@ -231,6 +231,7 @@ forestplot_data |>
                 n = c("n"),
                 events = c("Events"),
                 HR = c("HR")) 
+
 ```
 
 ## Panel G
@@ -240,43 +241,29 @@ Multivariate HR for PFS adjusted for age, diagnosis, and performance status.
 ```{r}
 #| warning: false
 #| include: true
-#| label: panel_f
+#| label: panel_g
 
-cox_pfs_all <-coxph(Surv(pfs_mo,pod_status)~ fiber_dichotomized + ageby10 + ecog_1to5_final,
-                    all_metadata_fiber)
+cox_pfs_all <-coxph(Surv(pfs_mo,pod_status)~ fiber_dichotomized + ageby10 + 
+                      ecog_1to5_final + cancer_RCCvsUC_NAME + stage.simplified.factor,
+                   all_metadata_fiber)
 summary(cox_pfs_all)
 
 cox_pfs_RC <-coxph(Surv(pfs_mo,pod_status)~ fiber_dichotomized + ageby10 + ecog_1to5_final,
-                   mRCdataFiber)
+                   mRCdataFiber) #could not adjust for stage because all patients with RCC were stage IV
 summary(cox_pfs_RC)
 
-cox_pfs_RC_IpiNivo <-coxph(Surv(pfs_mo,pod_status)~ fiber_dichotomized+ ageby10 + ecog_1to5_final,
-                           dataRCIpiNivoFiber)
-summary(cox_pfs_RC_IpiNivo)
-
-cox_pfs_RC_TKI_IO <-coxph(Surv(pfs_mo,pod_status)~ fiber_dichotomized+ ageby10 + ecog_1to5_final,
-                          dataRCioTKIFiber)
-summary(cox_pfs_RC_TKI_IO)
-
-cox_pfs_UC <-coxph(Surv(pfs_mo,pod_status)~ fiber_dichotomized+ ageby10 + ecog_1to5_final,
+cox_pfs_UC <-coxph(Surv(pfs_mo,pod_status)~ fiber_dichotomized+ ageby10 + ecog_1to5_final + stage.simplified.factor,
                    mUCdataFiber)
 summary(cox_pfs_UC)
 
-cox_pfs_UC_NOTavelumab <-coxph(Surv(pfs_mo,pod_status)~ fiber_dichotomized+ ageby10 + ecog_1to5_final,
-                               dataUC_NOTavelumabFiber)
-summary(cox_pfs_UC_NOTavelumab)
 
-cox_pfs_UC_avelumab <-coxph(Surv(pfs_mo,pod_status)~ fiber_dichotomized+ ageby10 + ecog_1to5_final,
-                            dataUCavelumabFiber)
-summary(cox_pfs_UC_avelumab)
-
-forestplot_data <- tibble::tibble(mean  = c(0.405, 0.3185, 0.6549),
-                                  lower = c(0.2298, 0.1322, 0.3038),
-                                  upper = c(0.7138, 0.7676, 1.412),
+forestplot_data <- tibble::tibble(mean  = c(0.4561, 0.3185, 0.7397),
+                                  lower = c(0.2560, 0.1322, 0.3284),
+                                  upper = c(0.8125, 0.7676, 1.666),
                                   study = c("All", "RCC", "UC"),
-                                  n = c("88","48","40"),
-                                  events = c("57","28","29"),
-                                  HR = c("0.41","0.32","0.65"))
+                                  n = c("86","48","38"),
+                                  events = c("55","28","27"),
+                                  HR = c("0.46","0.32","0.74"))
 
 forestplot_data |>
   forestplot(labeltext = c(study, n, events, HR),
@@ -292,4 +279,6 @@ forestplot_data |>
                 n = c("n"),
                 events = c("Events"),
                 HR = c("HR"))
+
+
 ```

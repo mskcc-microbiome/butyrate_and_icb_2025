@@ -307,7 +307,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="figure_1_hazard_ratio_fiber_files/figure-html/panel_a-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="figure_1_hazard_ratio_fiber_files/figure-html/panel_b-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -327,7 +327,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="figure_1_hazard_ratio_fiber_files/figure-html/panel_b-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="figure_1_hazard_ratio_fiber_files/figure-html/panel_c-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -357,7 +357,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="figure_1_hazard_ratio_fiber_files/figure-html/panel_c-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="figure_1_hazard_ratio_fiber_files/figure-html/panel_d-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -387,7 +387,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="figure_1_hazard_ratio_fiber_files/figure-html/panel_d-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="figure_1_hazard_ratio_fiber_files/figure-html/panel_e-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -398,27 +398,27 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Univariate HRs for PFS among clinically relavant subgroups.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>cox_pfs_all_uv <span class="ot">&lt;-</span><span class="fu">coxph</span>(<span class="fu">Surv</span>(pfs_mo,pod_status)<span class="sc">~</span> fiber_dichotomized,</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>                       all_metadata_fiber)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>                    all_metadata_fiber)</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(cox_pfs_all_uv)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Call:
 coxph(formula = Surv(pfs_mo, pod_status) ~ fiber_dichotomized, 
     data = all_metadata_fiber)
 
-  n= 88, number of events= 57 
+  n= 86, number of events= 55 
 
-                      coef exp(coef) se(coef)  z Pr(&gt;|z|)   
-fiber_dichotomized -0.8190    0.4409   0.2730 -3   0.0027 **
+                      coef exp(coef) se(coef)      z Pr(&gt;|z|)   
+fiber_dichotomized -0.8011    0.4488   0.2780 -2.882  0.00395 **
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
                    exp(coef) exp(-coef) lower .95 upper .95
-fiber_dichotomized    0.4409      2.268    0.2582    0.7528
+fiber_dichotomized    0.4488      2.228    0.2603    0.7739
 
-Concordance= 0.609  (se = 0.032 )
-Likelihood ratio test= 8.47  on 1 df,   p=0.004
-Wald test            = 9  on 1 df,   p=0.003
-Score (logrank) test = 9.49  on 1 df,   p=0.002</code></pre>
+Concordance= 0.606  (se = 0.033 )
+Likelihood ratio test= 7.82  on 1 df,   p=0.005
+Wald test            = 8.31  on 1 df,   p=0.004
+Score (logrank) test = 8.74  on 1 df,   p=0.003</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>cox_pfs_RC <span class="ot">&lt;-</span><span class="fu">coxph</span>(<span class="fu">Surv</span>(pfs_mo,pod_status)<span class="sc">~</span> fiber_dichotomized,</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>                   mRCdataFiber)</span>
@@ -488,54 +488,54 @@ Wald test            = 3.72  on 1 df,   p=0.05
 Score (logrank) test = 4.17  on 1 df,   p=0.04</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>cox_pfs_UC <span class="ot">&lt;-</span><span class="fu">coxph</span>(<span class="fu">Surv</span>(pfs_mo,pod_status)<span class="sc">~</span> fiber_dichotomized,</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>                   mUCdataFiber)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>                           mUCdataFiber)</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(cox_pfs_UC)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Call:
 coxph(formula = Surv(pfs_mo, pod_status) ~ fiber_dichotomized, 
     data = mUCdataFiber)
 
-  n= 40, number of events= 29 
+  n= 38, number of events= 27 
 
                       coef exp(coef) se(coef)      z Pr(&gt;|z|)
-fiber_dichotomized -0.3570    0.6998   0.3787 -0.943    0.346
+fiber_dichotomized -0.3084    0.7346   0.3919 -0.787    0.431
 
                    exp(coef) exp(-coef) lower .95 upper .95
-fiber_dichotomized    0.6998      1.429    0.3332      1.47
+fiber_dichotomized    0.7346      1.361    0.3408     1.584
 
-Concordance= 0.539  (se = 0.05 )
-Likelihood ratio test= 0.87  on 1 df,   p=0.3
-Wald test            = 0.89  on 1 df,   p=0.3
-Score (logrank) test = 0.9  on 1 df,   p=0.3</code></pre>
+Concordance= 0.53  (se = 0.052 )
+Likelihood ratio test= 0.61  on 1 df,   p=0.4
+Wald test            = 0.62  on 1 df,   p=0.4
+Score (logrank) test = 0.62  on 1 df,   p=0.4</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>cox_pfs_UC_NOTavelumab <span class="ot">&lt;-</span><span class="fu">coxph</span>(<span class="fu">Surv</span>(pfs_mo,pod_status)<span class="sc">~</span> fiber_dichotomized,</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>                               dataUC_NOTavelumab)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>                   dataUC_NOTavelumabFiber)</span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(cox_pfs_UC_NOTavelumab)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Call:
 coxph(formula = Surv(pfs_mo, pod_status) ~ fiber_dichotomized, 
-    data = dataUC_NOTavelumab)
+    data = dataUC_NOTavelumabFiber)
 
-  n= 26, number of events= 21 
+  n= 24, number of events= 19 
 
-                      coef exp(coef) se(coef)      z Pr(&gt;|z|)
-fiber_dichotomized -0.1107    0.8952   0.4417 -0.251    0.802
+                       coef exp(coef) se(coef)      z Pr(&gt;|z|)
+fiber_dichotomized -0.03016   0.97029  0.46269 -0.065    0.948
 
                    exp(coef) exp(-coef) lower .95 upper .95
-fiber_dichotomized    0.8952      1.117    0.3767     2.128
+fiber_dichotomized    0.9703      1.031    0.3918     2.403
 
-Concordance= 0.491  (se = 0.067 )
-Likelihood ratio test= 0.06  on 1 df,   p=0.8
-Wald test            = 0.06  on 1 df,   p=0.8
-Score (logrank) test = 0.06  on 1 df,   p=0.8</code></pre>
+Concordance= 0.473  (se = 0.07 )
+Likelihood ratio test= 0  on 1 df,   p=0.9
+Wald test            = 0  on 1 df,   p=0.9
+Score (logrank) test = 0  on 1 df,   p=0.9</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>cox_pfs_UC_avelumab <span class="ot">&lt;-</span><span class="fu">coxph</span>(<span class="fu">Surv</span>(pfs_mo,pod_status)<span class="sc">~</span> fiber_dichotomized,</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>                            dataUCavelumab)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>                            dataUCavelumabFiber)</span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(cox_pfs_UC_avelumab)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Call:
 coxph(formula = Surv(pfs_mo, pod_status) ~ fiber_dichotomized, 
-    data = dataUCavelumab)
+    data = dataUCavelumabFiber)
 
   n= 14, number of events= 8 
 
@@ -550,14 +550,14 @@ Likelihood ratio test= 0.02  on 1 df,   p=0.9
 Wald test            = 0.02  on 1 df,   p=0.9
 Score (logrank) test = 0.02  on 1 df,   p=0.9</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>forestplot_data <span class="ot">&lt;-</span> tibble<span class="sc">::</span><span class="fu">tibble</span>(<span class="at">mean  =</span> <span class="fu">c</span>(<span class="fl">0.4409</span>,<span class="fl">0.3485</span>, <span class="fl">0.4555</span>, <span class="fl">0.3034</span>, <span class="fl">0.6998</span>, <span class="fl">0.8952</span>, <span class="fl">0.8994</span>),</span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">lower =</span> <span class="fu">c</span>(<span class="fl">0.2582</span>,<span class="fl">0.1608</span>, <span class="fl">0.1071</span>, <span class="fl">0.09031</span>, <span class="fl">0.3332</span>, <span class="fl">0.3767</span>, <span class="fl">0.1789</span>),</span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">upper =</span> <span class="fu">c</span>(<span class="fl">0.7528</span>,<span class="fl">0.7551</span>, <span class="fl">1.937</span>, <span class="fl">1.02</span>, <span class="fl">1.47</span>, <span class="fl">2.128</span>, <span class="fl">4.521</span>),</span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">study =</span> <span class="fu">c</span>(<span class="st">"All"</span>,<span class="st">"RCC"</span>, <span class="st">"RCC ipi-nivo"</span>, <span class="st">"RCC TKI-ICB"</span>,</span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>                                            <span class="st">"UC"</span>, <span class="st">"UC non-maintenance ICB"</span>, <span class="st">"UC maintenance ICB"</span>),</span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">n =</span> <span class="fu">c</span>(<span class="st">"88"</span>,<span class="st">"48"</span>,<span class="st">"15"</span>,<span class="st">"24"</span>,<span class="st">"40"</span>,<span class="st">"26"</span>,<span class="st">"14"</span>),</span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">events =</span> <span class="fu">c</span>(<span class="st">"57"</span>,<span class="st">"28"</span>,<span class="st">"8"</span>,<span class="st">"12"</span>,<span class="st">"29"</span>,<span class="st">"21"</span>,<span class="st">"8"</span>),</span>
-<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">HR =</span> <span class="fu">c</span>(<span class="st">"0.44"</span>,<span class="st">"0.35"</span>, <span class="st">"0.46"</span>, <span class="st">"0.30"</span>, <span class="st">"0.70"</span>, <span class="st">"0.90"</span>, <span class="st">"0.90"</span>))</span>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>forestplot_data <span class="ot">&lt;-</span> tibble<span class="sc">::</span><span class="fu">tibble</span>(<span class="at">mean  =</span> <span class="fu">c</span>(<span class="fl">0.4488</span>,<span class="fl">0.3485</span>, <span class="fl">0.4555</span>, <span class="fl">0.3034</span>, <span class="fl">0.7346</span>, <span class="fl">0.97029</span>, <span class="fl">0.8994</span>),</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>                            <span class="at">lower =</span> <span class="fu">c</span>(<span class="fl">0.26032</span>,<span class="fl">0.1608</span>, <span class="fl">0.1071</span>, <span class="fl">0.09031</span>, <span class="fl">0.3408</span>, <span class="fl">0.3918</span>, <span class="fl">0.1789</span>),</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>                            <span class="at">upper =</span> <span class="fu">c</span>( <span class="fl">0.7739</span>,<span class="fl">0.7551</span>, <span class="fl">1.937</span>, <span class="fl">1.02</span>, <span class="fl">1.584</span>, <span class="fl">2.403</span>, <span class="fl">4.521</span>),</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>                            <span class="at">study =</span> <span class="fu">c</span>(<span class="st">"All"</span>,<span class="st">"RCC"</span>, <span class="st">"RCC ipi-nivo"</span>, <span class="st">"RCC TKI-ICB"</span>,</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>                                      <span class="st">"UC"</span>, <span class="st">"UC non-maintenance ICB"</span>, <span class="st">"UC maintenance ICB"</span>),</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>                            <span class="at">n =</span> <span class="fu">c</span>(<span class="st">"86"</span>,<span class="st">"48"</span>,<span class="st">"15"</span>,<span class="st">"24"</span>,<span class="st">"38"</span>,<span class="st">"24"</span>,<span class="st">"14"</span>),</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>                            <span class="at">events =</span> <span class="fu">c</span>(<span class="st">"55"</span>,<span class="st">"28"</span>,<span class="st">"8"</span>,<span class="st">"12"</span>,<span class="st">"27"</span>,<span class="st">"19"</span>,<span class="st">"8"</span>),</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>                            <span class="at">HR =</span> <span class="fu">c</span>(<span class="st">"0.45"</span>,<span class="st">"0.35"</span>, <span class="st">"0.46"</span>, <span class="st">"0.30"</span>, <span class="st">"0.73"</span>, <span class="st">"0.97"</span>, <span class="st">"0.90"</span>))</span>
 <span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>forestplot_data <span class="sc">|&gt;</span></span>
 <span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">forestplot</span>(<span class="at">labeltext =</span> <span class="fu">c</span>(study, n, events, HR),</span>
@@ -576,7 +576,7 @@ Score (logrank) test = 0.02  on 1 df,   p=0.9</code></pre>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="figure_1_hazard_ratio_fiber_files/figure-html/panel_e-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="figure_1_hazard_ratio_fiber_files/figure-html/panel_f-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -586,35 +586,41 @@ Score (logrank) test = 0.02  on 1 df,   p=0.9</code></pre>
 <h2 class="anchored" data-anchor-id="panel-g">Panel G</h2>
 <p>Multivariate HR for PFS adjusted for age, diagnosis, and performance status.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>cox_pfs_all <span class="ot">&lt;-</span><span class="fu">coxph</span>(<span class="fu">Surv</span>(pfs_mo,pod_status)<span class="sc">~</span> fiber_dichotomized <span class="sc">+</span> ageby10 <span class="sc">+</span> ecog_1to5_final,</span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>                    all_metadata_fiber)</span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(cox_pfs_all)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>cox_pfs_all <span class="ot">&lt;-</span><span class="fu">coxph</span>(<span class="fu">Surv</span>(pfs_mo,pod_status)<span class="sc">~</span> fiber_dichotomized <span class="sc">+</span> ageby10 <span class="sc">+</span> </span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>                      ecog_1to5_final <span class="sc">+</span> cancer_RCCvsUC_NAME <span class="sc">+</span> stage.simplified.factor,</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>                   all_metadata_fiber)</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(cox_pfs_all)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Call:
 coxph(formula = Surv(pfs_mo, pod_status) ~ fiber_dichotomized + 
-    ageby10 + ecog_1to5_final, data = all_metadata_fiber)
+    ageby10 + ecog_1to5_final + cancer_RCCvsUC_NAME + stage.simplified.factor, 
+    data = all_metadata_fiber)
 
-  n= 88, number of events= 57 
+  n= 86, number of events= 55 
 
-                      coef exp(coef) se(coef)      z Pr(&gt;|z|)   
-fiber_dichotomized -0.9038    0.4050   0.2891 -3.126  0.00177 **
-ageby10             0.3582    1.4308   0.1376  2.604  0.00922 **
-ecog_1to5_final     0.3765    1.4571   0.3301  1.140  0.25417   
+                                   coef exp(coef) se(coef)      z Pr(&gt;|z|)   
+fiber_dichotomized              -0.7851    0.4561   0.2946 -2.665   0.0077 **
+ageby10                          0.3098    1.3631   0.1463  2.118   0.0342 * 
+ecog_1to5_final                  0.3067    1.3589   0.3375  0.909   0.3635   
+cancer_RCCvsUC_NAMEUC            0.4615    1.5864   0.2986  1.546   0.1222   
+stage.simplified.factorStage IV  0.3596    1.4327   1.0407  0.346   0.7297   
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-                   exp(coef) exp(-coef) lower .95 upper .95
-fiber_dichotomized     0.405     2.4690    0.2298    0.7138
-ageby10                1.431     0.6989    1.0926    1.8737
-ecog_1to5_final        1.457     0.6863    0.7629    2.7830
+                                exp(coef) exp(-coef) lower .95 upper .95
+fiber_dichotomized                 0.4561     2.1925    0.2560    0.8125
+ageby10                            1.3631     0.7336    1.0233    1.8157
+ecog_1to5_final                    1.3589     0.7359    0.7013    2.6332
+cancer_RCCvsUC_NAMEUC              1.5864     0.6303    0.8836    2.8482
+stage.simplified.factorStage IV    1.4327     0.6980    0.1864   11.0150
 
-Concordance= 0.659  (se = 0.041 )
-Likelihood ratio test= 18.25  on 3 df,   p=4e-04
-Wald test            = 17.7  on 3 df,   p=5e-04
-Score (logrank) test = 18.41  on 3 df,   p=4e-04</code></pre>
+Concordance= 0.675  (se = 0.036 )
+Likelihood ratio test= 19.37  on 5 df,   p=0.002
+Wald test            = 19.17  on 5 df,   p=0.002
+Score (logrank) test = 20.29  on 5 df,   p=0.001</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>cox_pfs_RC <span class="ot">&lt;-</span><span class="fu">coxph</span>(<span class="fu">Surv</span>(pfs_mo,pod_status)<span class="sc">~</span> fiber_dichotomized <span class="sc">+</span> ageby10 <span class="sc">+</span> ecog_1to5_final,</span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>                   mRCdataFiber)</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>                   mRCdataFiber) <span class="co">#could not adjust for stage because all patients with RCC were stage IV</span></span>
 <span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(cox_pfs_RC)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Call:
@@ -640,161 +646,59 @@ Likelihood ratio test= 15.03  on 3 df,   p=0.002
 Wald test            = 15.1  on 3 df,   p=0.002
 Score (logrank) test = 16.22  on 3 df,   p=0.001</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>cox_pfs_RC_IpiNivo <span class="ot">&lt;-</span><span class="fu">coxph</span>(<span class="fu">Surv</span>(pfs_mo,pod_status)<span class="sc">~</span> fiber_dichotomized<span class="sc">+</span> ageby10 <span class="sc">+</span> ecog_1to5_final,</span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>                           dataRCIpiNivoFiber)</span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(cox_pfs_RC_IpiNivo)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>cox_pfs_UC <span class="ot">&lt;-</span><span class="fu">coxph</span>(<span class="fu">Surv</span>(pfs_mo,pod_status)<span class="sc">~</span> fiber_dichotomized<span class="sc">+</span> ageby10 <span class="sc">+</span> ecog_1to5_final <span class="sc">+</span> stage.simplified.factor,</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>                   mUCdataFiber)</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(cox_pfs_UC)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Call:
 coxph(formula = Surv(pfs_mo, pod_status) ~ fiber_dichotomized + 
-    ageby10 + ecog_1to5_final, data = dataRCIpiNivoFiber)
+    ageby10 + ecog_1to5_final + stage.simplified.factor, data = mUCdataFiber)
 
-  n= 15, number of events= 8 
+  n= 38, number of events= 27 
 
-                      coef exp(coef) se(coef)      z Pr(&gt;|z|)  
-fiber_dichotomized -1.9978    0.1356   1.0827 -1.845   0.0650 .
-ageby10             1.6818    5.3750   0.7495  2.244   0.0248 *
-ecog_1to5_final     0.4927    1.6367   0.9073  0.543   0.5871  
----
-Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+                                   coef exp(coef) se(coef)      z Pr(&gt;|z|)
+fiber_dichotomized              -0.3016    0.7397   0.4143 -0.728    0.467
+ageby10                          0.1800    1.1973   0.1998  0.901    0.367
+ecog_1to5_final                 -0.2445    0.7831   0.5621 -0.435    0.664
+stage.simplified.factorStage IV  0.8216    2.2742   1.1013  0.746    0.456
 
-                   exp(coef) exp(-coef) lower .95 upper .95
-fiber_dichotomized    0.1356      7.373   0.01625     1.132
-ageby10               5.3750      0.186   1.23717    23.352
-ecog_1to5_final       1.6367      0.611   0.27651     9.688
+                                exp(coef) exp(-coef) lower .95 upper .95
+fiber_dichotomized                 0.7397     1.3520    0.3284     1.666
+ageby10                            1.1973     0.8352    0.8094     1.771
+ecog_1to5_final                    0.7831     1.2770    0.2603     2.356
+stage.simplified.factorStage IV    2.2742     0.4397    0.2627    19.689
 
-Concordance= 0.81  (se = 0.092 )
-Likelihood ratio test= 8.69  on 3 df,   p=0.03
-Wald test            = 5.88  on 3 df,   p=0.1
-Score (logrank) test = 7.16  on 3 df,   p=0.07</code></pre>
+Concordance= 0.551  (se = 0.07 )
+Likelihood ratio test= 1.97  on 4 df,   p=0.7
+Wald test            = 1.83  on 4 df,   p=0.8
+Score (logrank) test = 1.86  on 4 df,   p=0.8</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>cox_pfs_RC_TKI_IO <span class="ot">&lt;-</span><span class="fu">coxph</span>(<span class="fu">Surv</span>(pfs_mo,pod_status)<span class="sc">~</span> fiber_dichotomized<span class="sc">+</span> ageby10 <span class="sc">+</span> ecog_1to5_final,</span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>                          dataRCioTKIFiber)</span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(cox_pfs_RC_TKI_IO)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Call:
-coxph(formula = Surv(pfs_mo, pod_status) ~ fiber_dichotomized + 
-    ageby10 + ecog_1to5_final, data = dataRCioTKIFiber)
-
-  n= 24, number of events= 12 
-
-                      coef exp(coef) se(coef)      z Pr(&gt;|z|)  
-fiber_dichotomized -0.5312    0.5879   0.7341 -0.724   0.4693  
-ageby10             0.3140    1.3689   0.4844  0.648   0.5168  
-ecog_1to5_final     1.8411    6.3036   0.8549  2.154   0.0313 *
----
-Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-                   exp(coef) exp(-coef) lower .95 upper .95
-fiber_dichotomized    0.5879     1.7009    0.1395     2.479
-ageby10               1.3689     0.7305    0.5297     3.538
-ecog_1to5_final       6.3036     0.1586    1.1801    33.671
-
-Concordance= 0.754  (se = 0.066 )
-Likelihood ratio test= 9.31  on 3 df,   p=0.03
-Wald test            = 6.94  on 3 df,   p=0.07
-Score (logrank) test = 9.12  on 3 df,   p=0.03</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>cox_pfs_UC <span class="ot">&lt;-</span><span class="fu">coxph</span>(<span class="fu">Surv</span>(pfs_mo,pod_status)<span class="sc">~</span> fiber_dichotomized<span class="sc">+</span> ageby10 <span class="sc">+</span> ecog_1to5_final,</span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>                   mUCdataFiber)</span>
-<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(cox_pfs_UC)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Call:
-coxph(formula = Surv(pfs_mo, pod_status) ~ fiber_dichotomized + 
-    ageby10 + ecog_1to5_final, data = mUCdataFiber)
-
-  n= 40, number of events= 29 
-
-                       coef exp(coef) se(coef)      z Pr(&gt;|z|)
-fiber_dichotomized -0.42328   0.65490  0.39185 -1.080    0.280
-ageby10             0.15310   1.16544  0.18707  0.818    0.413
-ecog_1to5_final    -0.05191   0.94942  0.49855 -0.104    0.917
-
-                   exp(coef) exp(-coef) lower .95 upper .95
-fiber_dichotomized    0.6549      1.527    0.3038     1.412
-ageby10               1.1654      0.858    0.8077     1.682
-ecog_1to5_final       0.9494      1.053    0.3573     2.522
-
-Concordance= 0.537  (se = 0.07 )
-Likelihood ratio test= 1.61  on 3 df,   p=0.7
-Wald test            = 1.54  on 3 df,   p=0.7
-Score (logrank) test = 1.56  on 3 df,   p=0.7</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>cox_pfs_UC_NOTavelumab <span class="ot">&lt;-</span><span class="fu">coxph</span>(<span class="fu">Surv</span>(pfs_mo,pod_status)<span class="sc">~</span> fiber_dichotomized<span class="sc">+</span> ageby10 <span class="sc">+</span> ecog_1to5_final,</span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>                               dataUC_NOTavelumabFiber)</span>
-<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(cox_pfs_UC_NOTavelumab)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Call:
-coxph(formula = Surv(pfs_mo, pod_status) ~ fiber_dichotomized + 
-    ageby10 + ecog_1to5_final, data = dataUC_NOTavelumabFiber)
-
-  n= 26, number of events= 21 
-
-                      coef exp(coef) se(coef)      z Pr(&gt;|z|)
-fiber_dichotomized  0.3584    1.4311   0.5299  0.676    0.499
-ageby10            -0.1427    0.8670   0.2760 -0.517    0.605
-ecog_1to5_final    -1.0023    0.3670   0.6821 -1.469    0.142
-
-                   exp(coef) exp(-coef) lower .95 upper .95
-fiber_dichotomized     1.431     0.6988   0.50655     4.043
-ageby10                0.867     1.1534   0.50474     1.489
-ecog_1to5_final        0.367     2.7245   0.09641     1.397
-
-Concordance= 0.634  (se = 0.069 )
-Likelihood ratio test= 3.95  on 3 df,   p=0.3
-Wald test            = 4.34  on 3 df,   p=0.2
-Score (logrank) test = 4.68  on 3 df,   p=0.2</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>cox_pfs_UC_avelumab <span class="ot">&lt;-</span><span class="fu">coxph</span>(<span class="fu">Surv</span>(pfs_mo,pod_status)<span class="sc">~</span> fiber_dichotomized<span class="sc">+</span> ageby10 <span class="sc">+</span> ecog_1to5_final,</span>
-<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>                            dataUCavelumabFiber)</span>
-<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(cox_pfs_UC_avelumab)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Call:
-coxph(formula = Surv(pfs_mo, pod_status) ~ fiber_dichotomized + 
-    ageby10 + ecog_1to5_final, data = dataUCavelumabFiber)
-
-  n= 14, number of events= 8 
-
-                         coef  exp(coef)   se(coef)      z Pr(&gt;|z|)
-fiber_dichotomized -4.907e-01  6.122e-01  9.281e-01 -0.529    0.597
-ageby10             3.708e-01  1.449e+00  3.681e-01  1.007    0.314
-ecog_1to5_final     2.028e+01  6.449e+08  1.626e+04  0.001    0.999
-
-                   exp(coef) exp(-coef) lower .95 upper .95
-fiber_dichotomized 6.122e-01  1.633e+00   0.09928     3.775
-ageby10            1.449e+00  6.902e-01   0.70419     2.981
-ecog_1to5_final    6.449e+08  1.551e-09   0.00000       Inf
-
-Concordance= 0.662  (se = 0.124 )
-Likelihood ratio test= 6.44  on 3 df,   p=0.09
-Wald test            = 1.02  on 3 df,   p=0.8
-Score (logrank) test = 4.05  on 3 df,   p=0.3</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>forestplot_data <span class="ot">&lt;-</span> tibble<span class="sc">::</span><span class="fu">tibble</span>(<span class="at">mean  =</span> <span class="fu">c</span>(<span class="fl">0.405</span>, <span class="fl">0.3185</span>, <span class="fl">0.6549</span>),</span>
-<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">lower =</span> <span class="fu">c</span>(<span class="fl">0.2298</span>, <span class="fl">0.1322</span>, <span class="fl">0.3038</span>),</span>
-<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">upper =</span> <span class="fu">c</span>(<span class="fl">0.7138</span>, <span class="fl">0.7676</span>, <span class="fl">1.412</span>),</span>
-<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">study =</span> <span class="fu">c</span>(<span class="st">"All"</span>, <span class="st">"RCC"</span>, <span class="st">"UC"</span>),</span>
-<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">n =</span> <span class="fu">c</span>(<span class="st">"88"</span>,<span class="st">"48"</span>,<span class="st">"40"</span>),</span>
-<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">events =</span> <span class="fu">c</span>(<span class="st">"57"</span>,<span class="st">"28"</span>,<span class="st">"29"</span>),</span>
-<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">HR =</span> <span class="fu">c</span>(<span class="st">"0.41"</span>,<span class="st">"0.32"</span>,<span class="st">"0.65"</span>))</span>
-<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a>forestplot_data <span class="sc">|&gt;</span></span>
-<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">forestplot</span>(<span class="at">labeltext =</span> <span class="fu">c</span>(study, n, events, HR),</span>
-<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a>             <span class="at">clip =</span> <span class="fu">c</span>(<span class="fl">0.09</span>, <span class="fl">2.5</span>),</span>
-<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a>             <span class="at">xlog =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb34-13"><a href="#cb34-13" aria-hidden="true" tabindex="-1"></a>             <span class="at">xlab =</span> <span class="st">"Hazard ratio for PFS (95% CI)"</span>,</span>
-<span id="cb34-14"><a href="#cb34-14" aria-hidden="true" tabindex="-1"></a>             <span class="at">xticks =</span> <span class="fu">c</span>(<span class="fl">0.1</span>,<span class="fl">0.25</span>,<span class="fl">0.5</span>,<span class="fl">1.0</span>,<span class="fl">2.5</span>),</span>
-<span id="cb34-15"><a href="#cb34-15" aria-hidden="true" tabindex="-1"></a>             <span class="at">title =</span> <span class="st">"Multivariable progression-free survival subgroup analyis"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb34-16"><a href="#cb34-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fp_set_style</span>(<span class="at">box =</span> <span class="st">"royalblue"</span>,</span>
-<span id="cb34-17"><a href="#cb34-17" aria-hidden="true" tabindex="-1"></a>               <span class="at">line =</span> <span class="st">"darkblue"</span>,</span>
-<span id="cb34-18"><a href="#cb34-18" aria-hidden="true" tabindex="-1"></a>               <span class="at">summary =</span> <span class="st">"royalblue"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb34-19"><a href="#cb34-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fp_add_header</span>(<span class="at">study =</span> <span class="fu">c</span>(<span class="st">"Subgroup"</span>),</span>
-<span id="cb34-20"><a href="#cb34-20" aria-hidden="true" tabindex="-1"></a>                <span class="at">n =</span> <span class="fu">c</span>(<span class="st">"n"</span>),</span>
-<span id="cb34-21"><a href="#cb34-21" aria-hidden="true" tabindex="-1"></a>                <span class="at">events =</span> <span class="fu">c</span>(<span class="st">"Events"</span>),</span>
-<span id="cb34-22"><a href="#cb34-22" aria-hidden="true" tabindex="-1"></a>                <span class="at">HR =</span> <span class="fu">c</span>(<span class="st">"HR"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>forestplot_data <span class="ot">&lt;-</span> tibble<span class="sc">::</span><span class="fu">tibble</span>(<span class="at">mean  =</span> <span class="fu">c</span>(<span class="fl">0.4561</span>, <span class="fl">0.3185</span>, <span class="fl">0.7397</span>),</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">lower =</span> <span class="fu">c</span>(<span class="fl">0.2560</span>, <span class="fl">0.1322</span>, <span class="fl">0.3284</span>),</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">upper =</span> <span class="fu">c</span>(<span class="fl">0.8125</span>, <span class="fl">0.7676</span>, <span class="fl">1.666</span>),</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">study =</span> <span class="fu">c</span>(<span class="st">"All"</span>, <span class="st">"RCC"</span>, <span class="st">"UC"</span>),</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">n =</span> <span class="fu">c</span>(<span class="st">"86"</span>,<span class="st">"48"</span>,<span class="st">"38"</span>),</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">events =</span> <span class="fu">c</span>(<span class="st">"55"</span>,<span class="st">"28"</span>,<span class="st">"27"</span>),</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">HR =</span> <span class="fu">c</span>(<span class="st">"0.46"</span>,<span class="st">"0.32"</span>,<span class="st">"0.74"</span>))</span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>forestplot_data <span class="sc">|&gt;</span></span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">forestplot</span>(<span class="at">labeltext =</span> <span class="fu">c</span>(study, n, events, HR),</span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>             <span class="at">clip =</span> <span class="fu">c</span>(<span class="fl">0.09</span>, <span class="fl">2.5</span>),</span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a>             <span class="at">xlog =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a>             <span class="at">xlab =</span> <span class="st">"Hazard ratio for PFS (95% CI)"</span>,</span>
+<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a>             <span class="at">xticks =</span> <span class="fu">c</span>(<span class="fl">0.1</span>,<span class="fl">0.25</span>,<span class="fl">0.5</span>,<span class="fl">1.0</span>,<span class="fl">2.5</span>),</span>
+<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a>             <span class="at">title =</span> <span class="st">"Multivariable progression-free survival subgroup analyis"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fp_set_style</span>(<span class="at">box =</span> <span class="st">"royalblue"</span>,</span>
+<span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a>               <span class="at">line =</span> <span class="st">"darkblue"</span>,</span>
+<span id="cb26-18"><a href="#cb26-18" aria-hidden="true" tabindex="-1"></a>               <span class="at">summary =</span> <span class="st">"royalblue"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb26-19"><a href="#cb26-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fp_add_header</span>(<span class="at">study =</span> <span class="fu">c</span>(<span class="st">"Subgroup"</span>),</span>
+<span id="cb26-20"><a href="#cb26-20" aria-hidden="true" tabindex="-1"></a>                <span class="at">n =</span> <span class="fu">c</span>(<span class="st">"n"</span>),</span>
+<span id="cb26-21"><a href="#cb26-21" aria-hidden="true" tabindex="-1"></a>                <span class="at">events =</span> <span class="fu">c</span>(<span class="st">"Events"</span>),</span>
+<span id="cb26-22"><a href="#cb26-22" aria-hidden="true" tabindex="-1"></a>                <span class="at">HR =</span> <span class="fu">c</span>(<span class="st">"HR"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="figure_1_hazard_ratio_fiber_files/figure-html/panel_f-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="figure_1_hazard_ratio_fiber_files/figure-html/panel_g-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
