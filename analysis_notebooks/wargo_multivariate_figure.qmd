@@ -1,0 +1,325 @@
+--- 
+title: |
+  Updated Multivariate Analysis \nExploring Wargo Data in a Multivariate Model.
+format:
+  html:
+    css: styles.css
+---
+
+
+
+Notes
+ - Multivariable models differ slightly between Wargo and MSK datasets
+ - MSK: adjusted for age (/decade), ECOG, and stratified on histology
+ - Wargo: adjusted for age (/decade)
+ - As described, ECOG is imputed as 1 (median) where not known
+
+```{r}
+#| echo: false
+#| warning: false
+#| include: false
+#| label: library_data_imports
+library(tidyverse)
+library(phyloseq)
+library(yingtools2)
+library(survival)
+library(rms)
+
+raw_mpa_phy_icb <- readRDS("../data/cleaned_data/wargo_phylo.RDS")
+ps <- readRDS("../data/cleaned_data/plotting_phyloseq.rds")
+acoa_df <- readRDS("../data/cleaned_data/acoa_data.rds") %>%
+  mutate(log_acoa = log10(pyruvate))
+```
+
+```{r}
+#| echo: false
+#| warning: false
+#| include: false
+#| label: process_phyloseq
+
+
+result_wargo <- raw_mpa_phy_icb %>%
+  get.otu.melt() %>%
+  select(sample, pfs_d, pfsevent, pyruvate, Class, Order, Family, Genus, Species, numseqs, AGE, adv_substage) %>%
+  group_by(sample, pfs_d, pfsevent, pyruvate, AGE, adv_substage) %>%
+  summarise(
+    rum = sum(numseqs[Family == "Ruminococcaceae"], na.rm=T),
+    rum_lach = sum(numseqs[Family %in% c("Ruminococcaceae", "Lachnospiraceae")], na.rm=T),
+    clostridiales = sum(numseqs[Order == "Clostridiales"], na.rm=T),
+    osc = sum(numseqs[Order == "Oscillospirales"], na.rm=T),
+    clostridia = sum(numseqs[Class == "Clostridia"], na.rm=T),
+    faecalibacterium = sum(numseqs[Genus == "Faecalibacterium"], na.rm=T),
+    faecalibacterium_prausnitzii = sum(numseqs[Species == "Faecalibacterium_prausnitzii"], na.rm=T)
+  ) %>%
+  mutate(
+    rum = replace_na(rum, 0),
+    osc = replace_na(osc, 0),
+    rum_lach = replace_na(rum_lach, 0),
+    clostridiales = replace_na(clostridiales, 0),
+    clostridia = replace_na(clostridia, 0),
+    faecalibacterium = replace_na(faecalibacterium, 0),
+    faecalibacterium_prausnitzii = replace_na(faecalibacterium_prausnitzii, 0),
+    age10 = as.numeric(AGE) /10
+  )
+result_wargo$age10[grepl(">", result_wargo$AGE)] <- 90 / 10
+
+```
+
+```{r}
+#| echo: false
+#| warning: false
+#| include: true
+#| label: fit_models
+
+model1 <- coxph(Surv(pfs_d, pfsevent)~log(rum)+age10 + adv_substage, result_wargo)
+model2 <- coxph(Surv(pfs_d, pfsevent)~log(rum_lach)+age10 + adv_substage, result_wargo)
+model3 <- coxph(Surv(pfs_d, pfsevent)~log(clostridiales)+age10 + adv_substage, result_wargo)
+model4 <- coxph(Surv(pfs_d, pfsevent)~log(clostridia)+age10 + adv_substage, result_wargo)
+model5 <- coxph(Surv(pfs_d, pfsevent)~log(eval(faecalibacterium_prausnitzii+1e-5))+age10 + adv_substage, result_wargo)
+model6 <- coxph(Surv(pfs_d, pfsevent)~log1p(pyruvate)+age10 + adv_substage, result_wargo)
+
+
+models <- list(model1, model2, model3, model4, model5, model6)
+
+result_wargos_df <- data.frame(
+  Model = character(),
+  HR = numeric(),
+  Lower_CI = numeric(),
+  Upper_CI = numeric(),
+  pvalue = numeric(),
+  stringsAsFactors = FALSE
+)
+
+
+for (i in seq_along(models)) {
+  model <- models[[i]]
+  summary_model <- summary(model)
+
+
+  hr <- summary_model$coefficients[1, "exp(coef)"]
+  lower_ci <- summary_model$conf.int[1, "lower .95"]
+  upper_ci <- summary_model$conf.int[1, "upper .95"]
+  pvalue <- summary_model$coefficients[1, "Pr(>|z|)"]
+
+
+  result_wargos_df <- rbind(result_wargos_df, data.frame(
+    Model = paste0("model", i),
+    HR = hr,
+    Lower_CI = lower_ci,
+    Upper_CI = upper_ci,
+    pvalue = pvalue
+  ))
+}
+
+result_wargos_df_os <- data.frame(
+  Model = character(),
+  HR = numeric(),
+  Lower_CI = numeric(),
+  Upper_CI = numeric(),
+  pvalue = numeric(),
+  stringsAsFactors = FALSE
+)
+```
+
+```{r}
+#| echo: false
+#| warning: false
+#| include: true
+#| label: get_model_results
+
+
+#for (i in seq_along(osmodels)) {
+for (i in seq_along(models)) {
+  model <- models[[i]]
+  summary_model <- summary(model)
+
+
+  hr <- summary_model$coefficients[, "exp(coef)"]
+  lower_ci <- summary_model$conf.int[, "lower .95"]
+  upper_ci <- summary_model$conf.int[, "upper .95"]
+  pvalue <- summary_model$coefficients[, "Pr(>|z|)"]
+
+
+  result_wargos_df_os <- rbind(result_wargos_df_os, data.frame(
+    Model = paste0("model", i),
+    HR = hr,
+    Lower_CI = lower_ci,
+    Upper_CI = upper_ci,
+    pvalue = pvalue
+  ))
+}
+
+result_wargos_df$source = c(rep("wargo", 6))
+
+result_wargos_df$modelname = c("log(Ruminococcaceae)", "log(Rum + Lachnospiraceae)",
+                         "log(Clostridiales)", "log(Clostridia)", "log(F. prausnitzii + 1e-5)", "log(ACoA)")
+
+result_wargos_df$label <- sprintf("%.2f (%.2f\u2013%.2f),\np=%.3f",
+                                  result_wargos_df$HR,
+                                  result_wargos_df$Lower_CI,
+                                  result_wargos_df$Upper_CI,
+                                  result_wargos_df$pvalue)
+
+```
+```{r}
+#| echo: true
+#| warning: false
+#| include: true
+#| label: plot_wargo_as_multivariate
+
+ggplot(result_wargos_df,
+       aes(y = fct_reorder(modelname, -HR), x = HR)) +
+  geom_point(size = 3) +
+  geom_errorbar(aes(xmin = Lower_CI, xmax = Upper_CI),
+                width = 0.2, linewidth = 0.5, orientation = "y") +
+  geom_text(aes(x = 1.45, label = label), hjust = 0, size = 3.2) +
+  geom_vline(xintercept = 1, lty = 2, col = "gray60") +
+  scale_x_log10(breaks = c(0.5, 0.75, 1.0, 1.25),
+                limits = c(0.35, 2.0)) +
+  theme_classic(base_size = 12) +
+  theme(
+    axis.text = element_text(size = 10, color = "black"),
+    axis.title = element_text(size = 11),
+    plot.title = element_text(face = "bold", size = 12),
+    panel.grid.major.x = element_line(color = "gray92", linewidth = 0.3),
+    plot.margin = margin(5, 15, 5, 5)
+  ) +
+  labs(title = "Wargo: age + substage adjusted",
+       y = NULL, x = "Hazard Ratio (95% CI)")
+
+```
+
+For comparison, here is the same analysis performed on the MSK data:
+```{r}
+#| echo: false
+#| warning: false
+#| include: false
+#| label: process_msk_phyloseq
+
+result_msk <- ps %>%
+  get.otu.melt() %>%
+  select(sample, age, cohort, ecog, tt_pfs_d, tt_os_d, pfs_event, event_os, Class, Order, Family, Species, numseqs) %>%
+  group_by(sample, age, cohort, ecog) %>%
+  summarise(
+    rum = sum(numseqs[Family == "Ruminococcaceae"], na.rm=T),
+    rum_lach = sum(numseqs[Family %in% c("Ruminococcaceae", "Lachnospiraceae")], na.rm=T),
+    clostridiales = sum(numseqs[Order == "Clostridiales"], na.rm=T),
+    clostridia = sum(numseqs[Class == "Clostridia"], na.rm=T),
+    faecalibacterium_prausnitzii = sum(numseqs[Species == "Faecalibacterium_prausnitzii"], na.rm=T)
+  ) %>%
+  mutate(
+    rum = replace_na(rum, 0),
+    rum_lach = replace_na(rum_lach, 0),
+    clostridiales = replace_na(clostridiales, 0),
+    clostridia = replace_na(clostridia, 0),
+    faecalibacterium_prausnitzii = replace_na(faecalibacterium_prausnitzii, 0),
+    ecog = if_else(is.na(ecog), 1, ecog),
+    age10 = age/10
+  ) %>%
+  left_join(acoa_df %>% select(c(WMS_SGPID, pyruvate, tt_pfs_d, pfs_event)), by = c("sample" = "WMS_SGPID"))
+```
+
+```{r}
+#| echo: false
+#| warning: false
+#| include: false
+#| label: make_msk_models
+model1 <- coxph(Surv(tt_pfs_d, pfs_event)~log(rum)+age10+strata(cohort)+ecog, result_msk)
+model2 <- coxph(Surv(tt_pfs_d, pfs_event)~log(rum_lach)+age10+strata(cohort)+ecog, result_msk)
+model3 <- coxph(Surv(tt_pfs_d, pfs_event)~log(clostridiales)+age10+strata(cohort)+ecog, result_msk)
+model4 <- coxph(Surv(tt_pfs_d, pfs_event)~log(clostridia)+age10+strata(cohort)+ecog, result_msk)
+model5 <- coxph(Surv(tt_pfs_d, pfs_event)~log(faecalibacterium_prausnitzii+1e-5)+age10+strata(cohort)+ecog, result_msk)
+model6 <- coxph(Surv(tt_pfs_d, pfs_event)~log(pyruvate)+age10+strata(cohort)+ecog, result_msk)
+
+
+msk_models <- list(model1, model2, model3, model4, model5, model6)
+
+result_msks_df <- data.frame(
+  Model = character(),
+  HR = numeric(),
+  Lower_CI = numeric(),
+  Upper_CI = numeric(),
+  pvalue = numeric(),
+  stringsAsFactors = FALSE
+)
+
+
+for (i in seq_along(models)) {
+  model <- models[[i]]
+  summary_model <- summary(model)
+
+
+  hr <- summary_model$coefficients[1, "exp(coef)"]
+  lower_ci <- summary_model$conf.int[1, "lower .95"]
+  upper_ci <- summary_model$conf.int[1, "upper .95"]
+  pvalue <- summary_model$coefficients[1, "Pr(>|z|)"]
+
+
+  result_msks_df <- rbind(result_msks_df, data.frame(
+    Model = paste0("model", i),
+    HR = hr,
+    Lower_CI = lower_ci,
+    Upper_CI = upper_ci,
+    pvalue = pvalue
+  ))
+}
+
+
+
+result_msks_df_os <- data.frame(
+  Model = character(),
+  HR = numeric(),
+  Lower_CI = numeric(),
+  Upper_CI = numeric(),
+  pvalue = numeric(),
+  stringsAsFactors = FALSE
+)
+
+```
+```{r}
+#| echo: false
+#| warning: false
+#| include: true
+#| label: get_msk_results
+
+for (i in seq_along(msk_models)) {
+  model <- msk_models[[i]]
+  summary_model <- summary(model)
+
+
+  hr <- summary_model$coefficients[, "exp(coef)"]
+  lower_ci <- summary_model$conf.int[, "lower .95"]
+  upper_ci <- summary_model$conf.int[, "upper .95"]
+  pvalue <- summary_model$coefficients[, "Pr(>|z|)"]
+
+
+  result_msks_df_os <- rbind(result_msks_df_os, data.frame(
+    Model = paste0("model", i),
+    HR = hr,
+    Lower_CI = lower_ci,
+    Upper_CI = upper_ci,
+    pvalue = pvalue
+  ))
+}
+
+result_msks_df$source = c(rep("msk", 6))
+
+result_msks_df$modelname = c("log(Ruminococcaceae)", "log(Ruminococcacaeae + Lachnospiraceae",
+                         "log(Clostridiales)", "log(Clostridia)", "log(F prausnitizii + 1e-5)", "log(ACoA")
+```
+```{r}
+#| echo: true
+#| warning: false
+#| include: true
+#| label: plt_msk_results
+
+ggplot(result_msks_df) +
+  geom_point(aes(y=fct_rev(fct_reorder(modelname, HR)), x=HR)) +
+  geom_errorbarh(aes(y=fct_rev(fct_reorder(modelname, HR)), xmin=Lower_CI, xmax=Upper_CI), height=0.5)+
+  geom_vline(xintercept=1, lty=2, col="gray70") +
+  scale_x_continuous(trans="log", breaks = c(0.4, 0.6, 0.8, 1.0, 1.2, 1.4)) +
+  theme_classic() +
+  facet_grid(.~source) +
+  labs(title = "HR (95% CI) univariable Cox",
+       subtitle ="", y="Variable", x="HR")
+```

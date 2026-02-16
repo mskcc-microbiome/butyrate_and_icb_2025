@@ -1,0 +1,334 @@
+--- 
+title: |
+  <img src="./images/fiber_beaker_image_food.jpg" width="250px" style="margin-left:5%; margin-right:5%"/>
+  Figure 1 - Hazard Ratio Analysis of Fiber Intake
+---
+
+
+
+```{r}
+#| echo: false
+#| warning: false
+#| include: false
+#| label: library_data_imports
+
+library(dplyr)
+library(survival)
+library(survminer)
+library(forestplot)
+source("utility_funcs.R")
+library(Hmisc)
+library(RColorBrewer)
+
+ggsave_workaround <- function(g){survminer:::.build_ggsurvplot(x = g,
+                                                               surv.plot.height = NULL,
+                                                               risk.table.height = NULL,
+                                                               ncensor.plot.height = NULL)}
+```
+
+The data we are visualizing here has the following structure:
+
+
+```{r}
+#| warning: false
+#| include: false
+#| label: load_data
+
+
+all_metadata_fiber <- readRDS("../public_data/fiber_data/all_metadata_fiber.RDS")
+data <- readRDS("../public_data/fiber_data/fiber_data_clean_labels.RDS")
+
+# Pull out different sub-groups from this data:
+
+UCdata=filter(data,cancer_type!=4)
+
+UCdata$TMBhigherThan10<-ifelse(UCdata$Impact.TMB.Score>=10,1,0)
+
+UCdata<-mutate(UCdata,TMBhigherThan10.Imputed = case_when(is.na(TMBhigherThan10)==FALSE~TMBhigherThan10,
+                                                          is.na(TMBhigherThan10)==TRUE~0))
+
+
+mUCdata=filter(UCdata,io_regimen!=6 & io_regimen!=13 & io_regimen!=15)
+
+
+dataUCavelumab=filter(mUCdata,io_regimen==5)
+dataUC_NOTavelumab=filter(mUCdata,io_regimen!=5)
+
+
+mUCdataFiber=filter(mUCdata,((calor>=600 & calor<=4200 & sex.factor=="Male") 
+                    |(calor>=500 & calor<=3500 & sex.factor=="Female"))&(nblank<=70))
+dataUCavelumabFiber=filter(dataUCavelumab,((calor>=600 & calor<=4200 & sex.factor=="Male") 
+                                 |(calor>=500 & calor<=3500 & sex.factor=="Female"))&(nblank<=70))
+dataUC_NOTavelumabFiber=filter(dataUC_NOTavelumab,((calor>=600 & calor<=4200 & sex.factor=="Male") 
+                                           |(calor>=500 & calor<=3500 & sex.factor=="Female"))&(nblank<=70))
+
+
+RCdata=filter(data,cancer_type==4)
+
+mRCdata=filter(RCdata,io_regimen!=7 & io_regimen!=15 & io_regimen!=99)
+dataRCIpiNivo=filter(RCdata,io_regimen==9 | io_regimen==17)
+dataRCioTKI=filter(RCdata,io_regimen==8 | io_regimen==18 | io_regimen==10 | io_regimen==11 | io_regimen==16 | io_regimen==12)
+
+
+mRCdataFiber=filter(mRCdata,((calor>=600 & calor<=4200 & sex.factor=="Male") 
+                             |(calor>=500 & calor<=3500 & sex.factor=="Female"))&(nblank<=70))
+dataRCIpiNivoFiber=filter(dataRCIpiNivo,((calor>=600 & calor<=4200 & sex.factor=="Male") 
+                                         |(calor>=500 & calor<=3500 & sex.factor=="Female"))&(nblank<=70))
+dataRCioTKIFiber=filter(dataRCioTKI,((calor>=600 & calor<=4200 & sex.factor=="Male") 
+                                     |(calor>=500 & calor<=3500 & sex.factor=="Female"))&(nblank<=70))
+```
+
+## Panel B
+
+Mortality Hazard for PFS by daily average fiber intake, visualized via partial smoothing spline.  Ticks along the x axis represent individual patients. 
+
+```{r}
+#| warning: false
+#| include: true
+#| label: panel_b
+
+makeSpline(all_metadata_fiber, all_metadata_fiber$pfs_mo, all_metadata_fiber$pod_status, 
+           all_metadata_fiber$aofib,
+           xlab = "Daily average fiber intake (g/day)", ylab="Hazard ratio (95% CI)",
+           title="Smoothing spline for progression-free survival",
+           knots=2,
+           centerpoint = 15) +
+  scale_x_log10()
+
+```
+
+## Panel C
+
+Mortality Hazard for OS by daily average fiber intake, visualized via partial smoothing spline.  Ticks along the x axis represent individual patients. 
+
+```{r}
+#| warning: false
+#| include: true
+#| label: panel_c
+
+makeSpline(all_metadata_fiber, all_metadata_fiber$os_mo, all_metadata_fiber$os_status, 
+           all_metadata_fiber$aofib,
+           xlab = "Daily average fiber intake (g/day)", ylab="Hazard ratio (95% CI)",
+           title="Smoothing spline for overall survival",
+           knots=2, 
+           centerpoint = 15) +
+  scale_x_log10()
+```
+```{r}
+#| warning: false
+#| include: true
+#| label: prep_data_for_km_curves
+
+all_metadata_fiber <- all_metadata_fiber %>%
+  mutate(fiber_tertile = ntile(aofib, 3)) %>%
+  mutate(fiber_t_factor_ordered = factor(fiber_tertile, ordered = T, levels = c(1,2,3))) %>%
+  mutate(fiber_top_tertile = fiber_tertile==3) %>%
+  mutate(fiber_top_tertile_factor = factor(fiber_top_tertile))
+
+tertiles <- quantile(all_metadata_fiber$aofib, probs = c(1/3, 2/3))
+print(tertiles)
+
+pval_continuous_pfs <- summary(coxph(Surv(pfs_mo, pod_status)~aofib,
+                                     data=all_metadata_fiber))$coefficients["aofib", "Pr(>|z|)"] %>%
+  signif(digits = 3)
+
+pval_continuous_os <- summary(coxph(Surv(os_mo, os_status)~aofib,
+                                    data=all_metadata_fiber))$coefficients["aofib", "Pr(>|z|)"] %>%
+  signif(digits = 3)
+
+pval_multivariate_binary_pfs_top_bottom_tertile <- summary(coxph(Surv(pfs_mo, pod_status)~fiber_top_tertile_factor + 
+                            ageby10 + 
+                            ecog_1to5_final +
+                              bmi,
+                                     data=all_metadata_fiber, subset = (fiber_tertile %in% c(1, 3))))$coefficients["fiber_top_tertile_factorTRUE", "Pr(>|z|)"] %>%
+  signif(digits = 3)
+print(pval_multivariate_binary_pfs_top_bottom_tertile)
+
+pval_multivariate_binary_os_top_bottom_tertile <- summary(coxph(Surv(os_mo, os_status)~fiber_top_tertile_factor + 
+                            ageby10 + 
+                            ecog_1to5_final +
+                              bmi,
+                                     data=all_metadata_fiber, subset = (fiber_tertile %in% c(1, 3))))$coefficients["fiber_top_tertile_factorTRUE", "Pr(>|z|)"] %>%
+  signif(digits = 3)
+print(pval_multivariate_binary_os_top_bottom_tertile)
+
+ylgnbu_palette <- brewer.pal(n = 8, name = "YlGnBu")
+custom_palette <- c(ylgnbu_palette[5], ylgnbu_palette[6], ylgnbu_palette[8])
+
+```
+## Panel D
+
+Kaplan-Meier PFS by daily average fiber intake, two groups >= 15 grams/day.  
+
+```{r}
+#| warning: false
+#| include: true
+#| label: panel_d
+
+kmPFS_tert<-survfit(Surv(pfs_mo, pod_status)~fiber_t_factor_ordered,
+               type="kaplan-meier", data=all_metadata_fiber)
+
+pfs_plot <- ggsurvplot(kmPFS_tert,risk.table=FALSE,
+           xlab=element_blank(), 
+           ylab=element_blank(),
+           pval = pval_continuous_pfs,
+           legend="none",
+           palette = custom_palette,
+           title=element_blank(),
+           #legend.title=element_blank(),
+           conf.int=F,
+           break.x.by=6,
+           axes.offset=FALSE,
+           xlim=c(0,25),
+           data = all_metadata_fiber)
+print(pfs_plot)
+pfs_plot_to_save <- ggsave_survival_workaround(pfs_plot)
+ggsave("figures/svg/pfs_tertitle_plot.svg", plot = pfs_plot_to_save, w = 2.5, h = 3)
+```
+
+## Panel E
+
+Kaplan-Meier OS by daily average fiber intake, two groups >= 15 grams/day. 
+
+```{r}
+#| warning: false
+#| include: true
+#| label: panel_e
+
+kmOS_tert<-survfit(Surv(os_mo, os_status)~fiber_t_factor_ordered,
+               type="kaplan-meier", data=all_metadata_fiber)
+
+
+os_plot <- ggsurvplot(kmOS_tert,risk.table=F,
+           xlab=element_blank(), 
+           ylab=element_blank(),
+           pval = pval_continuous_os,
+           palette = custom_palette,
+           title=element_blank(),
+           #legend.title=element_blank(),
+           legend="none",
+           #legend.labs=c("0-33%", "33-66%", "66-100%"),
+           #surv.median.line = "hv",
+           conf.int=FALSE,
+           break.x.by=6,
+           axes.offset=FALSE,
+           xlim=c(0,25),
+           data = all_metadata_fiber)
+
+print(os_plot)
+os_plot_to_save <- ggsave_survival_workaround(os_plot)
+ggsave("figures/svg/os_tertitle_plot.svg", plot = os_plot_to_save, w = 2.5, h = 3)
+```
+
+## Panel F
+Univariate HRs for PFS among clinically relavant subgroups.
+
+```{r}
+#| warning: false
+#| include: true
+#| label: panel_f
+
+cox_pfs_all_uv <-coxph(Surv(pfs_mo,pod_status)~ fiber_dichotomized,
+                    all_metadata_fiber)
+summary(cox_pfs_all_uv)
+
+cox_pfs_RC <-coxph(Surv(pfs_mo,pod_status)~ fiber_dichotomized,
+                   mRCdataFiber)
+summary(cox_pfs_RC)
+
+cox_pfs_RC_IpiNivo <-coxph(Surv(pfs_mo,pod_status)~ fiber_dichotomized,
+                           dataRCIpiNivoFiber)
+summary(cox_pfs_RC_IpiNivo)
+
+cox_pfs_RC_TKI_IO <-coxph(Surv(pfs_mo,pod_status)~ fiber_dichotomized,
+                          dataRCioTKIFiber)
+summary(cox_pfs_RC_TKI_IO)
+
+cox_pfs_UC <-coxph(Surv(pfs_mo,pod_status)~ fiber_dichotomized,
+                           mUCdataFiber)
+summary(cox_pfs_UC)
+
+cox_pfs_UC_NOTavelumab <-coxph(Surv(pfs_mo,pod_status)~ fiber_dichotomized,
+                   dataUC_NOTavelumabFiber)
+summary(cox_pfs_UC_NOTavelumab)
+
+cox_pfs_UC_avelumab <-coxph(Surv(pfs_mo,pod_status)~ fiber_dichotomized,
+                            dataUCavelumabFiber)
+summary(cox_pfs_UC_avelumab)
+
+
+            
+forestplot_data <- tibble::tibble(mean  = c(0.4488,0.3485, 0.4555, 0.3034, 0.7346, 0.97029, 0.8994),
+                            lower = c(0.26032,0.1608, 0.1071, 0.09031, 0.3408, 0.3918, 0.1789),
+                            upper = c( 0.7739,0.7551, 1.937, 1.02, 1.584, 2.403, 4.521),
+                            study = c("All","RCC", "RCC ipi-nivo", "RCC TKI-ICB",
+                                      "UC", "UC non-maintenance ICB", "UC maintenance ICB"),
+                            n = c("86","48","15","24","38","24","14"),
+                            events = c("55","28","8","12","27","19","8"),
+                            HR = c("0.45","0.35", "0.46", "0.30", "0.73", "0.97", "0.90"))
+
+forestplot_data |>
+  forestplot(labeltext = c(study, n, events, HR),
+             clip = c(0.09, 2.5),
+             xlog = TRUE,
+             xlab = "Hazard ratio for PFS (95% CI)",
+             xticks = c(0.1,0.25,0.5,1.0,2.5),
+             title = "Univariable progression-free survival subgroup analyis") |>
+  fp_set_style(box = "royalblue",
+               line = "darkblue",
+               summary = "royalblue") |> 
+  fp_add_header(study = c("Subgroup"),
+                n = c("n"),
+                events = c("Events"),
+                HR = c("HR")) 
+
+```
+
+## Panel G
+
+Multivariate HR for PFS adjusted for age, diagnosis, and performance status.
+
+```{r}
+#| warning: false
+#| include: true
+#| label: panel_g
+
+cox_pfs_all <-coxph(Surv(pfs_mo,pod_status)~ fiber_dichotomized + ageby10 + 
+                      ecog_1to5_final + cancer_RCCvsUC_NAME + stage.simplified.factor,
+                   all_metadata_fiber)
+summary(cox_pfs_all)
+
+cox_pfs_RC <-coxph(Surv(pfs_mo,pod_status)~ fiber_dichotomized + ageby10 + ecog_1to5_final,
+                   mRCdataFiber) #could not adjust for stage because all patients with RCC were stage IV
+summary(cox_pfs_RC)
+
+cox_pfs_UC <-coxph(Surv(pfs_mo,pod_status)~ fiber_dichotomized+ ageby10 + ecog_1to5_final + stage.simplified.factor,
+                   mUCdataFiber)
+summary(cox_pfs_UC)
+
+
+forestplot_data <- tibble::tibble(mean  = c(0.4561, 0.3185, 0.7397),
+                                  lower = c(0.2560, 0.1322, 0.3284),
+                                  upper = c(0.8125, 0.7676, 1.666),
+                                  study = c("All", "RCC", "UC"),
+                                  n = c("86","48","38"),
+                                  events = c("55","28","27"),
+                                  HR = c("0.46","0.32","0.74"))
+
+forestplot_data |>
+  forestplot(labeltext = c(study, n, events, HR),
+             clip = c(0.09, 2.5),
+             xlog = TRUE,
+             xlab = "Hazard ratio for PFS (95% CI)",
+             xticks = c(0.1,0.25,0.5,1.0,2.5),
+             title = "Multivariable progression-free survival subgroup analyis") |>
+  fp_set_style(box = "royalblue",
+               line = "darkblue",
+               summary = "royalblue") |> 
+  fp_add_header(study = c("Subgroup"),
+                n = c("n"),
+                events = c("Events"),
+                HR = c("HR"))
+
+
+```

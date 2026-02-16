@@ -39,6 +39,10 @@ website:
             href: extended_data_figure_6_acoa_pathway_butyrate.qmd
           - text: "Extended Figure 7: Time Bin Sensitivity Analysis"
             href: extended_data_figure_7_time_bin_analysis.qmd
+      - section: "Other Figures"
+        contents: 
+          - text: "External and Internal Cohort Multivariable Analysis"
+            href: wargo_multivariate_figure.qmd
 
 format:
   html:
