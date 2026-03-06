@@ -1,0 +1,111 @@
+--- 
+title: |
+  <img src="./images/liquid_scale.jpg" width="250px" style="margin-left:5%; margin-right:5%"/>
+  Histograms of Patient ABX and Probiotic Expsures
+format:
+  html:
+    css: styles.css
+---
+
+
+
+```{r}
+#| echo: false
+#| warning: false
+#| include: false
+#| label: library_data_imports
+
+library(tidyverse)
+library(ggplot2)
+
+fiber_cohort <- readRDS("../public_data/fiber_data/all_metadata_fiber.RDS")
+all_metadata_fiber <- read.csv("../data/fiber_data/full_metadata_no_phi.csv")  %>%
+  filter(record_id %in% fiber_cohort$record_id)%>%
+  select(c(abx_6mo, abx_3mo, pbx_now)) %>%
+  mutate(
+    abx_6mo = case_when(
+      abx_6mo == 0 ~ "0 weeks",
+      abx_6mo == 1 ~ "1 to 2 weeks",
+      abx_6mo == 3 ~ "3 t 5 weeks",
+      abx_6mo == 5 ~ "More than 5 weeks",
+      .default = "Unknown"
+    ),
+    abx_3mo = case_when(
+      abx_3mo == 0 ~ "0 weeks",
+      abx_3mo == 1 ~ "1 to 2 weeks",
+      abx_3mo == 3 ~ "3 t 5 weeks",
+      abx_3mo == 5 ~ "More than 5 weeks",
+      .default = "Unknown"
+    ),
+    pbx_now = case_when(
+      pbx_now == 0 ~ "No",
+      pbx_now == 1 ~ "Yes",
+      pbx_now == 3 ~ "Not sure what Probiotics Are",
+      .default = "Unknown"
+    ),
+    abx_6mo = factor(abx_6mo, levels = c("0 weeks", "1 to 2 weeks", "3 t 5 weeks", "More than 5 weeks", "Unknown")),
+    abx_3mo = factor(abx_3mo, levels = c("0 weeks", "1 to 2 weeks", "3 t 5 weeks", "More than 5 weeks", "Unknown")),
+    pbx_now = factor(pbx_now, levels = c("No", "Yes", "Not sure what Probiotics Are", "Unknown"))
+      
+  )
+
+```
+
+
+```{r}
+#| echo: true
+#| warning: false
+#| include: true
+#| label: pbx_usage
+
+ggplot(all_metadata_fiber, aes(x = pbx_now)) +
+  geom_bar(
+    binwidth = 2,           
+    fill = "#68a378",       
+    color = "white",
+    stat = 'count',        
+    alpha = 0.8            
+  ) +
+  labs(
+    title = "Probiotics Usage",
+    subtitle = "At time of Survey",
+    x = "Current Probiotic Use",
+    y = "Number of Patients"
+  ) +
+  geom_text(
+    stat = "count", 
+    aes(label = after_stat(count)), 
+    vjust = -0.5, 
+    fontface = "bold"
+  ) +
+  theme_minimal()
+```
+
+```{r}
+#| echo: true
+#| warning: false
+#| include: true
+#| label: abx_usage
+
+ggplot(all_metadata_fiber, aes(x = abx_3mo)) +
+  geom_bar(
+    binwidth = 2,           
+    fill = "#68a378",       
+    color = "white",
+    stat = 'count',        
+    alpha = 0.8            
+  ) +
+  labs(
+    title = "Antibiotics Usage",
+    subtitle = "3 Months before survey",
+    x = "Weeks of Antibiotics Exposure",
+    y = "Number of Patients"
+  ) +
+  geom_text(
+    stat = "count", 
+    aes(label = after_stat(count)), 
+    vjust = -0.5, 
+    fontface = "bold"
+  ) +
+  theme_minimal()
+```

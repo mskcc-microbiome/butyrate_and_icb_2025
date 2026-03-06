@@ -139,6 +139,8 @@ pval_continuous_os <- summary(coxph(Surv(os_mo, os_status)~aofib,
 pval_multivariate_binary_pfs_top_bottom_tertile <- summary(coxph(Surv(pfs_mo, pod_status)~fiber_top_tertile_factor + 
                             ageby10 + 
                             ecog_1to5_final +
+                              cancer_RCCvsUC+
+                              stage + 
                               bmi,
                                      data=all_metadata_fiber, subset = (fiber_tertile %in% c(1, 3))))$coefficients["fiber_top_tertile_factorTRUE", "Pr(>|z|)"] %>%
   signif(digits = 3)
@@ -147,6 +149,8 @@ print(pval_multivariate_binary_pfs_top_bottom_tertile)
 pval_multivariate_binary_os_top_bottom_tertile <- summary(coxph(Surv(os_mo, os_status)~fiber_top_tertile_factor + 
                             ageby10 + 
                             ecog_1to5_final +
+                              cancer_RCCvsUC +
+                              stage +
                               bmi,
                                      data=all_metadata_fiber, subset = (fiber_tertile %in% c(1, 3))))$coefficients["fiber_top_tertile_factorTRUE", "Pr(>|z|)"] %>%
   signif(digits = 3)
@@ -172,18 +176,25 @@ pfs_plot <- ggsurvplot(kmPFS_tert,risk.table=FALSE,
            xlab=element_blank(), 
            ylab=element_blank(),
            pval = pval_continuous_pfs,
-           legend="none",
            palette = custom_palette,
            title=element_blank(),
-           #legend.title=element_blank(),
+           #legend = "none",
+           legend.labs=c("0-33%", "33-66%", "66-100%"), # an ordered list
+           legend.title = "Fiber Consumption Tertile",
            conf.int=F,
            break.x.by=6,
            axes.offset=FALSE,
            xlim=c(0,25),
            data = all_metadata_fiber)
 print(pfs_plot)
+
+pfs_plot$plot <- pfs_plot$plot +
+  theme(
+    axis.text.y = element_blank(),
+    axis.text.x = element_blank()
+    )
 pfs_plot_to_save <- ggsave_survival_workaround(pfs_plot)
-ggsave("figures/svg/pfs_tertitle_plot.svg", plot = pfs_plot_to_save, w = 2.5, h = 3)
+ggsave("figures/svg/pfs_tertitle_plot.svg", plot = pfs_plot_to_save,w = 1.8, h = 1.5)
 ```
 
 ## Panel E
@@ -202,22 +213,29 @@ kmOS_tert<-survfit(Surv(os_mo, os_status)~fiber_t_factor_ordered,
 os_plot <- ggsurvplot(kmOS_tert,risk.table=F,
            xlab=element_blank(), 
            ylab=element_blank(),
+           size = .5,
            pval = pval_continuous_os,
            palette = custom_palette,
-           title=element_blank(),
-           #legend.title=element_blank(),
-           legend="none",
-           #legend.labs=c("0-33%", "33-66%", "66-100%"),
-           #surv.median.line = "hv",
+           #title=element_blank(),
+           #legend = "none",
+           legend.labs=c("0-33%", "33-66%", "66-100%"), # an ordered list
+           legend.title = "Fiber Consumption Tertile",
            conf.int=FALSE,
            break.x.by=6,
            axes.offset=FALSE,
            xlim=c(0,25),
-           data = all_metadata_fiber)
-
+           data = all_metadata_fiber) 
 print(os_plot)
-os_plot_to_save <- ggsave_survival_workaround(os_plot)
-ggsave("figures/svg/os_tertitle_plot.svg", plot = os_plot_to_save, w = 2.5, h = 3)
+
+os_plot$plot <- os_plot$plot +
+  theme(
+    axis.text.y = element_blank(),
+    axis.text.x = element_blank()
+    )
+
+
+os_plot_to_save <- ggsave_survival_workaround(os_plot) 
+ggsave("figures/svg/os_tertitle_plot.svg", plot = os_plot_to_save, w = 1.8, h = 1.5)
 ```
 
 ## Panel F
