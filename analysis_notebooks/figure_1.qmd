@@ -1,0 +1,381 @@
+--- 
+title: |
+  <img src="./images/fiber_beaker_image_food.jpg" width="250px" style="margin-left:5%; margin-right:5%"/>
+  Figure 1 - Hazard Ratio Analysis of Fiber Intake
+---
+
+This figure is largely concerned with fiber analysis in the Genito-unirinary survey cohort.
+
+
+```{r}
+#| echo: false
+#| warning: false
+#| include: false
+#| label: library_data_imports
+
+library(dplyr)
+library(survival)
+library(survminer)
+library(forestplot)
+source("utility_funcs.R")
+library(Hmisc)
+library(RColorBrewer)
+
+ggsave_workaround <- function(g){survminer:::.build_ggsurvplot(x = g,
+                                                               surv.plot.height = NULL,
+                                                               risk.table.height = NULL,
+                                                               ncensor.plot.height = NULL)}
+
+ylgnbu_palette <- brewer.pal(n = 8, name = "YlGnBu")
+custom_palette <- c(ylgnbu_palette[5], ylgnbu_palette[6], ylgnbu_palette[8])
+```
+
+The data we are visualizing here has the following structure:
+
+```{r}
+#| warning: false
+#| include: false
+#| label: load_data
+
+
+gu_cohort_data <- readRDS("../data/gu_survey_cohort.RDS")
+#mixed_solid_tumor <-
+#external_melanoma <-
+#external_rcc
+```
+
+```{r}
+
+# Pull out different sub-groups from this data:
+
+mUCdataFiber=filter(gu_cohort_data,cancer_type!=4)
+dataUCavelumabFiber=filter(mUCdataFiber,io_regimen==5)
+dataUC_NOTavelumabFiber=filter(mUCdataFiber,io_regimen!=5)
+
+mRCdataFiber=filter(gu_cohort_data,cancer_type==4)
+dataRCIpiNivoFiber=filter(mRCdataFiber,io_regimen==9 | io_regimen==17)
+dataRCioTKIFiber=filter(mRCdataFiber,io_regimen==8 | io_regimen==18 | io_regimen==10 | io_regimen==11 | io_regimen==16 | io_regimen==12)
+```
+
+## Panel B
+
+Mortality Hazard for PFS by daily average fiber intake, visualized via partial smoothing spline.  Ticks along the x axis represent individual patients. 
+
+```{r}
+#| warning: false
+#| include: true
+#| label: panel_b
+
+makeSpline(gu_cohort_data, gu_cohort_data$pfs_mo, gu_cohort_data$pod_status, 
+           gu_cohort_data$aofib,
+           xlab = "Daily average fiber intake (g/day)", ylab="Hazard ratio (95% CI)",
+           title="Spline for progression-free survival",
+           knots=2,
+           centerpoint = 15)
+
+```
+
+```{r}
+#| warning: false
+#| include: true
+#| label: panel_b_pval
+
+cox_pfs_allMet_uv <-coxph(Surv(pfs_mo,
+                               pod_status)~  fiber_5g_increment,
+                          gu_cohort_data)
+
+cat(paste(
+  "-----------------------------------------------\n\np value fiber in 5g increments, PFS:",
+  round(summary(cox_pfs_allMet_uv)$coefficients["fiber_5g_increment", "Pr(>|z|)"],digits = 3),
+  "\n\n-----------------------------------------------\n\n"
+))
+summary(cox_pfs_allMet_uv)
+
+```
+
+## Panel C
+
+Mortality Hazard for OS by daily average fiber intake, visualized via partial smoothing spline.  Ticks along the x axis represent individual patients. 
+
+```{r}
+#| warning: false
+#| include: true
+#| label: panel_c
+
+makeSpline(gu_cohort_data, gu_cohort_data$os_mo, gu_cohort_data$os_status, 
+           gu_cohort_data$aofib,
+           xlab = "Daily average fiber intake (g/day)", ylab="Hazard ratio (95% CI)",
+           title="Smoothing spline for overall survival",
+           knots=2, 
+           centerpoint = 15)
+```
+
+```{r}
+#| warning: false
+#| include: true
+#| label: panel_c_pval
+
+cox_os_allMet_uv <-coxph(Surv(os_mo,
+                              os_status)~  fiber_5g_increment,
+                         gu_cohort_data)
+
+cat(paste(
+  "-----------------------------------------------\n\np value fiber in 5g increments, OS:",
+  round(summary(cox_os_allMet_uv)$coefficients["fiber_5g_increment", "Pr(>|z|)"],digits = 3),
+  "\n\n-----------------------------------------------\n\n"
+))
+summary(cox_os_allMet_uv)
+```
+
+## Panel D
+
+Kaplan-Meier PFS by fiber intake tertiles.
+
+```{r}
+#| warning: false
+#| include: true
+#| label: panel_d
+
+
+kmPFS_tert<-survfit(Surv(pfs_mo, pod_status)~fiber_tertile_factor,
+               type="kaplan-meier", data=gu_cohort_data)
+
+pfs_plot <- ggsurvplot(kmPFS_tert,
+           risk.table=T,
+           xlab=element_blank(), 
+           ylab=element_blank(),
+           pval = T,
+           palette = custom_palette,
+           title=element_blank(),
+           censor.shape="|",
+           censor.size = 1,
+           size = .5,
+           #legend = "none",
+           legend.labs=c("Low", "Mid", "High"), # an ordered list
+           legend.title = "Fiber\nConsumption\nTertile",
+           conf.int=F,
+           break.x.by=6,
+           axes.offset=FALSE,
+           xlim=c(0,25),
+           data = gu_cohort_data)
+print(pfs_plot)
+
+#pfs_plot$plot <- pfs_plot$plot +
+#  theme(
+#    axis.text.y = element_blank(),
+#    axis.text.x = element_blank()
+#    )
+#pfs_plot_to_save <- ggsave_survival_workaround(pfs_plot)
+#ggsave("figures/svg/pfs_tertitle_plot.svg", plot = pfs_plot_to_save,w = 1.8, h = 1.5)
+```
+
+```{r}
+#| warning: false
+#| include: true
+#| label: panel_d_pval
+
+cox_pfs_allMet_mv <-coxph(Surv(pfs_mo,
+                               pod_status)~ fiber_tertile_factor + 
+                            strata(age_cat) + 
+                            ecog_1to5_final +
+                            cancer_RCCvsUC_NAME +
+                            stage.simplified.factor,
+                          gu_cohort_data
+)
+
+cat(paste(
+  "-----------------------------------------------\n\nWald p value top vs bottom tertile, PFS:",
+  round(summary(cox_pfs_allMet_mv)$coefficients["fiber_tertile_factorT3 (highest)", "Pr(>|z|)"],digits = 3),
+  "\n\n-----------------------------------------------\n\n"
+))
+```
+
+## Panel E
+
+Kaplan-Meier OS by fiber tertile. 
+
+```{r}
+#| warning: false
+#| include: true
+#| label: panel_e
+
+kmOS_tert<-survfit(Surv(os_mo, os_status)~fiber_tertile_factor,
+               type="kaplan-meier", data=gu_cohort_data)
+
+
+os_plot <- ggsurvplot(kmOS_tert,
+           risk.table=T,
+           xlab=element_blank(), 
+           ylab=element_blank(),
+           size = .5,
+           pval = T,
+           palette = custom_palette,
+           censor.shape="|",
+           censor.size = 1,
+           title=element_blank(),
+           #legend = "none",
+           legend.labs=c("Low", "Mid", "High"), # an ordered list
+           legend.title = "Fiber\nConsumption\nTertile",
+           conf.int=FALSE,
+           break.x.by=6,
+           axes.offset=FALSE,
+           xlim=c(0,25),
+           data = gu_cohort_data) 
+print(os_plot)
+
+#os_plot$plot <- os_plot$plot +
+#  theme(
+#    axis.text.y = element_blank(),
+#    axis.text.x = element_blank()
+#    )
+#
+#
+#os_plot_to_save <- ggsave_survival_workaround(os_plot) 
+#ggsave("figures/svg/os_tertitle_plot.svg", plot = os_plot_to_save, w = 1.8, h = 1.5)
+```
+
+```{r}
+#| warning: false
+#| include: true
+#| label: panel_e_pval
+
+cox_os_allMet_mv <-coxph(Surv(os_mo,
+                               os_status)~ fiber_tertile_factor + 
+                            strata(age_cat) + 
+                            ecog_1to5_final +
+                            cancer_RCCvsUC_NAME +
+                            stage.simplified.factor,
+                          gu_cohort_data
+)
+
+cat(paste(
+  "-----------------------------------------------\n\nWald p value top vs bottom tertile, PFS:",
+  round(summary(cox_os_allMet_mv)$coefficients["fiber_tertile_factorT3 (highest)", "Pr(>|z|)"],digits = 3),
+  "\n\n-----------------------------------------------\n\n"
+))
+```
+
+## Panel F
+Univariate HRs for PFS among clinically relevant subgroups in the highest versus lowest tertile of fiber consumption.
+
+```{r}
+#| warning: false
+#| include: true
+#| label: panel_f
+
+# Prep cohorts:
+mUCdataFiber=filter(gu_cohort_data,cancer_type!=4)
+dataUCavelumabFiber=filter(mUCdataFiber,io_regimen==5)
+dataUC_NOTavelumabFiber=filter(mUCdataFiber,io_regimen!=5)
+
+mRCdataFiber=filter(gu_cohort_data,cancer_type==4)
+dataRCIpiNivoFiber=filter(mRCdataFiber,io_regimen==9 | io_regimen==17)
+dataRCioTKIFiber=filter(mRCdataFiber,io_regimen==8 | io_regimen==18 | io_regimen==10 | io_regimen==11 | io_regimen==16 | io_regimen==12)
+
+# Get pvalues:
+
+cox_pfs_all_uv <-coxph(Surv(pfs_mo,pod_status)~ fiber_tertile_factor,
+                       gu_cohort_data)
+summary(cox_pfs_all_uv)
+
+cox_pfs_RC <-coxph(Surv(pfs_mo,pod_status)~ fiber_tertile_factor,
+                   mRCdataFiber)
+summary(cox_pfs_RC)
+
+cox_pfs_RC_IpiNivo <-coxph(Surv(pfs_mo,pod_status)~ fiber_tertile_factor,
+                           dataRCIpiNivoFiber)
+summary(cox_pfs_RC_IpiNivo)
+
+cox_pfs_RC_TKI_IO <-coxph(Surv(pfs_mo,pod_status)~ fiber_tertile_factor,
+                          dataRCioTKIFiber)
+summary(cox_pfs_RC_TKI_IO)
+
+cox_pfs_UC <-coxph(Surv(pfs_mo,pod_status)~ fiber_tertile_factor,
+                   mUCdataFiber)
+summary(cox_pfs_UC)
+
+cox_pfs_UC_NOTavelumab <-coxph(Surv(pfs_mo,pod_status)~ fiber_tertile_factor,
+                               dataUC_NOTavelumabFiber)
+summary(cox_pfs_UC_NOTavelumab)
+
+cox_pfs_UC_avelumab <-coxph(Surv(pfs_mo,pod_status)~ fiber_tertile_factor,
+                            dataUCavelumabFiber)
+summary(cox_pfs_UC_avelumab)
+
+forestplot_data <- tibble::tibble(mean  = c(0.4304,0.3603, 0.4570, 0.3079, 0.5800, 0.8845, 0.4854),
+                                  lower = c(0.2223, 0.1444, 0.09054, 0.07621, 0.2224, 0.2940, 0.06718),
+                                  upper = c(0.833, 0.8992, 2.307, 1.244, 1.513, 2.661, 3.507),
+                                  study = c("All","RCC", "RCC ipi-nivo", "RCC TKI-ICB",
+                                            "UC", "UC non-maintenance ICB", "UC maintenance ICB"),
+                                  n = c("86","48","15","24","38","24","14"),
+                                  events = c("55","28","8","12","27","19","8"),
+                                  HR = c("0.43","0.36", "0.46", "0.31", "0.58", "0.88", "0.49"))
+
+forestplot_data |>
+  forestplot(labeltext = c(study, n, events, HR),
+             clip = c(0.09, 2.5),
+             xlog = TRUE,
+             xlab = "Hazard ratio for PFS (95% CI)",
+             xticks = c(0.1, 0.25, 0.5, 1.0, 2.5),
+             title = "Univariable HRs for PFS comparing highest vs. lowest tertile of fiber intake",
+             txt_gp = fpTxtGp(xlab = grid::gpar(fontsize = 25),
+                              ticks = grid::gpar(fontsize = 25))) |>
+  fp_set_style(box = "royalblue",
+               line = "darkblue",
+               summary = "royalblue") |> 
+  fp_add_header(study = c("Subgroup"),
+                n = c("n"),
+                events = c("Events"),
+                HR = c("HR"))
+
+```
+
+## Panel G
+
+Multivariate HR for PFS adjusted for age, diagnosis, and performance status.
+
+```{r}
+#| warning: false
+#| include: true
+#| label: panel_g
+
+cox_pfs_all <-coxph(Surv(pfs_mo,pod_status)~ fiber_tertile_factor + strata(age_cat) + 
+                      ecog_1to5_final + cancer_RCCvsUC_NAME + stage.simplified.factor,
+                    gu_cohort_data)
+summary(cox_pfs_all)
+
+cox_pfs_RC <-coxph(Surv(pfs_mo,pod_status)~ fiber_tertile_factor + ageby10 + ecog_1to5_final,
+                   mRCdataFiber) #could not adjust for stage because all patients with RCC were stage IV
+summary(cox_pfs_RC)
+
+cox_pfs_UC <-coxph(Surv(pfs_mo,pod_status)~ fiber_tertile_factor + strata(age_cat) + ecog_1to5_final + stage.simplified.factor,
+                   mUCdataFiber)
+summary(cox_pfs_UC)
+
+forestplot_data <- tibble::tibble(mean  = c(0.4936, 0.4334, 0.70086),
+                                  lower = c(0.2503, 0.16228, 0.2609),
+                                  upper = c(0.9733, 1.1572, 1.883),
+                                  study = c("All", "RCC", "UC"),
+                                  n = c("86","48","38"),
+                                  events = c("55","28","27"),
+                                  HR = c("0.49","0.43","0.70"))
+
+forestplot_data |>
+  forestplot(labeltext = c(study, n, events, HR),
+             clip = c(0.09, 2.5),
+             xlog = TRUE,
+             xlab = "Hazard ratio for PFS (95% CI)",
+             xticks = c(0.1,0.25,0.5,1.0,2.5),
+             title = "Multivariable HRs for PFS comparing highest vs. lowest tertile of fiber intake",
+             txt_gp = fpTxtGp(xlab = grid::gpar(fontsize = 25),
+                              ticks = grid::gpar(fontsize = 25))) |>
+  fp_set_style(box = "royalblue",
+               line = "darkblue",
+               summary = "royalblue") |> 
+  fp_add_header(study = c("Subgroup"),
+                n = c("n"),
+                events = c("Events"),
+                HR = c("HR"))
+
+
+```
