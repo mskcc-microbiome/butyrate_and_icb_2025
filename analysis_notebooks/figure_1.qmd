@@ -39,14 +39,11 @@ The data we are visualizing here has the following structure:
 
 
 gu_cohort_data <- readRDS("../data/gu_survey_cohort.RDS")
-#mixed_solid_tumor <-
+#mixed_solid_tumor <- readRDS("../data/mixed_solid_tumor.RDS") %>% sample_data %>% as.matrix %>% as.data.frame()
 #external_melanoma <-
 #external_rcc
-```
 
-```{r}
-
-# Pull out different sub-groups from this data:
+#pull out cohorts:
 
 mUCdataFiber=filter(gu_cohort_data,cancer_type!=4)
 dataUCavelumabFiber=filter(mUCdataFiber,io_regimen==5)
@@ -57,21 +54,24 @@ dataRCIpiNivoFiber=filter(mRCdataFiber,io_regimen==9 | io_regimen==17)
 dataRCioTKIFiber=filter(mRCdataFiber,io_regimen==8 | io_regimen==18 | io_regimen==10 | io_regimen==11 | io_regimen==16 | io_regimen==12)
 ```
 
+
 ## Panel B
 
 Mortality Hazard for PFS by daily average fiber intake, visualized via partial smoothing spline.  Ticks along the x axis represent individual patients. 
 
 ```{r}
 #| warning: false
-#| include: true
+#| include: false
+#| echo: true
 #| label: panel_b
 
-makeSpline(gu_cohort_data, gu_cohort_data$pfs_mo, gu_cohort_data$pod_status, 
+p <- makeSpline(gu_cohort_data, gu_cohort_data$pfs_mo, gu_cohort_data$pod_status, 
            gu_cohort_data$aofib,
            xlab = "Daily average fiber intake (g/day)", ylab="Hazard ratio (95% CI)",
            title="Spline for progression-free survival",
            knots=2,
            centerpoint = 15)
+print(p)
 
 ```
 
@@ -99,15 +99,17 @@ Mortality Hazard for OS by daily average fiber intake, visualized via partial sm
 
 ```{r}
 #| warning: false
-#| include: true
+#| include: false
+#| echo: true
 #| label: panel_c
 
-makeSpline(gu_cohort_data, gu_cohort_data$os_mo, gu_cohort_data$os_status, 
+p<- makeSpline(gu_cohort_data, gu_cohort_data$os_mo, gu_cohort_data$os_status, 
            gu_cohort_data$aofib,
            xlab = "Daily average fiber intake (g/day)", ylab="Hazard ratio (95% CI)",
            title="Smoothing spline for overall survival",
            knots=2, 
            centerpoint = 15)
+print(p)
 ```
 
 ```{r}
@@ -133,7 +135,8 @@ Kaplan-Meier PFS by fiber intake tertiles.
 
 ```{r}
 #| warning: false
-#| include: true
+#| include: false
+#| echo: true
 #| label: panel_d
 
 
@@ -196,7 +199,7 @@ Kaplan-Meier OS by fiber tertile.
 
 ```{r}
 #| warning: false
-#| include: true
+#| include: false
 #| label: panel_e
 
 kmOS_tert<-survfit(Surv(os_mo, os_status)~fiber_tertile_factor,
@@ -261,6 +264,7 @@ Univariate HRs for PFS among clinically relevant subgroups in the highest versus
 ```{r}
 #| warning: false
 #| include: true
+#| echo: true
 #| label: panel_f
 
 # Prep cohorts:
@@ -337,6 +341,7 @@ Multivariate HR for PFS adjusted for age, diagnosis, and performance status.
 ```{r}
 #| warning: false
 #| include: true
+#| echo: true
 #| label: panel_g
 
 cox_pfs_all <-coxph(Surv(pfs_mo,pod_status)~ fiber_tertile_factor + strata(age_cat) + 
