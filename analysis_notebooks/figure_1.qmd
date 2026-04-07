@@ -1,10 +1,9 @@
 --- 
 title: |
-  <img src="./images/fiber_beaker_image_food.jpg" width="250px" style="margin-left:5%; margin-right:5%"/>
   Figure 1 - Hazard Ratio Analysis of Fiber Intake
 ---
 
-This figure is largely concerned with fiber analysis in the Genito-unirinary survey cohort.
+This figure is largely concerned with fiber analysis in the Genito-urinary survey cohort.
 
 
 ```{r}
@@ -61,8 +60,8 @@ Mortality Hazard for PFS by daily average fiber intake, visualized via partial s
 
 ```{r}
 #| warning: false
-#| include: false
-#| echo: true
+#| include: true
+#| echo: false
 #| label: panel_b
 
 p <- makeSpline(gu_cohort_data, gu_cohort_data$pfs_mo, gu_cohort_data$pod_status, 
@@ -99,8 +98,8 @@ Mortality Hazard for OS by daily average fiber intake, visualized via partial sm
 
 ```{r}
 #| warning: false
-#| include: false
-#| echo: true
+#| include: true
+#| echo: false
 #| label: panel_c
 
 p<- makeSpline(gu_cohort_data, gu_cohort_data$os_mo, gu_cohort_data$os_status, 
@@ -135,8 +134,8 @@ Kaplan-Meier PFS by fiber intake tertiles.
 
 ```{r}
 #| warning: false
-#| include: false
-#| echo: true
+#| include: true
+#| echo: false
 #| label: panel_d
 
 
@@ -199,7 +198,8 @@ Kaplan-Meier OS by fiber tertile.
 
 ```{r}
 #| warning: false
-#| include: false
+#| include: true
+#| echo: false
 #| label: panel_e
 
 kmOS_tert<-survfit(Surv(os_mo, os_status)~fiber_tertile_factor,
