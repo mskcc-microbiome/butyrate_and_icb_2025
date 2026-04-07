@@ -19,6 +19,7 @@ library(forestplot)
 source("utility_funcs.R")
 library(Hmisc)
 library(RColorBrewer)
+library(phyloseq)
 
 ggsave_workaround <- function(g){survminer:::.build_ggsurvplot(x = g,
                                                                surv.plot.height = NULL,
@@ -38,9 +39,9 @@ The data we are visualizing here has the following structure:
 
 
 gu_cohort_data <- readRDS("../data/gu_survey_cohort.RDS")
-#mixed_solid_tumor <- readRDS("../data/mixed_solid_tumor.RDS") %>% sample_data %>% as.matrix %>% as.data.frame()
-#external_melanoma <-
-#external_rcc
+mixed_solid_tumor <- readRDS("../data/mixed_solid_tumor_phyloseq.RDS") %>% sample_data() %>% as.matrix() %>% as.data.frame()
+external_melanoma <- readRDS("../data/external_melanoma_metadata.RDS")
+external_rcc <- readRDS("../data/external_rcc.rds")
 
 #pull out cohorts:
 
@@ -53,7 +54,26 @@ dataRCIpiNivoFiber=filter(mRCdataFiber,io_regimen==9 | io_regimen==17)
 dataRCioTKIFiber=filter(mRCdataFiber,io_regimen==8 | io_regimen==18 | io_regimen==10 | io_regimen==11 | io_regimen==16 | io_regimen==12)
 ```
 
+## Panel A
 
+We start with some summaries of the cohorts used here:
+```{r}
+#| warning: false
+#| include: true
+#| echo: false
+#| label: panel_a
+
+cat(
+  paste(
+    "Genito-Urinary Survey Cohort:", nrow(gu_cohort_data),
+    "Mixed Solid Tumor Cohort:", nrow(mixed_solid_tumor),
+    "External Melanoma Cohort:", nrow(external_melanoma),
+    "External RCC Cohort:", nrow(external_rcc),
+    sep = "\n"
+  )
+)
+
+```
 ## Panel B
 
 Mortality Hazard for PFS by daily average fiber intake, visualized via partial smoothing spline.  Ticks along the x axis represent individual patients. 
