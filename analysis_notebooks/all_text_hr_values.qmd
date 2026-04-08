@@ -1,0 +1,378 @@
+--- 
+title: |
+  Text Based Survival Statistics
+format:
+  html:
+    css: styles.css
+---
+
+
+
+```{r}
+#| echo: false
+#| warning: false
+#| include: false
+#| label: library_data_imports
+
+library(tidyverse)
+library(ggplot2)
+library(phyloseq)
+library(microViz)
+library(survival)
+library(survminer)
+library(viridis)
+library(gtsummary)
+library(yingtools2)
+source("utility_funcs.R")
+
+
+```
+
+This notebok is just to ensure statistics reported in the text are consistent and to make it clear wat set of variables was used in each.  Each section contains the line from the text followed by a section with the corresponding code. 
+
+```{r}
+#| warning: false
+#| echo: false
+#| label: load_data
+
+gu_cohort_data <- readRDS("../data/gu_survey_cohort.RDS")
+mixed_solid_tumor <- readRDS("../data/mixed_solid_tumor.RDS")
+external_melanoma <- readRDS("../data/external_melanoma_metadata.RDS")
+external_rcc <- readRDS("../data/external_rcc.rds")
+```
+
+Higher dietary fiber intake was associated with longer progression free survival (PFS) and overall survival (OS) both in analyses examining fiber intake as a continuous variable (p = 0.045 PFS, p = 0.048 OS) and as a categorical variable.
+```{r}
+#| warning: false
+#| echo: true
+#| include: true
+#| label: fiber_univariate
+
+#line 167-170
+
+cox_pfs_gu_uv_continous <-coxph(Surv(pfs_mo,
+                               pod_status)~  aofib,
+                          gu_cohort_data)
+
+variable = "aofib"
+
+sum_pfs_gu_uv_continous <- summary(cox_pfs_gu_uv_continous)
+cat(paste(
+  "-----------------------------------------------\n\np value unadjusted fiber as a continus variable, PFS:",
+  round(sum_pfs_gu_uv_continous$coefficients[variable, "Pr(>|z|)"],digits = 3),
+  "\n\n-----------------------------------------------\n\n",
+  "HR:",
+  round(sum_pfs_gu_uv_continous$coefficients[variable, "exp(coef)"],digits = 2),
+  "[95% CI:",
+  round(sum_pfs_gu_uv_continous$conf.int[variable, "lower .95"],digits = 2),
+  round(sum_pfs_gu_uv_continous$conf.int[variable, "upper .95"],digits = 3),
+  "]"
+))
+
+cox_os_gu_uv_continous <-coxph(Surv(os_mo,
+                               os_status)~  aofib,
+                          gu_cohort_data)
+
+sum_os_gu_uv_continous <- summary(cox_os_gu_uv_continous)
+cat(paste(
+  "-----------------------------------------------\n\np value unadjusted fiber as a continus variable, PFS:",
+  round(sum_os_gu_uv_continous$coefficients[variable, "Pr(>|z|)"],digits = 3),
+  "\n\n-----------------------------------------------\n\n",
+  "HR:",
+  round(sum_os_gu_uv_continous$coefficients[variable, "exp(coef)"],digits = 2),
+  "[95% CI:",
+  round(sum_os_gu_uv_continous$conf.int[variable, "lower .95"],digits = 2),
+  round(sum_os_gu_uv_continous$conf.int[variable, "upper .95"],digits = 3),
+  "]"
+))
+```
+
+Each 5-gram increase in daily fiber intake was associated with a 15% reduction in the risk of disease progression or death (hazard ratio [HR] of 0.85, 95% confidence interval [CI], 0.72 – 0.997, p = 0.045).
+```{r}
+#| warning: false
+#| echo: true
+#| include: true
+#| label: fiber_5g_univariate_pfs
+
+#line 170-172
+cox_pfs_gu_uv_5g <-coxph(Surv(pfs_mo,
+                               pod_status)~  fiber_5g_increment,
+                          gu_cohort_data)
+
+variable = "fiber_5g_increment"
+sum_pfs_gu_5g_uv <- summary(cox_pfs_gu_uv_5g)
+cat(paste(
+  "-----------------------------------------------\n\np value fiber in 5g increments, PFS:",
+  round(sum_pfs_gu_5g_uv$coefficients[variable, "Pr(>|z|)"],digits = 3),
+  "\n\n-----------------------------------------------\n\n",
+  "HR:",
+  round(sum_pfs_gu_5g_uv$coefficients[variable, "exp(coef)"],digits = 2),
+  "[95% CI:",
+  round(sum_pfs_gu_5g_uv$conf.int[variable, "lower .95"],digits = 2),
+  round(sum_pfs_gu_5g_uv$conf.int[variable, "upper .95"],digits = 3),
+  "]"
+))
+
+```
+Compared to patients in the lowest tertile of fiber intake, patients in the highest tertile had a reduced risk of disease progression or death in both a univariable model (HR 0.43, 95% 0.22-0.83, p = 0.012) ...
+```{r}
+#| warning: false
+#| echo: true
+#| include: true
+#| label: fiber_tertile_univariate_pfs
+
+#line 172-174
+cox_pfs_gu_uv_tertile <-coxph(Surv(pfs_mo,
+                               pod_status)~  fiber_tertile_factor,
+                          gu_cohort_data)
+
+variable = "fiber_tertile_factorT3 (highest)"
+sum_pfs_gu_tertile_uv <- summary(cox_pfs_gu_uv_tertile)
+cat(paste(
+  "-----------------------------------------------\n\np value fiber highest vs lowest tertile univariate, PFS:",
+  round(sum_pfs_gu_tertile_uv$coefficients[variable, "Pr(>|z|)"],digits = 3),
+  "\n\n-----------------------------------------------\n\n",
+  "HR:",
+  round(sum_pfs_gu_tertile_uv$coefficients[variable, "exp(coef)"],digits = 2),
+  "[95% CI:",
+  round(sum_pfs_gu_tertile_uv$conf.int[variable, "lower .95"],digits = 2),
+  round(sum_pfs_gu_tertile_uv$conf.int[variable, "upper .95"],digits = 3),
+  "]"
+))
+
+```
+... and a multivariable model adjusted for diagnosis, stage, and performance status, and stratified by age (HR 0.49, 95% CI 0.25-0.97, p = 0.042).
+```{r}
+#| warning: false
+#| echo: true
+#| include: true
+#| label: fiber_tertile_multivariate_pfs
+
+#line 174-175
+cox_pfs_gu_mv_tertile <-coxph(Surv(pfs_mo,
+                               pod_status)~  fiber_tertile_factor + 
+                            strata(age_cat) + 
+                            ecog_1to5_final +
+                            cancer_RCCvsUC_NAME +
+                            stage.simplified.factor,
+                          gu_cohort_data)
+
+variable = "fiber_tertile_factorT3 (highest)"
+sum_pfs_gu_tertile_mv <- summary(cox_pfs_gu_mv_tertile)
+cat(paste(
+  "-----------------------------------------------\n\np value fiber highest vs lowest tertile multivariate, PFS:",
+  round(sum_pfs_gu_tertile_mv$coefficients[variable, "Pr(>|z|)"],digits = 3),
+  "\n\n-----------------------------------------------\n\n",
+  "HR:",
+  round(sum_pfs_gu_tertile_mv$coefficients[variable, "exp(coef)"],digits = 2),
+  "[95% CI:",
+  round(sum_pfs_gu_tertile_mv$conf.int[variable, "lower .95"],digits = 2),
+  round(sum_pfs_gu_tertile_mv$conf.int[variable, "upper .95"],digits = 3),
+  "]"
+))
+
+```
+We identified that each log-fold increase in fecal butyrate-production gene abundance was associated with a decrease in overall mortality, HR 0.43 (95% CI, 0.26-0.71; p =0.001) in a multivariable Cox model adjusted for age, performance status, BMI, smoking status and stratified on diagnosis .
+```{r}
+#| warning: false
+#| echo: true
+#| include: true
+#| label: total_buty_multivariate_os
+
+#line 204-206
+cox_os_mst_total_buty_mv <-coxph(Surv(tt_os_d, event_os)~ log(total) + 
+                                age10 + 
+                                strata(cohort) + 
+                                imputed_ecog + #imputed to modal value
+                                bmi + 
+                                imputed_smoking_status, #imputed to modal value
+                          mixed_solid_tumor)
+
+variable = "log(total)"
+sum_os_mst_total_buty_mv <- summary(cox_os_mst_total_buty_mv)
+cat(paste(
+  "-----------------------------------------------\n\np value log(total butyrate producing genes), OS:",
+  round(sum_os_mst_total_buty_mv$coefficients[variable, "Pr(>|z|)"],digits = 3),
+  "\n\n-----------------------------------------------\n\n",
+  "HR:",
+  round(sum_os_mst_total_buty_mv$coefficients[variable, "exp(coef)"],digits = 2),
+  "[95% CI:",
+  round(sum_os_mst_total_buty_mv$conf.int[variable, "lower .95"],digits = 2),
+  round(sum_os_mst_total_buty_mv$conf.int[variable, "upper .95"],digits = 3),
+  "]"
+))
+```
+We observe a comparable HR of 0.60 for PFS (95% CI, 0.38-0.94; p = 0.03).
+```{r}
+#| warning: false
+#| echo: true
+#| include: true
+#| label: total_buty_multivariate_pfs
+
+#line 207-208
+cox_pfs_mst_total_buty_mv <-coxph(Surv(tt_pfs_d, pfs_event)~ log(total) + 
+                                age10 + 
+                                strata(cohort) + 
+                                imputed_ecog + #imputed to modal value
+                                bmi + 
+                                imputed_smoking_status, #imputed to modal value
+                          mixed_solid_tumor)
+
+variable = "log(total)"
+sum_pfs_mst_total_buty_mv <- summary(cox_pfs_mst_total_buty_mv)
+cat(paste(
+  "-----------------------------------------------\n\np value log(total butyrate producing genes), PFS:",
+  round(sum_pfs_mst_total_buty_mv$coefficients[variable, "Pr(>|z|)"],digits = 3),
+  "\n\n-----------------------------------------------\n\n",
+  "HR:",
+  round(sum_pfs_mst_total_buty_mv$coefficients[variable, "exp(coef)"],digits = 2),
+  "[95% CI:",
+  round(sum_pfs_mst_total_buty_mv$conf.int[variable, "lower .95"],digits = 2),
+  round(sum_pfs_mst_total_buty_mv$conf.int[variable, "upper .95"],digits = 3),
+  "]"
+))
+```
+We then subdivided the butyrate-producing genes according to their annotation as steps in four substrate-specific fermentation subpathways as described in Vital et al.19 (acetyl-CoA [ACoA], glutarate, succinate, lysine) and investigated associations with OS for each, applying a Bonferroni correction for multiple testing (significance at p < 0.0125). The ACoA fermentation pathway (Wald p = 0.006...
+```{r}
+#| warning: false
+#| echo: true
+#| include: true
+#| label: acoa_vs_taxa_os
+
+#line 211 ish
+model1_msk_os <- coxph(Surv(tt_os_d, event_os)~test_v+age10+strata(cohort)+ecog+ bmi + imputed_smoking_status, mixed_solid_tumor %>% mutate(test_v = log(rum)))
+model2_msk_os <- coxph(Surv(tt_os_d, event_os)~test_v+age10+strata(cohort)+ecog+ bmi + imputed_smoking_status, mixed_solid_tumor%>% mutate(test_v = log(rum_lach)))
+model3_msk_os <- coxph(Surv(tt_os_d, event_os)~test_v+age10+strata(cohort)+ecog+ bmi + imputed_smoking_status, mixed_solid_tumor %>% mutate(test_v = log(clostridiales)))
+model4_msk_os <- coxph(Surv(tt_os_d, event_os)~test_v+age10+strata(cohort)+ecog+ bmi + imputed_smoking_status, mixed_solid_tumor %>% mutate(test_v = log(clostridia)))
+model5_msk_os <- coxph(Surv(tt_os_d, event_os)~test_v+age10+strata(cohort)+ecog+ bmi + imputed_smoking_status, mixed_solid_tumor %>% mutate(test_v = log(eval(faecalibacterium_prausnitzii+1e-4))))
+model6_msk_os <- coxph(Surv(tt_os_d, event_os)~test_v+age10+strata(cohort)+ecog+ bmi + imputed_smoking_status, mixed_solid_tumor %>% mutate(test_v = log(pyruvate)))
+
+models_mixed_solid_tumor_os <- list(model6_msk_os, model1_msk_os, model2_msk_os, model3_msk_os, model4_msk_os, model5_msk_os)
+
+results_df <- data.frame()
+
+for (i in seq_along(models_mixed_solid_tumor_os)) {
+  model <- models_mixed_solid_tumor_os[[i]]
+  summary_model <- summary(model)
+
+
+  hr <- round(summary_model$coefficients["test_v", "exp(coef)"], digits = 2)
+  lower_ci <- round(summary_model$conf.int["test_v", "lower .95"], digits = 2)
+  upper_ci <- round(summary_model$conf.int["test_v", "upper .95"], digits = 2)
+  pvalue <- round(summary_model$coefficients["test_v", "Pr(>|z|)"], digits = 3)
+
+
+  results_df <- rbind(results_df, data.frame(
+    Model = paste0("model", i),
+    HR = hr,
+    Lower_CI = lower_ci,
+    Upper_CI = upper_ci,
+    pvalue = pvalue
+  ))
+}
+p_adjusted <- p.adjust(results_df$pvalue, method = "bonferroni")
+#First p value is the one for ACoA
+cat(paste(
+  "-----------------------------------------------\n\nBonferroni Adju p value log(ACoA), OS:",
+  p_adjusted[1],
+  "\n\n-----------------------------------------------\n\n"
+))
+
+```
+A significant association with PFS was also observed (Wald p = 0.012, Bonferroni adj. Wald p = 0.072).
+```{r}
+#| warning: false
+#| echo: true
+#| include: true
+#| label: acoa_vs_taxa_pfs
+
+#line 211 ish
+model1_msk_pfs <- coxph(Surv(tt_pfs_d, pfs_event)~test_v+age10+strata(cohort)+imputed_ecog+ bmi + imputed_smoking_status, mixed_solid_tumor %>% mutate(test_v = log(rum)))
+model2_msk_pfs <- coxph(Surv(tt_pfs_d, pfs_event)~test_v+age10+strata(cohort)+imputed_ecog+ bmi + imputed_smoking_status, mixed_solid_tumor%>% mutate(test_v = log(rum_lach)))
+model3_msk_pfs <- coxph(Surv(tt_pfs_d, pfs_event)~test_v+age10+strata(cohort)+imputed_ecog+ bmi + imputed_smoking_status, mixed_solid_tumor %>% mutate(test_v = log(clostridiales)))
+model4_msk_pfs <- coxph(Surv(tt_pfs_d, pfs_event)~test_v+age10+strata(cohort)+imputed_ecog+ bmi + imputed_smoking_status, mixed_solid_tumor %>% mutate(test_v = log(clostridia)))
+model5_msk_pfs <- coxph(Surv(tt_pfs_d, pfs_event)~test_v+age10+strata(cohort)+imputed_ecog+ bmi + imputed_smoking_status, mixed_solid_tumor %>% mutate(test_v = log(eval(faecalibacterium_prausnitzii+1e-4))))
+model6_msk_pfs <- coxph(Surv(tt_pfs_d, pfs_event)~test_v+age10+strata(cohort)+imputed_ecog+ bmi + imputed_smoking_status, mixed_solid_tumor %>% mutate(test_v = log(pyruvate)))
+
+
+models_mixed_solid_tumor_pfs <- list(model6_msk_pfs, model1_msk_pfs, model2_msk_pfs, model3_msk_pfs, model4_msk_pfs, model5_msk_pfs)
+
+results_df <- data.frame()
+
+
+for (i in seq_along(models_mixed_solid_tumor_pfs)) {
+  model <- models_mixed_solid_tumor_pfs[[i]]
+  summary_model <- summary(model)
+
+
+  hr <- round(summary_model$coefficients["test_v", "exp(coef)"], digits=2)
+  lower_ci <- round(summary_model$conf.int["test_v", "lower .95"], digits=2)
+  upper_ci <- round(summary_model$conf.int["test_v", "upper .95"], digits=2)
+  pvalue <- round(summary_model$coefficients["test_v", "Pr(>|z|)"], digits=3)
+
+
+  results_df <- rbind(results_df, data.frame(
+    Model = paste0("model", i),
+    HR = hr,
+    Lower_CI = lower_ci,
+    Upper_CI = upper_ci,
+    pvalue = pvalue
+  ))
+}
+
+p_adjusted <- p.adjust(results_df$pvalue, method = "bonferroni")
+#First p value is the one for ACoA
+cat(paste(
+  "-----------------------------------------------\n\n",
+  "Bonferroni Adju p value log(ACoA), PFS:",
+  p_adjusted[1],
+  "\n\n-----------------------------------------------\n\n",
+  
+  "Not Adj p value log(ACoA), PFS:",
+  results_df$pvalue[1],
+  "\n\n-----------------------------------------------\n\n"
+))
+
+```
+
+```{r}
+#| warning: false
+#| echo: true
+#| include: true
+#| label: external_rcc_aca_pfs
+
+#line 241
+
+cox_pfs_ercc_log_acoa_mv <-coxph(Surv(pfsd, progressed_per_protocol)~ eval(pyruvate/100)+cbm588, 
+                          external_rcc %>% 
+                            filter(!is.na(progressed_per_protocol)) %>%
+                            mutate(
+                              pfsd = as.numeric(as.Date(date_of_progression_or_last_f_u) - as.Date(x1st_i_n))#,
+                              #pyruvate = if_else(pyruvate < 1, mean(pyruvate), pyruvate) # one sample had reads < 1, likely insufficient read depth. 
+                              )
+)
+cox_pfs_ercc_log_acoa_mv <-coxph(Surv(pfsd, progressed_per_protocol)~ log(pyruvate)+cbm588, 
+                          external_rcc %>% 
+                            filter(!is.na(progressed_per_protocol)) %>%
+                            mutate(
+                              pfsd = as.numeric(as.Date(date_of_progression_or_last_f_u) - as.Date(x1st_i_n)) 
+                              )
+)
+
+variable = "log(pyruvate)"
+sum_pfs_ercc_log_acoa_mv <- summary(cox_pfs_ercc_log_acoa_mv)
+cat(paste(
+  "-----------------------------------------------\n\np value log(acoa), external RCC PFS:",
+  round(sum_pfs_ercc_log_acoa_mv$coefficients[variable, "Pr(>|z|)"],digits = 3),
+  "\n\n-----------------------------------------------\n\n",
+  "HR:",
+  round(sum_pfs_ercc_log_acoa_mv$coefficients[variable, "exp(coef)"],digits = 2),
+  "[95% CI:",
+  round(sum_pfs_ercc_log_acoa_mv$conf.int[variable, "lower .95"],digits = 2),
+  round(sum_pfs_ercc_log_acoa_mv$conf.int[variable, "upper .95"],digits = 3),
+  "]"
+))
+
+```
+
+
