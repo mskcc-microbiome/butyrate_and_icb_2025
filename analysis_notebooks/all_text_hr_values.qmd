@@ -172,7 +172,7 @@ cat(paste(
 ))
 
 ```
-We identified that each log-fold increase in fecal butyrate-production gene abundance was associated with a decrease in overall mortality, HR 0.43 (95% CI, 0.26-0.71; p =0.001) in a multivariable Cox model adjusted for age, performance status, BMI, smoking status and stratified on diagnosis .
+We identified that each log-fold increase in fecal butyrate-production gene abundance was associated with a decrease in overall mortality, HR 0.44 (95% CI, 0.27-0.73; p =0.002) in a multivariable Cox model adjusted for age, performance status, BMI, smoking status and stratified on diagnosis.
 ```{r}
 #| warning: false
 #| echo: true
@@ -202,7 +202,7 @@ cat(paste(
   "]"
 ))
 ```
-We observe a comparable HR of 0.60 for PFS (95% CI, 0.38-0.94; p = 0.03).
+We observe a comparable HR of 0.6 for PFS (95% CI, 0.39-0.96; p = 0.03).
 ```{r}
 #| warning: false
 #| echo: true
@@ -232,7 +232,7 @@ cat(paste(
   "]"
 ))
 ```
-We then subdivided the butyrate-producing genes according to their annotation as steps in four substrate-specific fermentation subpathways as described in Vital et al.19 (acetyl-CoA [ACoA], glutarate, succinate, lysine) and investigated associations with OS for each, applying a Bonferroni correction for multiple testing (significance at p < 0.0125). The ACoA fermentation pathway (Wald p = 0.006...
+We then subdivided the butyrate-producing genes according to their annotation as steps in four substrate-specific fermentation subpathways as described in Vital et al.19 (acetyl-CoA [ACoA], glutarate, succinate, lysine) and investigated associations with OS for each, applying a Bonferroni correction for multiple testing (significance at p < 0.0125). The ACoA fermentation pathway (Bonferroni adj. Wald p = 0.002 ...
 ```{r}
 #| warning: false
 #| echo: true
@@ -279,7 +279,7 @@ cat(paste(
 ))
 
 ```
-A significant association with PFS was also observed (Wald p = 0.012, Bonferroni adj. Wald p = 0.072).
+A significant association with PFS was also observed (Wald p = 0.015, Bonferroni adj. Wald p = 0.090).
 ```{r}
 #| warning: false
 #| echo: true
@@ -334,7 +334,7 @@ cat(paste(
 ))
 
 ```
-
+Patients in this cohort were randomly assigned to receive a live bacterial supplement or placebo throughout treatment, and in a multivariable model including log-transformed ACoA-pathway gene abundance and treatment assignment, increased gene abundance was associated with significant improvement in PFS (HR 0.29 [0.11, 0.75], p=0.011)
 ```{r}
 #| warning: false
 #| echo: true
@@ -343,14 +343,6 @@ cat(paste(
 
 #line 241
 
-cox_pfs_ercc_log_acoa_mv <-coxph(Surv(pfsd, progressed_per_protocol)~ eval(pyruvate/100)+cbm588, 
-                          external_rcc %>% 
-                            filter(!is.na(progressed_per_protocol)) %>%
-                            mutate(
-                              pfsd = as.numeric(as.Date(date_of_progression_or_last_f_u) - as.Date(x1st_i_n))#,
-                              #pyruvate = if_else(pyruvate < 1, mean(pyruvate), pyruvate) # one sample had reads < 1, likely insufficient read depth. 
-                              )
-)
 cox_pfs_ercc_log_acoa_mv <-coxph(Surv(pfsd, progressed_per_protocol)~ log(pyruvate)+cbm588, 
                           external_rcc %>% 
                             filter(!is.na(progressed_per_protocol)) %>%
@@ -370,6 +362,33 @@ cat(paste(
   "[95% CI:",
   round(sum_pfs_ercc_log_acoa_mv$conf.int[variable, "lower .95"],digits = 2),
   round(sum_pfs_ercc_log_acoa_mv$conf.int[variable, "upper .95"],digits = 3),
+  "]"
+))
+
+```
+
+```{r}
+#| warning: false
+#| echo: true
+#| include: true
+#| label: external_melanoma_pfs_log_acoa
+
+#line 250 ish
+
+cox_em_pfs_mv <- coxph(Surv(pfs_d, pfsevent)~log(pyruvate) + age10 + adv_substage, external_melanoma)
+
+
+variable = "log(pyruvate)"
+sum_em_pfs_mv <- summary(cox_em_pfs_mv)
+cat(paste(
+  "-----------------------------------------------\n\np value log(acoa), external RCC PFS:",
+  round(sum_em_pfs_mv$coefficients[variable, "Pr(>|z|)"],digits = 3),
+  "\n\n-----------------------------------------------\n\n",
+  "HR:",
+  round(sum_em_pfs_mv$coefficients[variable, "exp(coef)"],digits = 2),
+  "[95% CI:",
+  round(sum_em_pfs_mv$conf.int[variable, "lower .95"],digits = 2),
+  round(sum_em_pfs_mv$conf.int[variable, "upper .95"],digits = 3),
   "]"
 ))
 

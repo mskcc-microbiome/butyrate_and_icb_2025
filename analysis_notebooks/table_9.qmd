@@ -44,7 +44,7 @@ model2_wargo_pfs <- coxph(Surv(pfs_d, pfsevent)~test_v + age10 + adv_substage, e
 model3_wargo_pfs <- coxph(Surv(pfs_d, pfsevent)~test_v + age10 + adv_substage, external_melanoma_cohort%>% mutate(test_v = log(clostridiales)))
 model4_wargo_pfs <- coxph(Surv(pfs_d, pfsevent)~test_v + age10 + adv_substage, external_melanoma_cohort%>% mutate(test_v = log(clostridia)))
 model5_wargo_pfs <- coxph(Surv(pfs_d, pfsevent)~test_v + age10 + adv_substage, external_melanoma_cohort%>% mutate(test_v = log(eval(faecalibacterium_prausnitzii+1e-7))))
-model6_wargo_pfs <- coxph(Surv(pfs_d, pfsevent)~test_v + age10 + adv_substage, external_melanoma_cohort%>% mutate(test_v = log1p(pyruvate)))
+model6_wargo_pfs <- coxph(Surv(pfs_d, pfsevent)~test_v + age10 + adv_substage, external_melanoma_cohort%>% mutate(test_v = log(pyruvate)))
 
 models_external_melanoma_os <- list(model6_wargo_pfs, model1_wargo_pfs, model2_wargo_pfs, model3_wargo_pfs, model4_wargo_pfs, model5_wargo_pfs)
 
@@ -90,7 +90,7 @@ model2_msk_pfs <- coxph(Surv(tt_pfs_d, pfs_event)~test_v+age10+strata(cohort)+im
 model3_msk_pfs <- coxph(Surv(tt_pfs_d, pfs_event)~test_v+age10+strata(cohort)+imputed_ecog+ bmi + imputed_smoking_status, mixed_solid_tumor %>% mutate(test_v = log(clostridiales)))
 model4_msk_pfs <- coxph(Surv(tt_pfs_d, pfs_event)~test_v+age10+strata(cohort)+imputed_ecog+ bmi + imputed_smoking_status, mixed_solid_tumor %>% mutate(test_v = log(clostridia)))
 model5_msk_pfs <- coxph(Surv(tt_pfs_d, pfs_event)~test_v+age10+strata(cohort)+imputed_ecog+ bmi + imputed_smoking_status, mixed_solid_tumor %>% mutate(test_v = log(eval(faecalibacterium_prausnitzii+1e-4))))
-model6_msk_pfs <- coxph(Surv(tt_pfs_d, pfs_event)~test_v+age10+strata(cohort)+imputed_ecog+ bmi + imputed_smoking_status, mixed_solid_tumor %>% mutate(test_v = log1p(pyruvate)))
+model6_msk_pfs <- coxph(Surv(tt_pfs_d, pfs_event)~test_v+age10+strata(cohort)+imputed_ecog+ bmi + imputed_smoking_status, mixed_solid_tumor %>% mutate(test_v = log(pyruvate)))
 
 
 models_mixed_solid_tumor_pfs <- list(model6_msk_pfs, model1_msk_pfs, model2_msk_pfs, model3_msk_pfs, model4_msk_pfs, model5_msk_pfs)
@@ -139,7 +139,7 @@ model2_msk_os <- coxph(Surv(tt_os_d, event_os)~test_v+age10+strata(cohort)+ecog+
 model3_msk_os <- coxph(Surv(tt_os_d, event_os)~test_v+age10+strata(cohort)+ecog+ bmi + imputed_smoking_status, mixed_solid_tumor %>% mutate(test_v = log(clostridiales)))
 model4_msk_os <- coxph(Surv(tt_os_d, event_os)~test_v+age10+strata(cohort)+ecog+ bmi + imputed_smoking_status, mixed_solid_tumor %>% mutate(test_v = log(clostridia)))
 model5_msk_os <- coxph(Surv(tt_os_d, event_os)~test_v+age10+strata(cohort)+ecog+ bmi + imputed_smoking_status, mixed_solid_tumor %>% mutate(test_v = log(eval(faecalibacterium_prausnitzii+1e-4))))
-model6_msk_os <- coxph(Surv(tt_os_d, event_os)~test_v+age10+strata(cohort)+ecog+ bmi + imputed_smoking_status, mixed_solid_tumor %>% mutate(test_v = log1p(pyruvate)))
+model6_msk_os <- coxph(Surv(tt_os_d, event_os)~test_v+age10+strata(cohort)+ecog+ bmi + imputed_smoking_status, mixed_solid_tumor %>% mutate(test_v = log(pyruvate)))
 
 
 models_mixed_solid_tumor_os <- list(model6_msk_os, model1_msk_os, model2_msk_os, model3_msk_os, model4_msk_os, model5_msk_os)
