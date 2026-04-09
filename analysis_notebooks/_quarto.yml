@@ -65,10 +65,6 @@ website:
             href: table_8.qmd
           - text: "Extended Data Table 9"
             href: table_9.qmd
-      - section: "Other Figures"
-        contents: 
-          - text: "External and Internal Cohort Multivariable Analysis"
-            href: wargo_multivariate_figure.qmd
 
 format:
   html:
