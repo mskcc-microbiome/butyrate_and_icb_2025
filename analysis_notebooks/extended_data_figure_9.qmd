@@ -1,6 +1,6 @@
 --- 
 title: |
-  Extended Figure 7 - Time Bin Sensitivity Analysis
+  Extended Figure 9 - Time Bin Sensitivity Analysis
 format:
   html:
     css: styles.css

@@ -39,7 +39,7 @@ The data we are visualizing here has the following structure:
 
 
 gu_cohort_data <- readRDS("../data/gu_survey_cohort.RDS")
-mixed_solid_tumor <- readRDS("../data/mixed_solid_tumor_phyloseq.RDS") %>% sample_data() %>% as.matrix() %>% as.data.frame()
+mixed_solid_tumor <- readRDS("../data/mixed_solid_tumor.RDS")
 external_melanoma <- readRDS("../data/external_melanoma_metadata.RDS")
 external_rcc <- readRDS("../data/external_rcc.rds")
 

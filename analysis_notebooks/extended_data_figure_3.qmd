@@ -1,0 +1,212 @@
+--- 
+title: |
+  Extended Data Figure 3
+format:
+  html:
+    css: styles.css
+---
+
+
+
+```{r}
+#| echo: false
+#| warning: false
+#| include: false
+#| label: library_data_imports
+
+library(tidyverse)
+library(ggplot2)
+library(glmnet)
+library(survival)
+library(survminer)
+
+gu_cohort_data <- readRDS("../data/gu_survey_cohort.RDS") 
+
+
+
+```
+# Panel A
+Lasso regression raw fiber intake
+```{r}
+#| echo: false
+#| warning: false
+#| include: true
+#| label: lasso_model_raw_fiber
+
+
+x <- model.matrix(~ fiber_5g_increment + ageby10 + ecog_1to5_final + 
+                    cancer_RCCvsUC_NAME + stage.simplified.factor + 
+                    bmi + WhiteRace + latinx.binary + Impact.TMB.Imputed +
+                    sex + smoking.binary + calor + 
+                    abx_3mo_yn_imputed + pbx_now_imputed,
+                  data = gu_cohort_data)[, -1]
+
+y <- Surv(gu_cohort_data$pfs_mo, gu_cohort_data$pod_status)
+
+
+set.seed(42)
+n_sims <- 100
+seeds <- sample(1:10000, n_sims)
+
+# Store coefficients from each run
+coef_matrix <- matrix(NA, nrow = n_sims, ncol = ncol(x))
+colnames(coef_matrix) <- colnames(x)
+
+for (i in 1:n_sims) {
+  set.seed(seeds[i])
+  fit <- cv.glmnet(x, y, family = "cox", alpha = 1)
+  coef_matrix[i, ] <- as.numeric(coef(fit, s = "lambda.min"))
+}
+
+# Summary: mean, median, and SD of coefficients across runs
+coef_summary <- data.frame(
+  Variable = colnames(coef_matrix),
+  Mean_coef = round(apply(coef_matrix, 2, mean), 4),
+  Median_coef = round(apply(coef_matrix, 2, median), 4),
+  SD_coef = round(apply(coef_matrix, 2, sd), 4),
+  Mean_HR = round(exp(apply(coef_matrix, 2, mean)), 4),
+  Median_HR = round(exp(apply(coef_matrix, 2, median)), 4),
+  Pct_nonzero = round(apply(coef_matrix != 0, 2, mean) * 100, 1)
+)
+
+print(coef_summary, row.names = FALSE)
+
+
+coef_summary <- coef_summary %>%
+  mutate(Variable = recode(Variable,
+                           "fiber_5g_bin" = "Daily fiber intake (continuous variable)",
+                           "ageby10" = "Age",
+                           "ecog_1to5_final" = "ECOG PS",
+                           "cancer_RCCvsUC_NAMEUC" = "Cancer type (UC vs RCC)",
+                           "stage.simplified.factorStage IV" = "Stage IV",
+                           "bmi" = "BMI",
+                           "WhiteRace" = "Race",
+                           "Impact.TMB.Imputed" = "TMB",
+                           "smoking.binary" = "Smoking history",
+                           "sex" = "Sex",
+                           "calor" = "Daily caloric intake",
+                           "latinx.binaryNon-Latinx" = "Ethnicity",
+                           "abx_3mo_yn_imputed1" = "Antibiotics",
+                           "pbx_now_imputedYes" = "Probiotics"
+                           
+  ))
+
+coef_summary <- coef_summary %>%
+  arrange(Pct_nonzero) %>%
+  mutate(Variable = factor(Variable, 
+                           levels = c(setdiff(Variable, "Daily fiber intake (continuous variable)"),
+                                      "Daily fiber intake (continuous variable)")))
+
+
+
+ggplot(coef_summary, aes(x = reorder(Variable, Pct_nonzero), y = Pct_nonzero / 100)) +
+  geom_col(fill = "#0072B2", alpha = 0.8) +
+  coord_flip() +
+  scale_y_continuous(labels = scales::percent_format(), expand = c(0, 0.01)) +
+  geom_hline(yintercept = 0.5, lty = 2, color = "grey50") +
+  labs(
+    title = "Robustness of predictors in Lasso Cox regression",
+    subtitle = paste("Based on", n_sims, "replications with varying cross-validation folds"),
+    x = NULL,
+    y = "Proportion of runs where variable was retained"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor.x = element_blank(),
+    plot.title.position = "plot"
+  )
+
+
+```
+# Panel B
+Lasso regression with fiber density
+```{r}
+#| echo: false
+#| warning: false
+#| include: true
+#| label: lasso_model_fiber_density
+
+x <- model.matrix(~ gram_fiber_per_Kcal_aboveRecommended + ageby10 + ecog_1to5_final + 
+                    cancer_RCCvsUC_NAME + stage.simplified.factor + 
+                    bmi + WhiteRace + latinx.binary + Impact.TMB.Imputed +
+                    sex + smoking.binary + calor + 
+                    abx_3mo_yn_imputed + pbx_now_imputed,
+                  data = gu_cohort_data)[, -1]
+
+y <- Surv(gu_cohort_data$pfs_mo, gu_cohort_data$pod_status)
+
+set.seed(42)
+n_sims <- 100
+seeds <- sample(1:10000, n_sims)
+
+# Store coefficients from each run
+coef_matrix <- matrix(NA, nrow = n_sims, ncol = ncol(x))
+colnames(coef_matrix) <- colnames(x)
+
+for (i in 1:n_sims) {
+  set.seed(seeds[i])
+  fit <- cv.glmnet(x, y, family = "cox", alpha = 1)
+  coef_matrix[i, ] <- as.numeric(coef(fit, s = "lambda.min"))
+}
+
+# Summary: mean, median, and SD of coefficients across runs
+coef_summary <- data.frame(
+  Variable = colnames(coef_matrix),
+  Mean_coef = round(apply(coef_matrix, 2, mean), 4),
+  Median_coef = round(apply(coef_matrix, 2, median), 4),
+  SD_coef = round(apply(coef_matrix, 2, sd), 4),
+  Mean_HR = round(exp(apply(coef_matrix, 2, mean)), 4),
+  Median_HR = round(exp(apply(coef_matrix, 2, median)), 4),
+  Pct_nonzero = round(apply(coef_matrix != 0, 2, mean) * 100, 1)
+)
+
+print(coef_summary, row.names = FALSE)
+
+
+coef_summary <- coef_summary %>%
+  mutate(Variable = recode(Variable,
+                           "gram_fiber_per_Kcal_aboveRecommended" = "Dietary fiber density of 15+ g/1,000 kcal",
+                           "ageby10" = "Age",
+                           "ecog_1to5_final" = "ECOG PS",
+                           "cancer_RCCvsUC_NAMEUC" = "Cancer type (UC vs RCC)",
+                           "stage.simplified.factorStage IV" = "Stage IV",
+                           "bmi" = "BMI",
+                           "WhiteRace" = "Race",
+                           "Impact.TMB.Imputed" = "TMB",
+                           "smoking.binary" = "Smoking history",
+                           "sex" = "Sex",
+                           "calor" = "Daily caloric intake",
+                           "latinx.binaryNon-Latinx" = "Ethnicity",
+                           "abx_3mo_yn_imputed1" = "Antibiotics",
+                           "pbx_now_imputedYes" = "Probiotics"
+  ))
+
+coef_summary <- coef_summary %>%
+  arrange(Pct_nonzero) %>%
+  mutate(Variable = factor(Variable, 
+                           levels = c(setdiff(Variable, "Dietary fiber density of 15+ g/1,000 kcal"),
+                                      "Dietary fiber density of 15+ g/1,000 kcal")))
+
+
+
+ggplot(coef_summary, aes(x = Variable, y = Pct_nonzero / 100)) +
+  geom_col(fill = "#0072B2", alpha = 0.8) +
+  coord_flip() +
+  scale_y_continuous(labels = scales::percent_format(), expand = c(0, 0.01)) +
+  geom_hline(yintercept = 0.5, lty = 2, color = "grey50") +
+  labs(
+    title = "Robustness of predictors in Lasso Cox regression",
+    subtitle = paste("Based on", n_sims, "replications with varying cross-validation folds"),
+    x = NULL,
+    y = "Proportion of runs where variable was retained"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor.x = element_blank(),
+    plot.title.position = "plot"
+  )
+
+```
+

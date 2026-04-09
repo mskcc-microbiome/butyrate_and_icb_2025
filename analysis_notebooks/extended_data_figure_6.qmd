@@ -1,6 +1,6 @@
 --- 
 title: |
-  Extended Figure 4 \nA deeper dive into relationship between ACOA pathway abundance and microbiome taxonomy.
+  Extended Figure 6 \nA deeper dive into relationship between ACOA pathway abundance and microbiome taxonomy.
 format:
   html:
     css: styles.css

@@ -1,7 +1,6 @@
 --- 
 title: |
-  <img src="./images/liquid_scale.jpg" width="250px" style="margin-left:5%; margin-right:5%"/>
-  Histograms of Patient ABX and Probiotic Expsures
+  Extended Data Figure 2
 format:
   html:
     css: styles.css
@@ -17,10 +16,7 @@ format:
 
 library(tidyverse)
 library(ggplot2)
-
-fiber_cohort <- readRDS("../public_data/fiber_data/all_metadata_fiber.RDS")
-all_metadata_fiber <- read.csv("../data/fiber_data/full_metadata_no_phi.csv")  %>%
-  filter(record_id %in% fiber_cohort$record_id)%>%
+gu_cohort_data <- readRDS("../data/gu_survey_cohort.RDS") %>%
   select(c(abx_6mo, abx_3mo, pbx_now)) %>%
   mutate(
     abx_6mo = case_when(
@@ -58,7 +54,7 @@ all_metadata_fiber <- read.csv("../data/fiber_data/full_metadata_no_phi.csv")  %
 #| include: true
 #| label: pbx_usage
 
-ggplot(all_metadata_fiber, aes(x = pbx_now)) +
+ggplot(gu_cohort_data, aes(x = pbx_now)) +
   geom_bar(
     binwidth = 2,           
     fill = "#68a378",       
@@ -78,7 +74,8 @@ ggplot(all_metadata_fiber, aes(x = pbx_now)) +
     vjust = -0.5, 
     fontface = "bold"
   ) +
-  theme_minimal()
+  theme_minimal(base_size = 14)
+ggsave("svg/extended_figure_2_pbx_usage.svg", w = 6.5, h = 4)
 ```
 
 ```{r}
@@ -87,7 +84,7 @@ ggplot(all_metadata_fiber, aes(x = pbx_now)) +
 #| include: true
 #| label: abx_usage
 
-ggplot(all_metadata_fiber, aes(x = abx_3mo)) +
+ggplot(gu_cohort_data, aes(x = abx_3mo)) +
   geom_bar(
     binwidth = 2,           
     fill = "#68a378",       
@@ -107,5 +104,7 @@ ggplot(all_metadata_fiber, aes(x = abx_3mo)) +
     vjust = -0.5, 
     fontface = "bold"
   ) +
-  theme_minimal()
+  theme_minimal(base_size = 14)
+
+ggsave("svg/extended_figure_2_abx_usage.svg", w = 6.5, h = 4)
 ```

@@ -1,0 +1,64 @@
+--- 
+title: |
+  Extended Data Table 8
+format:
+  html:
+    css: styles.css
+---
+
+
+
+```{r}
+#| echo: false
+#| warning: false
+#| include: false
+#| label: library_data_imports
+
+library(tidyverse)
+library(ggplot2)
+library(phyloseq)
+library(microViz)
+library(survival)
+library(survminer)
+library(viridis)
+library(gtsummary)
+library(yingtools2)
+source("utility_funcs.R")
+
+
+```
+
+
+Here are the column names of the data we are plotting:
+
+fouraminobutyrate, glutarate, lysine and pyruvate represent different parts of the butyrate synthesis pathway. 
+
+```{r}
+#| warning: false
+#| echo: false
+#| label: load_data
+mixed_solid_tumor <- readRDS("../data/mixed_solid_tumor.RDS")
+```
+
+
+
+```{r}
+#| warning: false
+#| include: true
+#| echo: true
+#| label: pfs_multivariate_summary
+
+
+summary(coxph(Surv(tt_pfs_d, pfs_event)~log(total)+age10+strata(cohort)+imputed_ecog+ bmi + imputed_smoking_status, mixed_solid_tumor))
+
+
+
+```
+
+```{r}
+#| warning: false
+#| label: os_multivariate_summary
+
+summary(coxph(Surv(tt_os_d, event_os)~log(total)+age10+strata(cohort)+imputed_ecog+ bmi + imputed_smoking_status, mixed_solid_tumor))
+
+```

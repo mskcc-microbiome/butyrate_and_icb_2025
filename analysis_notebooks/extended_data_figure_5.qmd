@@ -1,6 +1,6 @@
 --- 
 title: |
-  Ext Data Fig 3 - Maaslin
+  Ext Data Fig 5 - Maaslin
 format:
   html:
     css: styles.css

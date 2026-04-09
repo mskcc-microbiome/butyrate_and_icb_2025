@@ -259,7 +259,7 @@ for (i in seq_along(models_mixed_solid_tumor_os)) {
   hr <- round(summary_model$coefficients["test_v", "exp(coef)"], digits = 2)
   lower_ci <- round(summary_model$conf.int["test_v", "lower .95"], digits = 2)
   upper_ci <- round(summary_model$conf.int["test_v", "upper .95"], digits = 2)
-  pvalue <- round(summary_model$coefficients["test_v", "Pr(>|z|)"], digits = 3)
+  pvalue <- round(summary_model$coefficients["test_v", "Pr(>|z|)"], digits = 4)
 
 
   results_df <- rbind(results_df, data.frame(

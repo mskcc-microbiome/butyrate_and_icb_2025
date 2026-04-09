@@ -1,0 +1,41 @@
+--- 
+title: |
+  Extended Data Table 4
+format:
+  html:
+    css: styles.css
+---
+
+
+
+```{r}
+#| echo: false
+#| warning: false
+#| include: false
+#| label: library_data_imports
+
+library(tidyverse)
+library(table1)
+library(gtsummary)
+library(yingtools2)
+source("utility_funcs.R")
+
+gu_cohort_data <- readRDS("../data/gu_survey_cohort.RDS")
+mRCdataFiber=filter(gu_cohort_data,cancer_type==4)
+```
+
+```{r}
+#| warning: false
+#| include: true
+#| echo: false
+#| label: import_data_add_labels
+
+tbl_summary(mRCdataFiber %>% select(age,sex.factor,race.factor,latinx.factor,
+                               bmi,
+                               ecog_kpsConverted,stage.simplified.factor,
+                               non_cc_rcc_yn.factor,
+                               imdc.factor,
+                               io_line)) %>% modify_caption("**Supplementary Table. Baseline characteristics of patients with RCC**")
+
+
+```

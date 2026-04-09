@@ -1,0 +1,40 @@
+--- 
+title: |
+  Extended Data Table  1
+format:
+  html:
+    css: styles.css
+---
+
+
+
+```{r}
+#| echo: false
+#| warning: false
+#| include: false
+#| label: library_data_imports
+
+library(tidyverse)
+library(table1)
+library(gtsummary)
+library(yingtools2)
+source("utility_funcs.R")
+gu_cohort_data <- readRDS("../data/gu_survey_cohort.RDS")
+
+```
+
+```{r}
+#| warning: false
+#| include: true
+#| echo: false
+#| label: import_data_add_labels
+
+gu_cohort_data %>%select(fiber_tertile_factor,fiber_tertile_median,calor,
+                                                            age,sex.factor,cancer_RCCvsUC_NAME,
+                                                            race.factor,
+                                                            latinx.factor,bmi,
+                      ecog_kpsConverted,stage.simplified.factor,smoke.factor,
+                      Impact.TMB.Score) %>% 
+  tbl_summary(by = fiber_tertile_factor) %>%
+  modify_caption("**Supplementary Table. Baseline characteristics of all patients by fiber intake**")
+```

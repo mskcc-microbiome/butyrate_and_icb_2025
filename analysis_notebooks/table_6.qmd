@@ -1,0 +1,557 @@
+--- 
+title: |
+  Extended Data Table 6
+format:
+  html:
+    css: styles.css
+---
+
+
+
+```{r}
+#| echo: false
+#| warning: false
+#| include: false
+#| label: library_data_imports
+
+library(tidyverse)
+library(table1)
+library(gtsummary)
+library(yingtools2)
+source("utility_funcs.R")
+
+
+
+nutrient_cols <- c("poly", "calor", "satfat", "monfat", "tfat", "trn11", 
+                   "f205", "f226", "sodium", "alco", "whgrn", "prot", "aprot",
+                   "aofib", "carbo", "sugtot")
+
+gu_cohort_data <- readRDS("../data/gu_survey_cohort.RDS") %>%
+  mutate(across(all_of(nutrient_cols), as.numeric))
+
+# ==================================================================================
+# WILLETT FFQ TO DIETARYINDEX PREPROCESSING SCRIPT
+# ==================================================================================
+source("AHEI_calculation.R")
+source("Willett_to_dietaryindex_preprocessing.R")
+```
+
+```{r}
+#| warning: false
+#| include: true
+#| echo: false
+#| label: important_diet_functions
+
+
+
+# ==================================================================================
+# MASTER FUNCTION: Calculate all diet quality indices
+# ==================================================================================
+
+calculate_all_diet_indices <- function(gu_cohort_data) {
+  
+  cat("=====================================================\n")
+  cat("  CALCULATING DIET QUALITY INDICES FROM WILLETT FFQ\n")
+  cat("=====================================================\n\n")
+  
+  cat("Step 1: Computing food group servings from FFQ frequencies...\n")
+  gu_cohort_data <- calculate_food_servings(gu_cohort_data)
+  
+  cat("Step 2: Computing additional food group variables...\n")
+  gu_cohort_data <- calculate_additional_food_groups(gu_cohort_data)
+  
+  cat("Step 3: Calculating indices...\n\n")
+  
+  gu_cohort_data <- calculate_AHEI_via_dietaryindex(gu_cohort_data)
+  gu_cohort_data <- calculate_HEI2015_via_dietaryindex(gu_cohort_data)
+  gu_cohort_data <- calculate_aMED(gu_cohort_data)
+  gu_cohort_data <- calculate_PDI(gu_cohort_data)
+  gu_cohort_data <- calculate_animal_score(gu_cohort_data)
+  gu_cohort_data <- calculate_HFD(gu_cohort_data)
+  
+  cat("\n=====================================================\n")
+  cat("  ALL INDICES COMPUTED SUCCESSFULLY\n")
+  cat("=====================================================\n")
+  
+  return(gu_cohort_data)
+}
+
+
+# ==================================================================================
+# ADDITIONAL FOOD GROUP CALCULATIONS
+# ==================================================================================
+
+calculate_additional_food_groups <- function(df) {
+  
+  df <- df %>%
+    mutate(
+      potato_servings =
+        convert_freq_9level(ff.pot) +
+        convert_freq_9level(pot),
+      
+      veg_oil_servings =
+        convert_freq_11level(olive.oil),
+      
+      tea_coffee_servings =
+        convert_freq_11level(tea) +
+        convert_freq_11level(coff) +
+        convert_freq_11level(decaf) +
+        convert_freq_11level(herb.tea),
+      
+      animal_fat_servings =
+        convert_freq_10level(bu) +
+        convert_freq_9level(cream) +
+        convert_freq_9level(cr.ch) +
+        convert_freq_9level(ice.cr),
+      
+      misc_animal_servings =
+        convert_freq_9level(mayo) +
+        convert_freq_9level(mayo.d),
+      
+      total_veg_excl_potatoes = veg_servings,
+      total_veg_incl_potatoes = veg_servings + potato_servings,
+      total_fruit_with_juice = fruit_servings + fruit_juice_servings
+    )
+  
+  return(df)
+}
+
+
+# ==================================================================================
+# 1. AHEI-2010 (via dietaryindex package)
+# ==================================================================================
+
+calculate_AHEI_via_dietaryindex <- function(df) {
+  
+  cat("  [1/6] AHEI-2010 (via dietaryindex package)...\n")
+  
+  if (!require("dietaryindex", quietly = TRUE)) {
+    cat("    Installing dietaryindex package...\n")
+    if (!require("remotes", quietly = TRUE)) install.packages("remotes")
+    remotes::install_github("jamesjiadazhan/dietaryindex")
+    library(dietaryindex)
+  }
+  
+  prepared <- prepare_willett_for_dietaryindex(df)
+  
+  ahei_results <- AHEI(
+    SERV_DATA              = prepared,
+    RESPONDENTID           = prepared$RESPONDENTID,
+    GENDER                 = prepared$GENDER,
+    TOTALKCAL_AHEI         = prepared$TOTALKCAL_AHEI,
+    VEG_SERV_AHEI          = prepared$VEG_SERV_AHEI,
+    FRT_SERV_AHEI          = prepared$FRT_SERV_AHEI,
+    WGRAIN_SERV_AHEI       = prepared$WGRAIN_SERV_AHEI,
+    NUTSLEG_SERV_AHEI      = prepared$NUTSLEG_SERV_AHEI,
+    N3FAT_SERV_AHEI        = prepared$N3FAT_SERV_AHEI,
+    PUFA_SERV_AHEI         = prepared$PUFA_SERV_AHEI,
+    SSB_FRTJ_SERV_AHEI     = prepared$SSB_FRTJ_SERV_AHEI,
+    REDPROC_MEAT_SERV_AHEI = prepared$REDPROC_MEAT_SERV_AHEI,
+    TRANS_SERV_AHEI        = prepared$TRANS_SERV_AHEI,
+    SODIUM_SERV_AHEI       = prepared$SODIUM_SERV_AHEI,
+    ALCOHOL_SERV_AHEI      = prepared$ALCOHOL_SERV_AHEI
+  )
+  
+  df <- df %>%
+    left_join(
+      ahei_results %>% dplyr::select(c("RESPONDENTID", "AHEI_ALL")),
+      by = c("record_id" = "RESPONDENTID")
+    ) %>%
+    dplyr::rename(AHEI = "AHEI_ALL")
+  
+  cat("    Range: ", round(min(df$AHEI, na.rm = TRUE), 1), "-",
+      round(max(df$AHEI, na.rm = TRUE), 1), "\n")
+  cat("    Mean:  ", round(mean(df$AHEI, na.rm = TRUE), 1), "\n")
+  
+  return(df)
+}
+
+
+# ==================================================================================
+# 2. HEI-2015 (via dietaryindex package)
+# ==================================================================================
+
+calculate_HEI2015_via_dietaryindex <- function(df) {
+  
+  cat("  [2/6] HEI-2015 (via dietaryindex package)...\n")
+  
+  if (!require("dietaryindex", quietly = TRUE)) {
+    cat("    Installing dietaryindex package...\n")
+    if (!require("remotes", quietly = TRUE)) install.packages("remotes")
+    remotes::install_github("jamesjiadazhan/dietaryindex")
+    library(dietaryindex)
+  }
+  
+  prepared <- prepare_willett_for_dietaryindex(df)
+  
+  # Build input data frame with column names expected by HEI2015()
+  # 
+  # DENSITY SCORING NOTES (HEI-2015 / HEI-2020):
+  #   - Food group components: function densitizes internally, pass RAW daily amounts.
+  #   - Added Sugars & Saturated Fat: pass as % of total energy (pre-computed).
+  #   - Sodium: pass in GRAMS/day (not mg).
+  #   - Fatty Acid Ratio: (MUFA+PUFA)/SFA, unitless ratio.
+  #
+  # ARGUMENT NAME NOTE: The dietaryindex package uses specific abbreviations:
+  #   GREENNBEAN (not GREENSANDBEAN), WHOLEGRAIN (not WGRAIN),
+  #   TOTALPRO (not TOTPROT), SEAPLANTPRO (not SEAPLANTPROT)
+  hei_input <- data.frame(
+    RESPONDENTID                = prepared$RESPONDENTID,
+    TOTALKCAL_HEI2015          = prepared$TOTALKCAL_AHEI,
+    TOTALFRT_SERV_HEI2015      = (df$fruit_servings + df$fruit_juice_servings) * 0.5,
+    FRT_SERV_HEI2015           = df$fruit_servings * 0.5,
+    VEG_SERV_HEI2015           = (df$veg_servings + df$legume_servings) * 0.5,
+    GREENNBEAN_SERV_HEI2015    = prepared$GREENSANDBEAN_SERV_HEI,
+    WHOLEGRAIN_SERV_HEI2015    = df$whgrn / 16,
+    DAIRY_SERV_HEI2015         = prepared$DAIRY_SERV_HEI,
+    TOTALPRO_SERV_HEI2015      = prepared$TOTALPROT_SERV_HEI,
+    SEAPLANTPRO_SERV_HEI2015   = prepared$SEAPLANTPROT_SERV_HEI,
+    REFINEDGRAIN_SERV_HEI2015  = prepared$REFINEDGRAIN_SERV_HEI,
+    SODIUM_SERV_HEI2015        = df$sodium / 1000,
+    ADDEDSUGAR_SERV_HEI2015    = prepared$ADDEDSUGARS_SERV_HEI,
+    SATFAT_SERV_HEI2015        = prepared$SATFAT_SERV_HEI,
+    FATTYACID_SERV_HEI2015     = prepared$FATTYACIDRATIO_HEI
+  )
+  
+  # Call the dietaryindex HEI2015 generic function
+  hei_results <- HEI2015(
+    SERV_DATA                  = hei_input,
+    RESPONDENTID               = hei_input$RESPONDENTID,
+    TOTALKCAL_HEI2015          = hei_input$TOTALKCAL_HEI2015,
+    TOTALFRT_SERV_HEI2015      = hei_input$TOTALFRT_SERV_HEI2015,
+    FRT_SERV_HEI2015           = hei_input$FRT_SERV_HEI2015,
+    VEG_SERV_HEI2015           = hei_input$VEG_SERV_HEI2015,
+    GREENNBEAN_SERV_HEI2015    = hei_input$GREENNBEAN_SERV_HEI2015,
+    WHOLEGRAIN_SERV_HEI2015    = hei_input$WHOLEGRAIN_SERV_HEI2015,
+    DAIRY_SERV_HEI2015         = hei_input$DAIRY_SERV_HEI2015,
+    TOTALPRO_SERV_HEI2015      = hei_input$TOTALPRO_SERV_HEI2015,
+    SEAPLANTPRO_SERV_HEI2015   = hei_input$SEAPLANTPRO_SERV_HEI2015,
+    REFINEDGRAIN_SERV_HEI2015  = hei_input$REFINEDGRAIN_SERV_HEI2015,
+    SODIUM_SERV_HEI2015        = hei_input$SODIUM_SERV_HEI2015,
+    ADDEDSUGAR_SERV_HEI2015    = hei_input$ADDEDSUGAR_SERV_HEI2015,
+    SATFAT_SERV_HEI2015        = hei_input$SATFAT_SERV_HEI2015,
+    FATTYACID_SERV_HEI2015     = hei_input$FATTYACID_SERV_HEI2015
+  )
+  
+  df <- df %>%
+    left_join(
+      hei_results %>% select(c(RESPONDENTID, HEI2015_ALL)),
+      by = c("record_id" = "RESPONDENTID")
+    ) %>%
+    dplyr::rename(HEI_2015 = "HEI2015_ALL")
+  
+  cat("    Range: ", round(min(df$HEI_2015, na.rm = TRUE), 1), "-",
+      round(max(df$HEI_2015, na.rm = TRUE), 1), "\n")
+  cat("    Mean:  ", round(mean(df$HEI_2015, na.rm = TRUE), 1), "\n")
+  
+  return(df)
+}
+
+
+# ==================================================================================
+# 3. aMED (Alternate Mediterranean Diet Score)
+# ==================================================================================
+
+calculate_aMED <- function(df) {
+  
+  cat("  [3/6] aMED...\n")
+  
+  df <- df %>%
+    group_by(sex) %>%
+    mutate(
+      med_veg       = median(total_veg_excl_potatoes, na.rm = TRUE),
+      med_fruit     = median(fruit_servings, na.rm = TRUE),
+      med_nuts      = median(nut_servings, na.rm = TRUE),
+      med_legumes   = median(legume_servings, na.rm = TRUE),
+      med_wgrain    = median(whgrn, na.rm = TRUE),
+      med_fish      = median(fish_servings, na.rm = TRUE),
+      med_mufa_sfa  = median(monfat / pmax(satfat, 0.01), na.rm = TRUE),
+      med_redmeat   = median(red_meat_servings, na.rm = TRUE)
+    ) %>%
+    ungroup() %>%
+    mutate(
+      amed_veg      = ifelse(total_veg_excl_potatoes >= med_veg, 1, 0),
+      amed_fruit    = ifelse(fruit_servings >= med_fruit, 1, 0),
+      amed_nuts     = ifelse(nut_servings >= med_nuts, 1, 0),
+      amed_legumes  = ifelse(legume_servings >= med_legumes, 1, 0),
+      amed_wgrain   = ifelse(whgrn >= med_wgrain, 1, 0),
+      amed_fish     = ifelse(fish_servings >= med_fish, 1, 0),
+      amed_mufa_sfa = ifelse((monfat / pmax(satfat, 0.01)) >= med_mufa_sfa, 1, 0),
+      amed_redmeat  = ifelse(red_meat_servings < med_redmeat, 1, 0),
+      amed_alcohol  = case_when(
+        sex == 2 & alco >= 5 & alco <= 15  ~ 1,
+        sex == 1 & alco >= 5 & alco <= 25  ~ 1,
+        TRUE ~ 0
+      ),
+      aMED = amed_veg + amed_fruit + amed_nuts + amed_legumes +
+        amed_wgrain + amed_fish + amed_mufa_sfa +
+        amed_redmeat + amed_alcohol
+    )
+  
+  cat("    Range: ", min(df$aMED, na.rm = TRUE), "-",
+      max(df$aMED, na.rm = TRUE), "\n")
+  cat("    Mean:  ", round(mean(df$aMED, na.rm = TRUE), 1), "\n")
+  
+  return(df)
+}
+
+
+# ==================================================================================
+# 4. PDI / hPDI / uPDI (Plant-Based Diet Indices)
+# ==================================================================================
+
+calculate_PDI <- function(df) {
+  
+  cat("  [4/6] PDI / hPDI / uPDI...\n")
+  
+  df <- df %>%
+    mutate(
+      pdi_whole_grains   = wholegrain_servings,
+      pdi_fruits         = fruit_servings,
+      pdi_vegetables     = veg_servings,
+      pdi_nuts           = nut_servings,
+      pdi_legumes        = legume_servings,
+      pdi_veg_oils       = veg_oil_servings,
+      pdi_tea_coffee     = tea_coffee_servings,
+      pdi_fruit_juices   = fruit_juice_servings,
+      pdi_refined_grains = refined_grain_servings,
+      pdi_potatoes       = potato_servings,
+      pdi_ssb            = ssb_servings,
+      pdi_sweets         = sweets_servings,
+      pdi_animal_fat     = animal_fat_servings,
+      pdi_dairy          = dairy_servings,
+      pdi_eggs           = egg_servings,
+      pdi_fish_seafood   = fish_servings,
+      pdi_meat           = red_meat_servings + poultry_servings,
+      pdi_misc_animal    = misc_animal_servings
+    )
+  
+  quintile_score <- function(x) {
+    n <- length(x)
+    n_zero <- sum(x == 0, na.rm = TRUE)
+    if (n_zero > 0.20 * n) {
+      # Many zeros: assign 1 to zeros, split nonzeros into quartiles (2-5)
+      scores <- rep(NA_real_, n)
+      scores[x == 0] <- 1
+      nonzero_idx <- which(x > 0)
+      if (length(nonzero_idx) > 0) {
+        q <- quantile(x[nonzero_idx], probs = c(0.25, 0.50, 0.75), na.rm = TRUE)
+        uq <- unique(c(-Inf, q, Inf))
+        if (length(uq) >= 3) {
+          n_bins <- length(uq) - 1
+          top_labels <- seq(from = 5 - n_bins + 1, to = 5)
+          scores[nonzero_idx] <- cut(x[nonzero_idx],
+                                     breaks = uq,
+                                     labels = top_labels, include.lowest = TRUE) %>%
+            as.numeric()
+        } else {
+          # All nonzero values essentially the same; assign middle score
+          scores[nonzero_idx] <- 3
+        }
+      }
+      return(scores)
+    } else {
+      q <- quantile(x, probs = c(0.20, 0.40, 0.60, 0.80), na.rm = TRUE)
+      uq <- unique(c(-Inf, q, Inf))
+      if (length(uq) == 6) {
+        # All breakpoints unique — standard quintiles
+        scores <- cut(x, breaks = uq,
+                      labels = 1:5, include.lowest = TRUE) %>%
+          as.numeric()
+        return(scores)
+      } else {
+        # Ties in breakpoints — fall back to dplyr::ntile()
+        return(dplyr::ntile(x, 5))
+      }
+    }
+  }
+  
+  food_groups <- c(
+    "pdi_whole_grains", "pdi_fruits", "pdi_vegetables", "pdi_nuts",
+    "pdi_legumes", "pdi_veg_oils", "pdi_tea_coffee",
+    "pdi_fruit_juices", "pdi_refined_grains", "pdi_potatoes",
+    "pdi_ssb", "pdi_sweets",
+    "pdi_animal_fat", "pdi_dairy", "pdi_eggs", "pdi_fish_seafood",
+    "pdi_meat", "pdi_misc_animal"
+  )
+  
+  for (fg in food_groups) {
+    df[[paste0("q_", fg)]] <- quintile_score(df[[fg]])
+  }
+  
+  healthy_plant <- paste0("q_", c("pdi_whole_grains", "pdi_fruits", "pdi_vegetables",
+                                  "pdi_nuts", "pdi_legumes", "pdi_veg_oils",
+                                  "pdi_tea_coffee"))
+  unhealthy_plant <- paste0("q_", c("pdi_fruit_juices", "pdi_refined_grains",
+                                    "pdi_potatoes", "pdi_ssb", "pdi_sweets"))
+  animal <- paste0("q_", c("pdi_animal_fat", "pdi_dairy", "pdi_eggs",
+                           "pdi_fish_seafood", "pdi_meat", "pdi_misc_animal"))
+  
+  df <- df %>%
+    mutate(
+      PDI = rowSums(across(all_of(c(healthy_plant, unhealthy_plant)))) +
+        rowSums(6 - across(all_of(animal))),
+      hPDI = rowSums(across(all_of(healthy_plant))) +
+        rowSums(6 - across(all_of(unhealthy_plant))) +
+        rowSums(6 - across(all_of(animal))),
+      uPDI = rowSums(6 - across(all_of(healthy_plant))) +
+        rowSums(across(all_of(unhealthy_plant))) +
+        rowSums(6 - across(all_of(animal)))
+    )
+  
+  cat("    PDI  - Range: ", min(df$PDI, na.rm = TRUE), "-",
+      max(df$PDI, na.rm = TRUE), ", Mean: ",
+      round(mean(df$PDI, na.rm = TRUE), 1), "\n")
+  cat("    hPDI - Range: ", min(df$hPDI, na.rm = TRUE), "-",
+      max(df$hPDI, na.rm = TRUE), ", Mean: ",
+      round(mean(df$hPDI, na.rm = TRUE), 1), "\n")
+  cat("    uPDI - Range: ", min(df$uPDI, na.rm = TRUE), "-",
+      max(df$uPDI, na.rm = TRUE), ", Mean: ",
+      round(mean(df$uPDI, na.rm = TRUE), 1), "\n")
+  
+  return(df)
+}
+
+
+# ==================================================================================
+# 5. ANIMAL SCORE
+# ==================================================================================
+
+calculate_animal_score <- function(df) {
+  
+  cat("  [5/6] Animal score...\n")
+  
+  df <- df %>%
+    mutate(
+      animal_protein_pct = (aprot / pmax(prot, 0.01)) * 100,
+      animal_energy_pct  = (aprot * 4 / calor) * 100,
+      animal_score       = animal_protein_pct
+    )
+  
+  cat("    Range: ", round(min(df$animal_score, na.rm = TRUE), 1), "-",
+      round(max(df$animal_score, na.rm = TRUE), 1), "%\n")
+  cat("    Mean:  ", round(mean(df$animal_score, na.rm = TRUE), 1), "%\n")
+  
+  return(df)
+}
+
+
+# ==================================================================================
+# 6. HFD (US Healthy Food Diversity Index)
+# ==================================================================================
+
+calculate_HFD <- function(df) {
+  
+  cat("  [6/6] HFD (Healthy Food Diversity Index)...\n")
+  
+  hf <- list(
+    fruit = 1.0, veg = 1.0, wholegrain = 1.0,
+    dairy = 0.8, nuts_legumes = 0.9, fish = 0.9,
+    poultry = 0.6, veg_oil = 0.7, tea_coffee = 0.5,
+    red_meat = 0.2, refined_grain = 0.3, potatoes = 0.4,
+    ssb = 0.1, fruit_juice = 0.3, sweets = 0.1,
+    eggs = 0.5, animal_fat = 0.1, alcohol = 0.2
+  )
+  
+  df <- df %>%
+    mutate(
+      kcal_fruit         = fruit_servings * 60,
+      kcal_veg           = veg_servings * 25,
+      kcal_wholegrain    = wholegrain_servings * 80,
+      kcal_dairy         = dairy_servings * 120,
+      kcal_nuts_legumes  = (nut_servings + legume_servings) * 170,
+      kcal_fish          = fish_servings * 150,
+      kcal_poultry       = poultry_servings * 180,
+      kcal_veg_oil       = veg_oil_servings * 120,
+      kcal_tea_coffee    = tea_coffee_servings * 2,
+      kcal_red_meat      = red_meat_servings * 230,
+      kcal_refined_grain = refined_grain_servings * 80,
+      kcal_potatoes      = potato_servings * 150,
+      kcal_ssb           = ssb_servings * 150,
+      kcal_fruit_juice   = fruit_juice_servings * 110,
+      kcal_sweets        = sweets_servings * 200,
+      kcal_eggs          = egg_servings * 75,
+      kcal_animal_fat    = animal_fat_servings * 100,
+      kcal_alcohol       = (alco / 14) * 100,
+      
+      kcal_total_est = pmax(1,
+                            kcal_fruit + kcal_veg + kcal_wholegrain + kcal_dairy +
+                              kcal_nuts_legumes + kcal_fish + kcal_poultry + kcal_veg_oil +
+                              kcal_tea_coffee + kcal_red_meat + kcal_refined_grain +
+                              kcal_potatoes + kcal_ssb + kcal_fruit_juice + kcal_sweets +
+                              kcal_eggs + kcal_animal_fat + kcal_alcohol),
+      
+      s_fruit         = kcal_fruit / kcal_total_est,
+      s_veg           = kcal_veg / kcal_total_est,
+      s_wholegrain    = kcal_wholegrain / kcal_total_est,
+      s_dairy         = kcal_dairy / kcal_total_est,
+      s_nuts_legumes  = kcal_nuts_legumes / kcal_total_est,
+      s_fish          = kcal_fish / kcal_total_est,
+      s_poultry       = kcal_poultry / kcal_total_est,
+      s_veg_oil       = kcal_veg_oil / kcal_total_est,
+      s_tea_coffee    = kcal_tea_coffee / kcal_total_est,
+      s_red_meat      = kcal_red_meat / kcal_total_est,
+      s_refined_grain = kcal_refined_grain / kcal_total_est,
+      s_potatoes      = kcal_potatoes / kcal_total_est,
+      s_ssb           = kcal_ssb / kcal_total_est,
+      s_fruit_juice   = kcal_fruit_juice / kcal_total_est,
+      s_sweets        = kcal_sweets / kcal_total_est,
+      s_eggs          = kcal_eggs / kcal_total_est,
+      s_animal_fat    = kcal_animal_fat / kcal_total_est,
+      s_alcohol       = kcal_alcohol / kcal_total_est,
+      
+      HFD = s_fruit         * hf$fruit         * (1 - s_fruit) +
+        s_veg           * hf$veg           * (1 - s_veg) +
+        s_wholegrain    * hf$wholegrain    * (1 - s_wholegrain) +
+        s_dairy         * hf$dairy         * (1 - s_dairy) +
+        s_nuts_legumes  * hf$nuts_legumes  * (1 - s_nuts_legumes) +
+        s_fish          * hf$fish          * (1 - s_fish) +
+        s_poultry       * hf$poultry       * (1 - s_poultry) +
+        s_veg_oil       * hf$veg_oil       * (1 - s_veg_oil) +
+        s_tea_coffee    * hf$tea_coffee    * (1 - s_tea_coffee) +
+        s_red_meat      * hf$red_meat      * (1 - s_red_meat) +
+        s_refined_grain * hf$refined_grain * (1 - s_refined_grain) +
+        s_potatoes      * hf$potatoes      * (1 - s_potatoes) +
+        s_ssb           * hf$ssb           * (1 - s_ssb) +
+        s_fruit_juice   * hf$fruit_juice   * (1 - s_fruit_juice) +
+        s_sweets        * hf$sweets        * (1 - s_sweets) +
+        s_eggs          * hf$eggs          * (1 - s_eggs) +
+        s_animal_fat    * hf$animal_fat    * (1 - s_animal_fat) +
+        s_alcohol       * hf$alcohol       * (1 - s_alcohol)
+    )
+  
+  cat("    Range: ", round(min(df$HFD, na.rm = TRUE), 3), "-",
+      round(max(df$HFD, na.rm = TRUE), 3), "\n")
+  cat("    Mean:  ", round(mean(df$HFD, na.rm = TRUE), 3), "\n")
+  
+  return(df)
+}
+
+```
+```{r}
+#| warning: false
+#| include: true
+#| echo: false
+#| label: make_the_table
+
+
+ffq_with_indices <- calculate_all_diet_indices(gu_cohort_data)
+
+ffq_with_indices %>%
+  select(AHEI, HEI_2015, aMED, PDI, hPDI, uPDI, animal_score, HFD) %>%
+  summary()
+
+for (idx in c("AHEI", "HEI_2015", "aMED", "PDI", "hPDI", "uPDI", "animal_score", "HFD")) {
+  ffq_with_indices[[paste0(idx, "_z")]] <- scale(ffq_with_indices[[idx]])
+  formula <- as.formula(paste0(
+    "Surv(pfs_mo, pod_status) ~ ", idx, "_z + ageby10 + 
+       ecog_1to5_final +
+       cancer_RCCvsUC_NAME +
+       stage.simplified.factor"
+  ))
+  fit <- coxph(formula, data = ffq_with_indices)
+  cat("\n===", idx, "===\n")
+  print(summary(fit)$conf.int[1, , drop = FALSE])
+}
+
+```

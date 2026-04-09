@@ -1,0 +1,52 @@
+--- 
+title: |
+  Extended Data Table  7
+format:
+  html:
+    css: styles.css
+---
+
+
+
+```{r}
+#| echo: false
+#| warning: false
+#| include: false
+#| label: library_data_imports
+
+library(tidyverse)
+library(table1)
+library(gtsummary)
+library(yingtools2)
+source("utility_funcs.R")
+
+
+```
+
+```{r}
+#| warning: false
+#| include: true
+#| echo: false
+#| label: import_data_add_labels
+
+mixed_solid_tumor <- readRDS("../data/mixed_solid_tumor.RDS") %>%
+  mutate(therapy = case_when(
+    grepl("IPILIMUMAB", cpb_drug) ~ "PD1+CTLA4",
+    cpb_drug %in% c("ATEZOLIZUMAB", "AVELUMAB", "DURVALUMAB", "NIVOLUMAB", "PEMBROLIZUMAB") ~ "PD1 mono",
+    TRUE ~ "PD1+chemo"
+  ))
+
+label(mixed_solid_tumor$age)="Age at time of dietary questionnaire (in years)"
+label(mixed_solid_tumor$ecog)="Performance Status"
+label(mixed_solid_tumor$cohort)="Diagnosis"
+label(mixed_solid_tumor$bmi)="Body Mass Index"
+label(mixed_solid_tumor$imputed_smoking_status)="Smoking Status"
+label(mixed_solid_tumor$therapy)="Therapy"
+label(mixed_solid_tumor$TMPT)="Sample day relative to first ICB infusion"
+
+
+
+tbl_summary(mixed_solid_tumor%>%select(age,,cohort,therapy, ecog,TMPT,bmi,imputed_smoking_status)) %>% modify_caption("**Supplementary Table. Baseline characteristics of Mixed Solid Tumor Cohort**")
+
+
+```

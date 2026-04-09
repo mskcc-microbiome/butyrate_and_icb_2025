@@ -1,0 +1,177 @@
+--- 
+title: |
+  Extended Data Table 9
+format:
+  html:
+    css: styles.css
+---
+
+
+
+```{r}
+#| echo: false
+#| warning: false
+#| include: false
+#| label: library_data_imports
+
+library(tidyverse)
+
+library(survival)
+```
+
+
+Here are the column names of the data we are plotting:
+
+fouraminobutyrate, glutarate, lysine and pyruvate represent different parts of the butyrate synthesis pathway. 
+```{r}
+#| warning: false
+#| echo: false
+#| label: load_data
+mixed_solid_tumor <- readRDS("../data/mixed_solid_tumor.RDS")
+external_melanoma_cohort <- readRDS("../data/external_melanoma_metadata.RDS")
+```
+
+
+```{r}
+#| warning: false
+#| label: external_data_pfs_mv
+#| include: true
+#| echo: false
+
+
+model1_wargo_pfs <- coxph(Surv(pfs_d, pfsevent)~test_v + age10 + adv_substage, external_melanoma_cohort %>% mutate(test_v = log(rum)))
+model2_wargo_pfs <- coxph(Surv(pfs_d, pfsevent)~test_v + age10 + adv_substage, external_melanoma_cohort%>% mutate(test_v = log(rum_lach)))
+model3_wargo_pfs <- coxph(Surv(pfs_d, pfsevent)~test_v + age10 + adv_substage, external_melanoma_cohort%>% mutate(test_v = log(clostridiales)))
+model4_wargo_pfs <- coxph(Surv(pfs_d, pfsevent)~test_v + age10 + adv_substage, external_melanoma_cohort%>% mutate(test_v = log(clostridia)))
+model5_wargo_pfs <- coxph(Surv(pfs_d, pfsevent)~test_v + age10 + adv_substage, external_melanoma_cohort%>% mutate(test_v = log(eval(faecalibacterium_prausnitzii+1e-7))))
+model6_wargo_pfs <- coxph(Surv(pfs_d, pfsevent)~test_v + age10 + adv_substage, external_melanoma_cohort%>% mutate(test_v = log1p(pyruvate)))
+
+models_external_melanoma_os <- list(model6_wargo_pfs, model1_wargo_pfs, model2_wargo_pfs, model3_wargo_pfs, model4_wargo_pfs, model5_wargo_pfs)
+
+results_df <- data.frame()
+
+for (i in seq_along(models_external_melanoma_os)) {
+  model <- models_external_melanoma_os[[i]]
+  summary_model <- summary(model)
+
+  hr <- round(summary_model$coefficients["test_v", "exp(coef)"], digits=2)
+  lower_ci <- round(summary_model$conf.int["test_v", "lower .95"], digits=2)
+  upper_ci <- round(summary_model$conf.int["test_v", "upper .95"], digits=2)
+  pvalue <- round(summary_model$coefficients["test_v", "Pr(>|z|)"], digits=3)
+
+  results_df <- rbind(results_df, data.frame(
+    HR = hr,
+    Lower_CI = lower_ci,
+    Upper_CI = upper_ci,
+    pvalue = pvalue
+  ))
+}
+results_df$modelname = c("log(ACoA)", "log(Ruminococcaceae)", "log(Ruminococcacaeae + Lachnospiraceae)",
+                             "log(Clostridiales)", "log(Clostridia)", "log(F prausnitizii + 1e-7)")
+results_df$source = rep("external melanoma", 6)
+results_df$type = rep("pfs", 6)
+
+
+knitr::kable(results_df)
+
+```
+
+<h3 class="nogo" >Panel E MSK Data</h3>
+Univariate Cox regression analyses PFS relationship to ACoA gene abundance in MSK Observational Data.
+
+```{r}
+#| warning: false
+#| label: internal_data_pfs_mv
+#| include: true
+#| echo: false
+
+model1_msk_pfs <- coxph(Surv(tt_pfs_d, pfs_event)~test_v+age10+strata(cohort)+imputed_ecog+ bmi + imputed_smoking_status, mixed_solid_tumor %>% mutate(test_v = log(rum)))
+model2_msk_pfs <- coxph(Surv(tt_pfs_d, pfs_event)~test_v+age10+strata(cohort)+imputed_ecog+ bmi + imputed_smoking_status, mixed_solid_tumor%>% mutate(test_v = log(rum_lach)))
+model3_msk_pfs <- coxph(Surv(tt_pfs_d, pfs_event)~test_v+age10+strata(cohort)+imputed_ecog+ bmi + imputed_smoking_status, mixed_solid_tumor %>% mutate(test_v = log(clostridiales)))
+model4_msk_pfs <- coxph(Surv(tt_pfs_d, pfs_event)~test_v+age10+strata(cohort)+imputed_ecog+ bmi + imputed_smoking_status, mixed_solid_tumor %>% mutate(test_v = log(clostridia)))
+model5_msk_pfs <- coxph(Surv(tt_pfs_d, pfs_event)~test_v+age10+strata(cohort)+imputed_ecog+ bmi + imputed_smoking_status, mixed_solid_tumor %>% mutate(test_v = log(eval(faecalibacterium_prausnitzii+1e-4))))
+model6_msk_pfs <- coxph(Surv(tt_pfs_d, pfs_event)~test_v+age10+strata(cohort)+imputed_ecog+ bmi + imputed_smoking_status, mixed_solid_tumor %>% mutate(test_v = log1p(pyruvate)))
+
+
+models_mixed_solid_tumor_pfs <- list(model6_msk_pfs, model1_msk_pfs, model2_msk_pfs, model3_msk_pfs, model4_msk_pfs, model5_msk_pfs)
+
+results_df <- data.frame()
+
+
+for (i in seq_along(models_mixed_solid_tumor_pfs)) {
+  model <- models_mixed_solid_tumor_pfs[[i]]
+  summary_model <- summary(model)
+
+
+  hr <- round(summary_model$coefficients["test_v", "exp(coef)"], digits=2)
+  lower_ci <- round(summary_model$conf.int["test_v", "lower .95"], digits=2)
+  upper_ci <- round(summary_model$conf.int["test_v", "upper .95"], digits=2)
+  pvalue <- round(summary_model$coefficients["test_v", "Pr(>|z|)"], digits=3)
+
+
+  results_df <- rbind(results_df, data.frame(
+    HR = hr,
+    Lower_CI = lower_ci,
+    Upper_CI = upper_ci,
+    pvalue = pvalue
+  ))
+}
+
+results_df$modelname = c("log(ACoA)","log(Ruminococcaceae)", "log(Ruminococcacaeae + Lachnospiraceae)",
+                             "log(Clostridiales)", "log(Clostridia)", "log(F prausnitizii + 1e-7)")
+results_df$source = rep("mixed solid tumor", 6)
+results_df$type = rep("pfs", 6)
+
+
+
+
+knitr::kable(results_df)
+```
+
+```{r}
+#| warning: false
+#| label: internal_data_os_mv
+#| include: true
+#| echo: false
+
+model1_msk_os <- coxph(Surv(tt_os_d, event_os)~test_v+age10+strata(cohort)+ecog+ bmi + imputed_smoking_status, mixed_solid_tumor %>% mutate(test_v = log(rum)))
+model2_msk_os <- coxph(Surv(tt_os_d, event_os)~test_v+age10+strata(cohort)+ecog+ bmi + imputed_smoking_status, mixed_solid_tumor%>% mutate(test_v = log(rum_lach)))
+model3_msk_os <- coxph(Surv(tt_os_d, event_os)~test_v+age10+strata(cohort)+ecog+ bmi + imputed_smoking_status, mixed_solid_tumor %>% mutate(test_v = log(clostridiales)))
+model4_msk_os <- coxph(Surv(tt_os_d, event_os)~test_v+age10+strata(cohort)+ecog+ bmi + imputed_smoking_status, mixed_solid_tumor %>% mutate(test_v = log(clostridia)))
+model5_msk_os <- coxph(Surv(tt_os_d, event_os)~test_v+age10+strata(cohort)+ecog+ bmi + imputed_smoking_status, mixed_solid_tumor %>% mutate(test_v = log(eval(faecalibacterium_prausnitzii+1e-4))))
+model6_msk_os <- coxph(Surv(tt_os_d, event_os)~test_v+age10+strata(cohort)+ecog+ bmi + imputed_smoking_status, mixed_solid_tumor %>% mutate(test_v = log1p(pyruvate)))
+
+
+models_mixed_solid_tumor_os <- list(model6_msk_os, model1_msk_os, model2_msk_os, model3_msk_os, model4_msk_os, model5_msk_os)
+
+results_df <- data.frame()
+
+for (i in seq_along(models_mixed_solid_tumor_os)) {
+  model <- models_mixed_solid_tumor_os[[i]]
+  summary_model <- summary(model)
+
+
+  hr <- round(summary_model$coefficients["test_v", "exp(coef)"], digits = 2)
+  lower_ci <- round(summary_model$conf.int["test_v", "lower .95"], digits = 2)
+  upper_ci <- round(summary_model$conf.int["test_v", "upper .95"], digits = 2)
+  pvalue <- round(summary_model$coefficients["test_v", "Pr(>|z|)"], digits = 3)
+
+
+  results_df <- rbind(results_df, data.frame(
+    HR = hr,
+    Lower_CI = lower_ci,
+    Upper_CI = upper_ci,
+    pvalue = pvalue
+  ))
+}
+
+results_df$modelname = c("log(ACoA)","log(Ruminococcaceae)", "log(Ruminococcacaeae + Lachnospiraceae)",
+                             "log(Clostridiales)", "log(Clostridia)", "log(F prausnitizii + 1e-7)")
+results_df$source = rep("mixed solid tumor", 6)
+results_df$type = rep("os", 6)
+
+knitr::kable(results_df)
+
+```
+
+

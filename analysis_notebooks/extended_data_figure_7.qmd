@@ -1,6 +1,6 @@
 --- 
 title: |
-  Extended Figure 5 \nA Beta Diversity Analysis and the External Melanoma Cohort.
+  Extended Figure 7 \nA Beta Diversity Analysis and the External Melanoma Cohort.
 format:
   html:
     css: styles.css

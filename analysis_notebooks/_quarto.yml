@@ -17,28 +17,54 @@ website:
         contents: 
           - text: "shortBRED Analysis Butyrate Gene Quantification"
             href: shortbred_analysis_intro.qmd
+          - text: "All Text HR values"
+            href: all_text_hr_values.qmd
       - section: "Main Figures"
         contents: 
           - text: "Figure 1: Hazard Ratio with Fiber"
-            href: figure_1_hazard_ratio_fiber.qmd
+            href: figure_1.qmd
           - text: "Figure 2: ACoA Pathway and ICB/Survival Outcomes"
-            href: figure_2_acoa_pathway_icb_outcome.qmd
+            href: figure_2.qmd
       - section: "Extended Figures"
         contents:  
-          - text: "Extended Figure 1: PFS and OS by Disease Type"
-            href: extended_data_figure_1_pfs_fiber_disease_type.qmd
-          - text: "Extended Figure 2: Butyrate Genes and OS"
-            href: extended_data_figure_2_butyrate_genes_overall_survival.qmd
-          - text: "Extended Figure 3: Maaslin Analysis"
-            href: extended_data_figure_3_maaslin_acoa_analysis.qmd
-          - text: "Extended Figure 4: Deeper Look at ACOA genes and taxonomy"
-            href: extended_data_figure_4_acoa_pathway_family_associations_continued.qmd
-          - text: "Extended Figure 5: External Melanoma Cohort Beta Diversity"
-            href: extended_data_figure_5_PCOA_family_and_ACOA_colors_external_melanoma_cohort.qmd
-          - text: "Extended Figure 6: ACOA Pathway Breakdown - Butyrate"
-            href: extended_data_figure_6_acoa_pathway_butyrate.qmd
-          - text: "Extended Figure 7: Time Bin Sensitivity Analysis"
-            href: extended_data_figure_7_time_bin_analysis.qmd
+          - text: "Extended Figure 1"
+            href: extended_data_figure_1.qmd
+          - text: "Extended Figure 2"
+            href: extended_data_figure_2.qmd
+          - text: "Extended Figure 3"
+            href: extended_data_figure_3.qmd
+          - text: "Extended Figure 4"
+            href: extended_data_figure_4.qmd
+          - text: "Extended Figure 5"
+            href: extended_data_figure_5.qmd
+          - text: "Extended Figure 6"
+            href: extended_data_figure_6.qmd
+          - text: "Extended Figure 7"
+            href: extended_data_figure_7.qmd
+          - text: "Extended Figure 8"
+            href: extended_data_figure_8.qmd
+          - text: "Extended Figure 9"
+            href: extended_data_figure_9.qmd
+      - section: "Tables"
+        contents: 
+          - text: "Extended Data Table 1"
+            href: table_1.qmd
+          - text: "Extended Data Table 2"
+            href: table_2.qmd
+          - text: "Extended Data Table 3"
+            href: table_3.qmd
+          - text: "Extended Data Table 4"
+            href: table_4.qmd
+          - text: "Extended Data Table 5"
+            href: table_5.qmd
+          - text: "Extended Data Table 6"
+            href: table_6.qmd
+          - text: "Extended Data Table 7"
+            href: table_7.qmd
+          - text: "Extended Data Table 8"
+            href: table_8.qmd
+          - text: "Extended Data Table 9"
+            href: table_9.qmd
       - section: "Other Figures"
         contents: 
           - text: "External and Internal Cohort Multivariable Analysis"
@@ -49,6 +75,7 @@ format:
     theme: minty
     css: styles.css
     toc: true
+    embed-resources: true
 
 
 

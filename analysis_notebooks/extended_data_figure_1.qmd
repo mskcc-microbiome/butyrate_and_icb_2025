@@ -1,0 +1,154 @@
+--- 
+title: |
+  Extended Figure 1: PFS vs Fiber by Disease Type
+---
+
+
+
+```{r}
+#| echo: false
+#| warning: false
+#| include: false
+#| label: library_data_imports
+
+library(dplyr)
+library(survival)
+library(survminer)
+library(forestplot)
+source("utility_funcs.R")
+
+gu_cohort_data <- readRDS("../data/gu_survey_cohort.RDS")
+
+makeSpline <- function(df, survtime, survevent, var,
+                         knots=knots, centerpoint = NULL,
+                         title=paste("Spline with", knots, "knots"),
+                         xlab = xlab, ylab=ylab,
+                         xticks = NULL) {
+    
+    require(survival)
+    require(tidyverse)
+    
+    model_spline <- coxph(Surv(survtime, survevent)~pspline(var,knots), df) #
+    ptemp <- termplot(model_spline, se=T, plot=F)
+    
+    splinem <- ptemp$var
+    
+    if(is.null(centerpoint)){centerpoint = median(var, na.rm=T)}
+   
+    if(centerpoint %in% splinem$x){
+      c_row = which(splinem$x == centerpoint)
+    } else {
+      c_row = which(abs(splinem$x - centerpoint) == min(abs(splinem$x - centerpoint)))
+    }
+    
+    center <- splinem$y[c_row]
+    
+    ytemp <- splinem$y + outer(splinem$se, c(0, -1.96, 1.96), '*')
+    
+    exp_ytemp <- exp(ytemp - center)
+    
+    # Create a spline_data frame for plotting
+    spline_data <- data.frame(xvar = splinem$x, Estimate = exp_ytemp[,1],
+                              Lower = exp_ytemp[,2], Upper = exp_ytemp[,3])
+    
+    ggplot(spline_data, aes(x = xvar)) +
+      geom_hline(yintercept=1, lty=2)+
+      geom_ribbon(aes(ymin = Lower, ymax = Upper), fill = "grey80", alpha = 0.5) +
+      geom_line(aes(y = Estimate), color = "blue") +
+      geom_rug(sides = "b") +  # Add rug plot at the bottom ('b') of the plot
+      scale_y_log10() +  # Log scale for y-axis
+      scale_x_log10() +
+      labs(x = xlab, y = ylab, title=title) +
+      theme_classic()
+  }
+```
+
+The data we are visualizing here has the following structure:
+
+
+```{r}
+#| warning: false
+#| include: false
+#| label: load_data
+
+gu_cohort_data <- readRDS("../data/gu_survey_cohort.RDS")
+
+#pull out cohorts:
+
+mUCdataFiber=filter(gu_cohort_data,cancer_type!=4)
+dataUCavelumabFiber=filter(mUCdataFiber,io_regimen==5)
+dataUC_NOTavelumabFiber=filter(mUCdataFiber,io_regimen!=5)
+
+mRCdataFiber=filter(gu_cohort_data,cancer_type==4)
+dataRCIpiNivoFiber=filter(mRCdataFiber,io_regimen==9 | io_regimen==17)
+dataRCioTKIFiber=filter(mRCdataFiber,io_regimen==8 | io_regimen==18 | io_regimen==10 | io_regimen==11 | io_regimen==16 | io_regimen==12)
+
+```
+
+## Panel A
+
+Mortality Hazard for PFS by daily average fiber intake, visualized via partial smoothing spline for pateints with Renal Cell Cancer.  Ticks along the x axis represent individual patients. 
+
+```{r}
+#| warning: false
+#| include: true
+#| label: panel_a
+
+makeSpline(gu_cohort_data, gu_cohort_data$pfs_mo, gu_cohort_data$pod_status, 
+           gu_cohort_data$gram_fiber_per_Kcal,
+           xlab = "(Grams of fiber)/(1,000 kilocalories)", ylab="Hazard ratio (95% CI)",
+           title="Smoothing spline for progression-free survival",
+           knots=3) +
+  scale_x_continuous(breaks = c(5,10,15,20))
+
+#ggsave("svg/extended_figure_1_part_a_fiber_density_spline.svg", w=8, h = 5)
+```
+
+
+## Panel B
+
+Mortality Hazard for PFS by daily average fiber intake, visualized via partial smoothing spline for pateints with Urothelial Cancer.  Ticks along the x axis represent individual patients. 
+
+```{r}
+#| warning: false
+#| include: true
+#| label: panel_b
+
+
+makeSpline(gu_cohort_data, gu_cohort_data$os_mo, gu_cohort_data$os_status, 
+           gu_cohort_data$gram_fiber_per_Kcal,
+           xlab = "(Grams of fiber)/(1,000 kilocalories)", ylab="Hazard ratio (95% CI)",
+           title="Smoothing spline for overall survival",
+           knots=3) +
+  scale_x_continuous(breaks = c(5,10,15,20))
+#ggsave("svg/extended_figure_1_part_b_spline_os.svg", w=8, h = 5)
+```
+
+## Panel C
+
+KM Surv Plot above below 15g/1000kcal
+
+```{r}
+#| warning: false
+#| include: true
+#| label: panel_c
+kmPFS <- survfit(Surv(pfs_mo, pod_status) ~ gram_fiber_per_Kcal_aboveRecommended,
+                 data = gu_cohort_data)
+
+ggsurvplot(kmPFS,risk.table=TRUE,
+           xlab="Time (months)", 
+           ylab="Progression-free survival",
+           pval = TRUE,
+           legend=c(0.9,0.8),
+           title="Patients with urothelial or renal cell cancer on ICB",
+           legend.title="Fiber intake",
+           legend.labs=c("<15 g/1,000 kcal","15+ g/1,000 kcal"),
+           conf.int=TRUE,
+           break.x.by=6,
+           axes.offset=FALSE,
+           xlim=c(0,25),
+           data = gu_cohort_data)
+
+
+```
+

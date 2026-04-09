@@ -1,6 +1,6 @@
 --- 
 title: |
-  Extended Figure 2 \nButyrate Gene Abundance and Hazard Ration, and Univatiate Analysis of Butyrate Pathway.
+  Extended Figure 4 \nButyrate Gene Abundance and Hazard Ration, and Univatiate Analysis of Butyrate Pathway.
 format:
   html:
     css: styles.css
@@ -33,8 +33,8 @@ source("utility_funcs.R")
 #| echo: false
 #| label: load_data
 
-acoa_df <- readRDS("../data/cleaned_data/acoa_data.rds")
-colnames(acoa_df)
+
+mixed_solid_tumor <- readRDS("../data/mixed_solid_tumor.RDS")
 ```
 
 
@@ -46,9 +46,12 @@ Hazard Ratio of Overall Survival Evaluated with respect to Butyrate production g
 #| warning: false
 #| label: hr_spline_butyrate_genes
 
-os_butyrate <-  coxph(Surv(tt_os_d, event_os)~rms::rcs(total,4)+age10+factor(cohort)+ecog,, data = acoa_df)
-ptemp <- termplot(os_butyrate, se=T, plot=F)
-buterm <- ptemp$total
+cox_mst_os_mv_spline <-  coxph(Surv(tt_os_d, event_os)~rms::rcs(pyruvate,4)+age10+factor(cohort)+ecog + bmi + imputed_smoking_status,, data = mixed_solid_tumor)
+
+
+summary(cox_mst_os_mv_spline)
+ptemp <- termplot(cox_mst_os_mv_spline, se=T, plot=F)
+buterm <- ptemp$pyruvate
 center <- buterm$y[which(buterm$y == median(buterm$y))]
 ytemp <- buterm$y + outer(buterm$se, c(0, -1.96, 1.96), '*')
 exp_ytemp <- exp(ytemp - center)
@@ -72,7 +75,7 @@ ggplot(spline_data, aes(x = buty)) +
      strip.text.x = element_text(size = 20),
      strip.text.y = element_text(size = 20)
  ) 
-ggsave("svg/extended_figure_2_part_a_HR_tot_butyrate.svg", w = 6.5, h = 4)  
+ggsave("svg/extended_figure_4_part_a_HR_tot_butyrate.svg", w = 6.5, h = 4)  
 ```
 ### Panel B
 
@@ -95,11 +98,11 @@ univ2 <- function(cox, k=1, l=1){
 }
 
 forest_os <- rbind(
-univ2(coxph(Surv(tt_os_d, event_os)~log(total)+age10+cohort+ecog, acoa_df)),
-univ2(coxph(Surv(tt_os_d, event_os)~log(pyruvate)+age10+cohort+ecog, acoa_df)),
-univ2(coxph(Surv(tt_os_d, event_os)~log(lysine+0.0000001)+age10+cohort+ecog, acoa_df)),
-univ2(coxph(Surv(tt_os_d, event_os)~log(fouraminobutyrate+0.000001)+age10+cohort+ecog, acoa_df)),
-univ2(coxph(Surv(tt_os_d, event_os)~log(gluatarate+0.000001)+age10+cohort+ecog, acoa_df)))
+univ2(coxph(Surv(tt_os_d, event_os)~log(total)+age10+cohort+ecog+ bmi + imputed_smoking_status, mixed_solid_tumor)),
+univ2(coxph(Surv(tt_os_d, event_os)~log(pyruvate)+age10+cohort+ecog+ bmi + imputed_smoking_status, mixed_solid_tumor)),
+univ2(coxph(Surv(tt_os_d, event_os)~log(lysine+0.0000001)+age10+cohort+ecog+ bmi + imputed_smoking_status, mixed_solid_tumor)),
+univ2(coxph(Surv(tt_os_d, event_os)~log(fouraminobutyrate+0.000001)+age10+cohort+ecog+ bmi + imputed_smoking_status, mixed_solid_tumor)),
+univ2(coxph(Surv(tt_os_d, event_os)~log(gluatarate+0.000001)+age10+cohort+ecog+ bmi + imputed_smoking_status, mixed_solid_tumor)))
 
 forest_os %>%
   rename_with(~ c("HR", "CI_low", "CI_high", "p"), .cols = everything()) %>%
@@ -122,5 +125,5 @@ forest_os %>%
      strip.text.y = element_text(size = 18)
  ) + 
 theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
-ggsave("svg/extended_figure_2_part_b_forest_plt.svg", w = 6.5, h = 4)  
+ggsave("svg/extended_figure_4_part_b_forest_plt.svg", w = 6.5, h = 4)  
 ```

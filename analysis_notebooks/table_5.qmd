@@ -1,0 +1,83 @@
+--- 
+title: |
+  Extended Data Table 5
+format:
+  html:
+    css: styles.css
+---
+
+
+
+```{r}
+#| echo: false
+#| warning: false
+#| include: false
+#| label: library_data_imports
+
+library(tidyverse)
+
+library(survival)
+```
+
+
+Here are the column names of the data we are plotting:
+
+fouraminobutyrate, glutarate, lysine and pyruvate represent different parts of the butyrate synthesis pathway. 
+```{r}
+#| warning: false
+#| echo: false
+#| label: load_data
+gu_cohort_data <- readRDS("../data/gu_survey_cohort.RDS")
+```
+
+
+```{r}
+#| warning: false
+#| label: external_data_pfs_mv
+#| include: true
+#| echo: false
+
+
+univariable <- coxph(Surv(pfs_mo,pod_status)~ gram_fiber_per_Kcal_aboveRecommended, gu_cohort_data)
+multivariable_1 <- coxph(Surv(pfs_mo,pod_status)~ gram_fiber_per_Kcal_aboveRecommended + calor, gu_cohort_data)
+multivariable_2 <- coxph(Surv(pfs_mo,pod_status)~ gram_fiber_per_Kcal_aboveRecommended + 
+                                      strata(age_cat) + 
+                                      ecog_1to5_final +
+                                      cancer_RCCvsUC_NAME +
+                                      stage.simplified.factor + calor, gu_cohort_data)
+multivariable_3 <- coxph(Surv(pfs_mo,pod_status)~ gram_fiber_per_Kcal_aboveRecommended + 
+                                      Impact.TMB.Imputed +
+                                      bmi + strata(sex) + smoking.binary + calor, gu_cohort_data)
+multivariable_4 <- coxph(Surv(pfs_mo,pod_status)~ gram_fiber_per_Kcal_aboveRecommended + 
+                                      WhiteRace + latinx.factor + calor, gu_cohort_data)
+
+gu_fiber_density_models <- list(univariable, multivariable_1, multivariable_2, multivariable_3, multivariable_4)
+
+results_df <- data.frame()
+
+for (i in seq_along(gu_fiber_density_models)) {
+  model <- gu_fiber_density_models[[i]]
+  summary_model <- summary(model)
+
+  hr <- round(summary_model$coefficients["gram_fiber_per_Kcal_aboveRecommended", "exp(coef)"], digits=2)
+  lower_ci <- round(summary_model$conf.int["gram_fiber_per_Kcal_aboveRecommended", "lower .95"], digits=2)
+  upper_ci <- round(summary_model$conf.int["gram_fiber_per_Kcal_aboveRecommended", "upper .95"], digits=2)
+  pvalue <- round(summary_model$coefficients["gram_fiber_per_Kcal_aboveRecommended", "Pr(>|z|)"], digits=3)
+
+  results_df <- rbind(results_df, data.frame(
+    HR = hr,
+    Lower_CI = lower_ci,
+    Upper_CI = upper_ci,
+    pvalue = pvalue
+  ))
+}
+results_df$modelname = c("Univariable", "Multivariable 1", "Multivariable 2", "Multivariable 3", "Multivariable 4")
+
+
+knitr::kable(results_df)
+
+```
+
+
+
+
