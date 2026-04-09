@@ -40,13 +40,13 @@ label(mixed_solid_tumor$age)="Age at time of dietary questionnaire (in years)"
 label(mixed_solid_tumor$ecog)="Performance Status"
 label(mixed_solid_tumor$cohort)="Diagnosis"
 label(mixed_solid_tumor$bmi)="Body Mass Index"
-label(mixed_solid_tumor$imputed_smoking_status)="Smoking Status"
+label(mixed_solid_tumor$smoking_status)="Smoking Status"
 label(mixed_solid_tumor$therapy)="Therapy"
 label(mixed_solid_tumor$TMPT)="Sample day relative to first ICB infusion"
 
 
 
-tbl_summary(mixed_solid_tumor%>%select(age,,cohort,therapy, ecog,TMPT,bmi,imputed_smoking_status)) %>% modify_caption("**Supplementary Table. Baseline characteristics of Mixed Solid Tumor Cohort**")
+tbl_summary(mixed_solid_tumor%>%select(age,,cohort,therapy, ecog,TMPT,bmi,smoking_status)) %>% modify_caption("**Supplementary Table. Baseline characteristics of Mixed Solid Tumor Cohort**")
 
 
 ```
