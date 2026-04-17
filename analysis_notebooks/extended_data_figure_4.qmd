@@ -46,12 +46,12 @@ Hazard Ratio of Overall Survival Evaluated with respect to Butyrate production g
 #| warning: false
 #| label: hr_spline_butyrate_genes
 
-cox_mst_os_mv_spline <-  coxph(Surv(tt_os_d, event_os)~rms::rcs(pyruvate,4)+age10+factor(cohort)+ecog + bmi + imputed_smoking_status,, data = mixed_solid_tumor)
+cox_mst_os_mv_spline <-  coxph(Surv(tt_os_d, event_os)~rms::rcs(total,4)+age10+factor(cohort)+ecog + bmi + imputed_smoking_status,, data = mixed_solid_tumor)
 
 
 summary(cox_mst_os_mv_spline)
 ptemp <- termplot(cox_mst_os_mv_spline, se=T, plot=F)
-buterm <- ptemp$pyruvate
+buterm <- ptemp$total
 center <- buterm$y[which(buterm$y == median(buterm$y))]
 ytemp <- buterm$y + outer(buterm$se, c(0, -1.96, 1.96), '*')
 exp_ytemp <- exp(ytemp - center)
@@ -67,15 +67,15 @@ ggplot(spline_data, aes(x = buty)) +
   labs(x = "Total butyrate-pathway genes present", y = "Hazard ratio") +
   theme_minimal() +
  theme(
-     axis.text = element_text(size = 24), # Adjust axis labels
-     axis.title = element_text(size = 24), # Adjust axis titles
-     plot.title = element_text(size = 24),  # Adjust plot title
-     legend.text = element_text(size = 18),  # Adjust legend text
-     legend.title = element_text(size = 20), # Adjust legend titleMetronidazole
-     strip.text.x = element_text(size = 20),
-     strip.text.y = element_text(size = 20)
+     axis.text = element_text(size = 12), # Adjust axis labels
+     axis.title = element_text(size = 12), # Adjust axis titles
+     plot.title = element_text(size = 12),  # Adjust plot title
+     legend.text = element_text(size = 9),  # Adjust legend text
+     legend.title = element_text(size = 10), # Adjust legend titleMetronidazole
+     strip.text.x = element_text(size = 10),
+     strip.text.y = element_text(size = 10)
  ) 
-ggsave("svg/extended_figure_4_part_a_HR_tot_butyrate.svg", w = 6.5, h = 4)  
+ggsave("svg/updated_extended_figure_4_part_a_HR_tot_butyrate.svg", w = 3.5, h = 2)  
 ```
 ### Panel B
 
@@ -116,14 +116,14 @@ forest_os %>%
   coord_cartesian(xlim=exp(c(-2, 0.3))) + 
   labs(y = "") +
  theme(
-     axis.text = element_text(size = 20), # Adjust axis labels
-     axis.title = element_text(size = 20), # Adjust axis titles
-     plot.title = element_text(size = 20),  # Adjust plot title
-     legend.text = element_text(size = 18),  # Adjust legend text
-     legend.title = element_text(size = 18), # Adjust legend titleMetronidazole
-     strip.text.x = element_text(size = 18),
-     strip.text.y = element_text(size = 18)
+     axis.text = element_text(size = 10), # Adjust axis labels
+     axis.title = element_text(size = 10), # Adjust axis titles
+     plot.title = element_text(size = 10),  # Adjust plot title
+     legend.text = element_text(size = 9),  # Adjust legend text
+     legend.title = element_text(size = 9), # Adjust legend titleMetronidazole
+     strip.text.x = element_text(size = 9),
+     strip.text.y = element_text(size = 9)
  ) + 
 theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
-ggsave("svg/extended_figure_4_part_b_forest_plt.svg", w = 6.5, h = 4)  
+ggsave("svg/updated_extended_figure_4_part_b_forest_plt.svg", w = 4, h = 2)  
 ```

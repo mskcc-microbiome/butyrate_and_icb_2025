@@ -20,9 +20,6 @@ library(survival)
 ```
 
 
-Here are the column names of the data we are plotting:
-
-fouraminobutyrate, glutarate, lysine and pyruvate represent different parts of the butyrate synthesis pathway. 
 ```{r}
 #| warning: false
 #| echo: false

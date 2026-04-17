@@ -262,10 +262,10 @@ ACoA-pathway gene abundance was associated with response to ICB among patients w
 #Figure 2D
 ggplot(external_rcc, aes(x = response, y = pyruvate)) +
   geom_boxplot(width = 0.4, outlier.shape = NA, linewidth = 0.6, color = "black") +
-  geom_jitter(aes(fill = response), shape = 21, width = 0.15, size = 5, stroke = 0.3, color = "black", alpha = 0.7) +
+  geom_jitter(aes(fill = response), shape = 21, width = 0.15, size = 2, stroke = 0.3, color = "black", alpha = 0.7) +
   scale_fill_manual(values = c("#999999", "#E69F00")) +
   scale_x_discrete(labels = c("Non-responder", "Responder")) +
-  theme_classic(base_size = 16) +
+  theme_classic(base_size = 5) +
   theme(
     legend.position = "none",
     axis.line = element_line(color = "black", linewidth = 0.5),
@@ -274,6 +274,7 @@ ggplot(external_rcc, aes(x = response, y = pyruvate)) +
   xlab("") +
   ylab("Acetyl-CoA pathway\ngene abundance (RPKM)")
 
+ggsave("svg/updated_fig_2_d.svg", w = 1.5, h = 2.5) 
 
 wilcox.test(external_rcc$pyruvate ~ external_rcc$response)
 
@@ -328,17 +329,19 @@ for (i in seq_along(models_external_melanoma_os)) {
 results_df$source = rep("wargo", 6)
 results_df$modelname = c("log(ACoA)", "log(Ruminococcaceae)", "log(Ruminococcacaeae + Lachnospiraceae)",
                              "log(Clostridiales)", "log(Clostridia)", "log(F prausnitizii + 1e-7)")
+results_df$modelname = factor(results_df$modelname, levels = c("log(F prausnitizii + 1e-7)", "log(Clostridia)","log(Clostridiales)",
+                                                               "log(Ruminococcacaeae + Lachnospiraceae)", "log(Ruminococcaceae)", "log(ACoA)" ))
 
 ggplot(results_df) +
-  geom_point(aes(y=fct_rev(fct_reorder(modelname, HR)), x=HR)) +
-  geom_errorbarh(aes(y=fct_rev(fct_reorder(modelname, HR)), xmin=Lower_CI, xmax=Upper_CI), height=0.5)+
+  geom_point(aes(y=modelname, x=HR)) +
+  geom_errorbarh(aes(y=modelname, xmin=Lower_CI, xmax=Upper_CI), height=0.5)+
   geom_vline(xintercept=1, lty=2, col="gray70") +
   scale_x_continuous(trans="log") +
   theme_classic() +
   labs(title = "HR (95% CI) multivariable Cox PFS\nExternal Melanoma Cohort",
        subtitle ="", y="Variable", x="HR")
 
-
+ggsave("svg/updated_fig_2_e_pt1.svg", w = 5.4, h = 2) 
 ```
 
 <h3 class="nogo" >Panel E MSK Data</h3>
@@ -383,19 +386,20 @@ for (i in seq_along(models_mixed_solid_tumor_pfs)) {
 
 results_df$source = rep("msk", 6)
 results_df$type = rep("pfs", 6)
-results_df$modelname = c("log(ACoA)","log(Ruminococcaceae)", "log(Ruminococcacaeae + Lachnospiraceae)",
+results_df$modelname = c("log(ACoA)", "log(Ruminococcaceae)", "log(Ruminococcacaeae + Lachnospiraceae)",
                              "log(Clostridiales)", "log(Clostridia)", "log(F prausnitizii + 1e-7)")
-
+results_df$modelname = factor(results_df$modelname, levels = c("log(F prausnitizii + 1e-7)", "log(Clostridia)","log(Clostridiales)",
+                                                               "log(Ruminococcacaeae + Lachnospiraceae)", "log(Ruminococcaceae)", "log(ACoA)" ))
 
 ggplot(results_df) +
-  geom_point(aes(y=fct_rev(fct_reorder(modelname, HR)), x=HR)) +
-  geom_errorbarh(aes(y=fct_rev(fct_reorder(modelname, HR)), xmin=Lower_CI, xmax=Upper_CI), height=0.5)+
+  geom_point(aes(y=modelname, x=HR)) +
+  geom_errorbarh(aes(y=modelname, xmin=Lower_CI, xmax=Upper_CI), height=0.5)+
   geom_vline(xintercept=1, lty=2, col="gray70") +
   scale_x_continuous(trans="log") +
   theme_classic() +
   labs(title = "HR (95% CI) multivariable Cox PFS\nMixed Solid Tumor Cohort",
        subtitle ="", y="Variable", x="HR")
-
+ggsave("svg/updated_fig_2_e_pt2.svg", w = 5.4, h = 2) 
 
 ```
 
@@ -437,18 +441,19 @@ for (i in seq_along(models_mixed_solid_tumor_os)) {
 
 results_df$source = rep("msk", 6)
 results_df$type = rep("os", 6)
-results_df$modelname = c("log(ACoA)","log(Ruminococcaceae)", "log(Ruminococcacaeae + Lachnospiraceae)",
+results_df$modelname = c("log(ACoA)", "log(Ruminococcaceae)", "log(Ruminococcacaeae + Lachnospiraceae)",
                              "log(Clostridiales)", "log(Clostridia)", "log(F prausnitizii + 1e-7)")
-
+results_df$modelname = factor(results_df$modelname, levels = c("log(F prausnitizii + 1e-7)", "log(Clostridia)","log(Clostridiales)",
+                                                               "log(Ruminococcacaeae + Lachnospiraceae)", "log(Ruminococcaceae)", "log(ACoA)" ))
 
 ggplot(results_df) +
-  geom_point(aes(y=fct_rev(fct_reorder(modelname, HR)), x=HR)) +
-  geom_errorbarh(aes(y=fct_rev(fct_reorder(modelname, HR)), xmin=Lower_CI, xmax=Upper_CI), height=0.5)+
+  geom_point(aes(y=modelname, x=HR)) +
+  geom_errorbarh(aes(y=modelname, xmin=Lower_CI, xmax=Upper_CI), height=0.5)+
   geom_vline(xintercept=1, lty=2, col="gray70") +
   scale_x_continuous(trans="log") +
   theme_classic() +
   labs(title = "HR (95% CI) multivariable Cox OS\nMixed Solid Tumor Cohort",
        subtitle ="", y="Variable", x="HR")
-
+ggsave("svg/updated_fig_2_e_pt3.svg", w = 5.4, h = 2) 
 
 ```

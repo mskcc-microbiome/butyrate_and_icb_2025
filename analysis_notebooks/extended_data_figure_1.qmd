@@ -87,7 +87,7 @@ dataRCioTKIFiber=filter(mRCdataFiber,io_regimen==8 | io_regimen==18 | io_regimen
 
 ## Panel A
 
-Mortality Hazard for PFS by daily average fiber intake, visualized via partial smoothing spline for pateints with Renal Cell Cancer.  Ticks along the x axis represent individual patients. 
+Mortality Hazard for PFS by daily average fiber density, visualized via partial smoothing spline for the GU survey cohort.  Ticks along the x axis represent individual patients. 
 
 ```{r}
 #| warning: false
@@ -107,7 +107,7 @@ makeSpline(gu_cohort_data, gu_cohort_data$pfs_mo, gu_cohort_data$pod_status,
 
 ## Panel B
 
-Mortality Hazard for PFS by daily average fiber intake, visualized via partial smoothing spline for pateints with Urothelial Cancer.  Ticks along the x axis represent individual patients. 
+Mortality Hazard for OS by daily average fiber density, visualized via partial smoothing spline for the GU survey cohortr.  Ticks along the x axis represent individual patients. 
 
 ```{r}
 #| warning: false
@@ -141,7 +141,7 @@ ggsurvplot(kmPFS,risk.table=TRUE,
            pval = TRUE,
            legend=c(0.9,0.8),
            title="Patients with urothelial or renal cell cancer on ICB",
-           legend.title="Fiber intake",
+           legend.title="fiber density",
            legend.labs=c("<15 g/1,000 kcal","15+ g/1,000 kcal"),
            conf.int=TRUE,
            break.x.by=6,

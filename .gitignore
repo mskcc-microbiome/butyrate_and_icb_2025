@@ -3,9 +3,14 @@
 .RData
 .Ruserdata
 data/*
+old/*
 .Rprofile
 *.Rproj
 .env
 public_data/*
 data_processing/shortbred_analysis/config.yaml
 data_processing/shortbred_analysis/config_params.sh
+analysis_notebooks/figures/*
+analysis_notebooks/png/*
+analysis_notebooks/svg/*
+old_figures/*
