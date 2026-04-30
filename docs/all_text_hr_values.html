@@ -4992,7 +4992,7 @@ p value unadjusted fiber as a continus variable, PFS: 0.045
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>sum_os_gu_uv_continous <span class="ot">&lt;-</span> <span class="fu">summary</span>(cox_os_gu_uv_continous)</span>
 <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">paste</span>(</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;-----------------------------------------------</span><span class="sc">\n\n</span><span class="st">p value unadjusted fiber as a continus variable, PFS:&quot;</span>,</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;-----------------------------------------------</span><span class="sc">\n\n</span><span class="st">p value unadjusted fiber as a continus variable, OS:&quot;</span>,</span>
 <span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">round</span>(sum_os_gu_uv_continous<span class="sc">$</span>coefficients[variable, <span class="st">&quot;Pr(&gt;|z|)&quot;</span>],<span class="at">digits =</span> <span class="dv">3</span>),</span>
 <span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;</span><span class="sc">\n\n</span><span class="st">-----------------------------------------------</span><span class="sc">\n\n</span><span class="st">&quot;</span>,</span>
 <span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;HR:&quot;</span>,</span>
@@ -5005,7 +5005,7 @@ p value unadjusted fiber as a continus variable, PFS: 0.045
 <div class="cell-output cell-output-stdout">
 <pre><code>-----------------------------------------------
 
-p value unadjusted fiber as a continus variable, PFS: 0.048 
+p value unadjusted fiber as a continus variable, OS: 0.048 
 
 -----------------------------------------------
 
@@ -5174,7 +5174,7 @@ p value log(total butyrate producing genes), PFS: 0.032
  HR: 0.61 [95% CI: 0.39 0.96 ]</code></pre>
 </div>
 </div>
-<p>We then subdivided the butyrate-producing genes according to their annotation as steps in four substrate-specific fermentation subpathways as described in Vital et al.19 (acetyl-CoA [ACoA], glutarate, succinate, lysine) and investigated associations with OS for each, applying a Bonferroni correction for multiple testing (significance at p &lt; 0.0125). The ACoA fermentation pathway (Bonferroni adj. Wald p = 0.002 …</p>
+<p>We then subdivided the butyrate-producing genes according to their annotation as steps in four substrate-specific fermentation subpathways as described in Vital et al.19 (acetyl-CoA [ACoA], glutarate, succinate, lysine) and investigated associations with OS for each, applying a Bonferroni correction for multiple testing (significance at p &lt; 0.0125). The ACoA fermentation pathway, which is the fermentation pathway involved in deriving butyrate from fiber, accounted for the association between butyrate-production capacity, as this was the only sub-pathway for which a statistically significant difference was observed in OS (Bonferroni-adjusted Wald p = 0.002 …</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co">#line 211 ish</span></span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>model1_msk_os <span class="ot">&lt;-</span> <span class="fu">coxph</span>(<span class="fu">Surv</span>(tt_os_d, event_os)<span class="sc">~</span>test_v<span class="sc">+</span>age10<span class="sc">+</span><span class="fu">strata</span>(cohort)<span class="sc">+</span>ecog<span class="sc">+</span> bmi <span class="sc">+</span> imputed_smoking_status, mixed_solid_tumor <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">test_v =</span> <span class="fu">log</span>(rum)))</span>

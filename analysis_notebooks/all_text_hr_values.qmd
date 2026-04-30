@@ -75,7 +75,7 @@ cox_os_gu_uv_continous <-coxph(Surv(os_mo,
 
 sum_os_gu_uv_continous <- summary(cox_os_gu_uv_continous)
 cat(paste(
-  "-----------------------------------------------\n\np value unadjusted fiber as a continus variable, PFS:",
+  "-----------------------------------------------\n\np value unadjusted fiber as a continus variable, OS:",
   round(sum_os_gu_uv_continous$coefficients[variable, "Pr(>|z|)"],digits = 3),
   "\n\n-----------------------------------------------\n\n",
   "HR:",
@@ -232,7 +232,7 @@ cat(paste(
   "]"
 ))
 ```
-We then subdivided the butyrate-producing genes according to their annotation as steps in four substrate-specific fermentation subpathways as described in Vital et al.19 (acetyl-CoA [ACoA], glutarate, succinate, lysine) and investigated associations with OS for each, applying a Bonferroni correction for multiple testing (significance at p < 0.0125). The ACoA fermentation pathway (Bonferroni adj. Wald p = 0.002 ...
+We then subdivided the butyrate-producing genes according to their annotation as steps in four substrate-specific fermentation subpathways as described in Vital et al.19 (acetyl-CoA [ACoA], glutarate, succinate, lysine) and investigated associations with OS for each, applying a Bonferroni correction for multiple testing (significance at p < 0.0125). The ACoA fermentation pathway, which is the fermentation pathway involved in deriving butyrate from fiber, accounted for the association between butyrate-production capacity, as this was the only sub-pathway for which a statistically significant difference was observed in OS (Bonferroni-adjusted Wald p = 0.002 ...
 ```{r}
 #| warning: false
 #| echo: true
