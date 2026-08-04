@@ -1,110 +1,140 @@
 --- 
 title: |
-  Extended Data Figure 2
+  Ext Data Fig 2 - Maaslin
 format:
   html:
     css: styles.css
 ---
-
-
-
 ```{r}
 #| echo: false
 #| warning: false
 #| include: false
 #| label: library_data_imports
+#| eval: false
 
 library(tidyverse)
 library(ggplot2)
-gu_cohort_data <- readRDS("../data/gu_survey_cohort.RDS") %>%
-  select(c(abx_6mo, abx_3mo, pbx_now)) %>%
-  mutate(
-    abx_6mo = case_when(
-      abx_6mo == 0 ~ "0 weeks",
-      abx_6mo == 1 ~ "1 to 2 weeks",
-      abx_6mo == 3 ~ "3 t 5 weeks",
-      abx_6mo == 5 ~ "More than 5 weeks",
-      .default = "Unknown"
-    ),
-    abx_3mo = case_when(
-      abx_3mo == 0 ~ "0 weeks",
-      abx_3mo == 1 ~ "1 to 2 weeks",
-      abx_3mo == 3 ~ "3 t 5 weeks",
-      abx_3mo == 5 ~ "More than 5 weeks",
-      .default = "Unknown"
-    ),
-    pbx_now = case_when(
-      pbx_now == 0 ~ "No",
-      pbx_now == 1 ~ "Yes",
-      pbx_now == 3 ~ "Not sure what Probiotics Are",
-      .default = "Unknown"
-    ),
-    abx_6mo = factor(abx_6mo, levels = c("0 weeks", "1 to 2 weeks", "3 t 5 weeks", "More than 5 weeks", "Unknown")),
-    abx_3mo = factor(abx_3mo, levels = c("0 weeks", "1 to 2 weeks", "3 t 5 weeks", "More than 5 weeks", "Unknown")),
-    pbx_now = factor(pbx_now, levels = c("No", "Yes", "Not sure what Probiotics Are", "Unknown"))
-      
-  )
+library(phyloseq)
+library(maaslin3)
 
-```
-
-
-```{r}
-#| echo: true
-#| warning: false
-#| include: true
-#| label: pbx_usage
-
-ggplot(gu_cohort_data, aes(x = pbx_now)) +
-  geom_bar(
-    binwidth = 2,           
-    fill = "#68a378",       
-    color = "white",
-    stat = 'count',        
-    alpha = 0.8            
-  ) +
-  labs(
-    title = "Probiotics Usage",
-    subtitle = "At time of Survey",
-    x = "Current Probiotic Use",
-    y = "Number of Patients"
-  ) +
-  geom_text(
-    stat = "count", 
-    aes(label = after_stat(count)), 
-    vjust = -0.5, 
-    fontface = "bold"
-  ) +
-  theme_minimal(base_size = 14)
-ggsave("svg/extended_figure_2_pbx_usage.svg", w = 6.5, h = 4)
+data_folder = "C:\\Users\\baichom1\\Documents\\Github\\butyrate_and_icb_2025"
 ```
 
 ```{r}
-#| echo: true
-#| warning: false
-#| include: true
-#| label: abx_usage
+#| eval: false
+ps <- readRDS(paste0(data_folder, "/public_data/sequencing_data/plotting_phyloseq_deidentified.rds"))
+acoa_df <- readRDS(paste0(data_folder, "/data/cleaned_data/acoa_data.rds"))
 
-ggplot(gu_cohort_data, aes(x = abx_3mo)) +
-  geom_bar(
-    binwidth = 2,           
-    fill = "#68a378",       
-    color = "white",
-    stat = 'count',        
-    alpha = 0.8            
-  ) +
-  labs(
-    title = "Antibiotics Usage",
-    subtitle = "3 Months before survey",
-    x = "Weeks of Antibiotics Exposure",
-    y = "Number of Patients"
-  ) +
-  geom_text(
-    stat = "count", 
-    aes(label = after_stat(count)), 
-    vjust = -0.5, 
-    fontface = "bold"
-  ) +
-  theme_minimal(base_size = 14)
+ps_family <- tax_glom(ps, taxrank = "Family")
+tax_table(ps_family)[, "Family"] <- gsub("[^a-zA-Z0-9]", "_", tax_table(ps_family)[, "Family"])
+family_names <- make.unique(tax_table(ps_family)[, "Family"])
+taxa_names(ps_family) <- family_names
+# Extract feature table (transpose to samples x features)
+if (taxa_are_rows(ps_family)) {
+  feature_table <- as.data.frame(t(otu_table(ps_family)))
+} else {
+  feature_table <- as.data.frame(otu_table(ps_family))
+}
 
-ggsave("svg/extended_figure_2_abx_usage.svg", w = 6.5, h = 4)
+# Extract metadata
+metadata <- sample_data(ps_family) %>%
+  as.matrix() %>%
+  as.data.frame() %>% 
+  rownames_to_column("tmp_row_names") %>%
+  mutate(SAMPID = as.integer(SAMPID)) %>%
+  left_join(acoa_df %>% select(c(pyruvate, SAMPID)), by = "SAMPID") %>%
+  rename(acoa = pyruvate) %>% 
+  column_to_rownames("tmp_row_names")  # Note that the "pyruvate" generating pathway is associated with ACOA, apologies for the inconsistent names
+  
+metadata <- metadata[match(rownames(metadata), rownames(feature_table)), ]
+
+# Check that sample names match
+stopifnot(identical(rownames(feature_table), rownames(metadata)))
+
+#output at the species level
+#raw ACoA input here since log transform is included in the maaslin algorithm
+fit_out <- maaslin3(input_data = feature_table,
+                    input_metadata = metadata,
+                    output = 'maaslin_output_family_level_abundance',
+                    formula = '~ acoa',
+                    normalization = 'TSS',
+                    transform = 'LOG',
+                    max_significance = 0.1,
+                    median_comparison_abundance = TRUE,
+                    warn_prevalence = FALSE,
+                    min_abundance = 0.1,
+                    evaluate_only = 'abundance',
+                    max_pngs = 250,
+                    cores = 1)
+
+
 ```
+
+### Panel A
+
+Results of Maaslin 3 run on MSKCC Cohort
+
+<iframe src="maaslin_output_family_level_abundance/figures/summary_plot.pdf" width="100%" height="600px" style="border:none;"></iframe>
+
+
+```{r}
+#| eval: false
+new_metadata <- readRDS(paste0(data_folder, "/data/cleaned_data/wargo_phylo.rds")) %>%
+  microViz::ps_melt() %>% 
+  mutate(acoa = pyruvate + .001) %>%
+    select(c(Sample, acoa)) %>%
+  unique() %>%
+  column_to_rownames("Sample") %>%
+  phyloseq::sample_data()
+
+ps_wargo <- merge_phyloseq(readRDS(paste0(data_folder, "/data/cleaned_data/wargo_phylo.rds")), new_metadata)
+#same for Wargo!
+# Collapse taxa to the Family level
+ps_wargo_f <- tax_glom(ps_wargo, taxrank = "Family")
+
+# Optional: keep only named families
+ps_wargo_f <- subset_taxa(ps_wargo_f, !is.na(Family) & Family != "")
+
+# Replace NAs and tidy family names
+tax_table(ps_wargo_f)[, "Family"] <- gsub("[^a-zA-Z0-9]", "_", tax_table(ps_wargo_f)[, "Family"])
+family_names <- make.unique(tax_table(ps_wargo_f)[, "Family"])
+taxa_names(ps_wargo_f) <- family_names
+
+
+# Extract feature table (transpose to samples x features)
+feature_table <- as.data.frame(t(otu_table(ps_wargo_f)))
+if (taxa_are_rows(ps_wargo_f)) {
+  feature_table <- as.data.frame(t(otu_table(ps_wargo_f)))
+} else {
+  feature_table <- as.data.frame(otu_table(ps_wargo_f))
+}
+
+# Extract metadata
+metadata <- data.frame(sample_data(ps_wargo_f))
+
+
+# Check that sample names match
+stopifnot(identical(rownames(feature_table), rownames(metadata)))
+
+
+fit_out <- maaslin3(input_data = feature_table,
+                    input_metadata = metadata,
+                    output = 'wargo_maaslin_output_family_level_abundance',
+                    formula = '~ acoa',
+                    normalization = 'TSS',
+                    transform = 'LOG',
+                    max_significance = 0.1,
+                    median_comparison_abundance = TRUE,
+                    warn_prevalence = FALSE,
+                    min_abundance = 0.1,
+                    evaluate_only = 'abundance',
+                    max_pngs = 250,
+                    cores = 1)
+
+
+```
+
+### Panel B
+
+Results of Maaslin 3 run on the External Validation Cohort 
+<iframe src="wargo_maaslin_output_family_level_abundance/figures/summary_plot.pdf" width="100%" height="600px" style="border:none;"></iframe>

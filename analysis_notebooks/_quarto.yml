@@ -23,9 +23,11 @@ website:
         contents: 
           - text: "Figure 1: Hazard Ratio with Fiber"
             href: figure_1.qmd
-          - text: "Figure 2: ACoA Pathway and ICB/Survival Outcomes"
-            href: figure_2.qmd
-      - section: "Extended Figures"
+          - text: "Figure 2: PFS vs Fiber by Disease Type"
+            href: figure_1.qmd
+          - text: "Figure 3: ACoA Pathway and ICB/Survival Outcomes"
+            href: figure_3.qmd
+      - section: "Extended Data Figures"
         contents:  
           - text: "Extended Figure 1"
             href: extended_data_figure_1.qmd
@@ -39,32 +41,26 @@ website:
             href: extended_data_figure_5.qmd
           - text: "Extended Figure 6"
             href: extended_data_figure_6.qmd
-          - text: "Extended Figure 7"
-            href: extended_data_figure_7.qmd
-          - text: "Extended Figure 8"
-            href: extended_data_figure_8.qmd
-          - text: "Extended Figure 9"
-            href: extended_data_figure_9.qmd
-      - section: "Tables"
+      - section: "Main Tables"
+        contents: 
+          - text: "Table 1"
+            href: table_1.qmd
+          - text: "Table 2"
+            href: table_2.qmd
+      - section: "Extended Data Tables"
         contents: 
           - text: "Extended Data Table 1"
-            href: table_1.qmd
+            href: extended_table_1.qmd
           - text: "Extended Data Table 2"
-            href: table_2.qmd
+            href: extended_table_2.qmd
           - text: "Extended Data Table 3"
-            href: table_3.qmd
+            href: extended_table_3.qmd
           - text: "Extended Data Table 4"
-            href: table_4.qmd
+            href: extended_table_4.qmd
           - text: "Extended Data Table 5"
-            href: table_5.qmd
+            href: extended_table_5.qmd
           - text: "Extended Data Table 6"
-            href: table_6.qmd
-          - text: "Extended Data Table 7"
-            href: table_7.qmd
-          - text: "Extended Data Table 8"
-            href: table_8.qmd
-          - text: "Extended Data Table 9"
-            href: table_9.qmd
+            href: extended_table_6.qmd
 
 format:
   html:

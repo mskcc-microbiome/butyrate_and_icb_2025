@@ -1,6 +1,6 @@
 --- 
 title: |
-  Extended Data Table  2
+  Table 2
 format:
   html:
     css: styles.css
@@ -19,7 +19,7 @@ library(table1)
 library(gtsummary)
 library(yingtools2)
 source("utility_funcs.R")
-gu_cohort_data <- readRDS("../data/gu_survey_cohort.RDS")
+
 
 ```
 
@@ -29,14 +29,24 @@ gu_cohort_data <- readRDS("../data/gu_survey_cohort.RDS")
 #| echo: false
 #| label: import_data_add_labels
 
-gu_cohort_data %>% 
-  mutate(above_below_label = ifelse(gram_fiber_per_Kcal_aboveRecommended == 0, "below 15g/1000 kcal", "above 15g/1000 kcal")) %>% 
-  select(above_below_label,calor,
-                                                            age,sex.factor,cancer_RCCvsUC_NAME,
-                                                            race.factor,
-                                                            latinx.factor,bmi,
-                                                            ecog_kpsConverted,stage.simplified.factor,smoke.factor,
-                                                            Impact.TMB.Score) %>% 
-  tbl_summary(by = above_below_label) %>%
-  modify_caption("**Supplementary Table. Baseline characteristics of all patients by fiber intake**")
+mixed_solid_tumor <- readRDS("../data/mixed_solid_tumor.RDS") %>%
+  mutate(therapy = case_when(
+    grepl("IPILIMUMAB", cpb_drug) ~ "PD1+CTLA4",
+    cpb_drug %in% c("ATEZOLIZUMAB", "AVELUMAB", "DURVALUMAB", "NIVOLUMAB", "PEMBROLIZUMAB") ~ "PD1 mono",
+    TRUE ~ "PD1+chemo"
+  ))
+
+label(mixed_solid_tumor$age)="Age at time of dietary questionnaire (in years)"
+label(mixed_solid_tumor$ecog)="Performance Status"
+label(mixed_solid_tumor$cohort)="Diagnosis"
+label(mixed_solid_tumor$bmi)="Body Mass Index"
+label(mixed_solid_tumor$smoking_status)="Smoking Status"
+label(mixed_solid_tumor$therapy)="Therapy"
+label(mixed_solid_tumor$TMPT)="Sample day relative to first ICB infusion"
+
+
+
+tbl_summary(mixed_solid_tumor%>%select(age,,cohort,therapy, ecog,TMPT,bmi,smoking_status)) %>% modify_caption("**Supplementary Table. Baseline characteristics of Mixed Solid Tumor Cohort**")
+
+
 ```

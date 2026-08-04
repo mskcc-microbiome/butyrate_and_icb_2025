@@ -1,6 +1,6 @@
 --- 
 title: |
-  Extended Data Table 4
+  Extended Data Table 2
 format:
   html:
     css: styles.css

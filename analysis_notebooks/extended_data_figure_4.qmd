@@ -1,6 +1,6 @@
 --- 
 title: |
-  Extended Figure 4 \nButyrate Gene Abundance and Hazard Ration, and Univatiate Analysis of Butyrate Pathway.
+  Extended Figure 4 ACOA and Butyrate
 format:
   html:
     css: styles.css
@@ -17,6 +17,7 @@ format:
 library(tidyverse)
 library(ggplot2)
 library(phyloseq)
+library(microViz)
 library(survival)
 library(survminer)
 library(viridis)
@@ -27,103 +28,22 @@ source("utility_funcs.R")
 ```
 
 
-
-```{r}
-#| warning: false
-#| echo: false
-#| label: load_data
-
-
-mixed_solid_tumor <- readRDS("../data/mixed_solid_tumor.RDS")
-```
-
-
 ### Panel A
 
-Hazard Ratio of Overall Survival Evaluated with respect to Butyrate production gene RPKM. 
+
+Acetyle CoA Gene abundance and butyric acid relationship
 
 ```{r}
 #| warning: false
-#| label: hr_spline_butyrate_genes
+#| label: panel_c
 
-cox_mst_os_mv_spline <-  coxph(Surv(tt_os_d, event_os)~rms::rcs(total,4)+age10+factor(cohort)+ecog + bmi + imputed_smoking_status,, data = mixed_solid_tumor)
+metabolomics_db <- readRDS("../data/cleaned_data/metabolomics_data.rds")
 
-
-summary(cox_mst_os_mv_spline)
-ptemp <- termplot(cox_mst_os_mv_spline, se=T, plot=F)
-buterm <- ptemp$total
-center <- buterm$y[which(buterm$y == median(buterm$y))]
-ytemp <- buterm$y + outer(buterm$se, c(0, -1.96, 1.96), '*')
-exp_ytemp <- exp(ytemp - center)
-
-spline_data <- data.frame(buty = buterm$x, Estimate = exp_ytemp[,1],
-                          Lower = exp_ytemp[,2], Upper = exp_ytemp[,3])
-
-ggplot(spline_data, aes(x = buty)) +
-  geom_ribbon(aes(ymin = Lower, ymax = Upper), fill = "grey80", alpha = 0.5) +
-  geom_line(aes(y = Estimate), color = "blue") +
-  geom_rug(sides = "b") +  # Add rug plot at the bottom ('b') of the plot
-  scale_y_log10() +  # Log scale for y-axis
-  labs(x = "Total butyrate-pathway genes present", y = "Hazard ratio") +
-  theme_minimal() +
- theme(
-     axis.text = element_text(size = 12), # Adjust axis labels
-     axis.title = element_text(size = 12), # Adjust axis titles
-     plot.title = element_text(size = 12),  # Adjust plot title
-     legend.text = element_text(size = 9),  # Adjust legend text
-     legend.title = element_text(size = 10), # Adjust legend titleMetronidazole
-     strip.text.x = element_text(size = 10),
-     strip.text.y = element_text(size = 10)
- ) 
-ggsave("svg/updated_extended_figure_4_part_a_HR_tot_butyrate.svg", w = 3.5, h = 2)  
-```
-### Panel B
-
-Univariate model of OS as a function of total butyrate genes, and each major sub-pathway in the butyrate production gene pathways. 
-
-```{r}
-#| warning: false
-#| label: univariate_butyrate_pathway
-
-univ2 <- function(cox, k=1, l=1){
-  coef <- exp(coef(cox))
-  confint <- exp(confint(cox))
-  p <- summary(cox)$coefficients[,5]
-  out <- data.frame("HR"=round(coef,4), round(confint,4), "p"=round(p,9))
-  q <- nrow(out)
-  if(l== -1){out <- out[q,]
-  }else{out <- out[k:l,]}
-  return(out)
-
-}
-
-forest_os <- rbind(
-univ2(coxph(Surv(tt_os_d, event_os)~log(total)+age10+cohort+ecog+ bmi + imputed_smoking_status, mixed_solid_tumor)),
-univ2(coxph(Surv(tt_os_d, event_os)~log(pyruvate)+age10+cohort+ecog+ bmi + imputed_smoking_status, mixed_solid_tumor)),
-univ2(coxph(Surv(tt_os_d, event_os)~log(lysine+0.0000001)+age10+cohort+ecog+ bmi + imputed_smoking_status, mixed_solid_tumor)),
-univ2(coxph(Surv(tt_os_d, event_os)~log(fouraminobutyrate+0.000001)+age10+cohort+ecog+ bmi + imputed_smoking_status, mixed_solid_tumor)),
-univ2(coxph(Surv(tt_os_d, event_os)~log(gluatarate+0.000001)+age10+cohort+ecog+ bmi + imputed_smoking_status, mixed_solid_tumor)))
-
-forest_os %>%
-  rename_with(~ c("HR", "CI_low", "CI_high", "p"), .cols = everything()) %>%
-  rownames_to_column("scfa") %>%
-  ggplot() +
-  geom_vline(xintercept=1, lty=2, size=0.25)+
-  geom_point(aes(x=HR, y=fct_reorder(scfa, HR, .desc = T)))+
-  geom_linerange(aes(xmin=CI_low, xmax=CI_high, y=fct_reorder(scfa, HR)), size=0.5) +
-  scale_x_continuous(transform = "log", breaks=round(exp(seq(-2,1.5,0.5)),1)) +
-  theme_classic() +
-  coord_cartesian(xlim=exp(c(-2, 0.3))) + 
-  labs(y = "") +
- theme(
-     axis.text = element_text(size = 10), # Adjust axis labels
-     axis.title = element_text(size = 10), # Adjust axis titles
-     plot.title = element_text(size = 10),  # Adjust plot title
-     legend.text = element_text(size = 9),  # Adjust legend text
-     legend.title = element_text(size = 9), # Adjust legend titleMetronidazole
-     strip.text.x = element_text(size = 9),
-     strip.text.y = element_text(size = 9)
- ) + 
-theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
-ggsave("svg/updated_extended_figure_4_part_b_forest_plt.svg", w = 4, h = 2)  
+ggplot(metabolomics_db) +
+  geom_smooth(aes(x=log(pyruvate), y=Butyric.acid), method=lm, color="#e05f5f") +
+  geom_point(aes(x=log(pyruvate), y=Butyric.acid),
+             shape=21, size=3, fill="#e05f5f", alpha=0.8) +
+  theme_classic()
+cor.test(metabolomics_db$Butyric.acid, log(metabolomics_db$pyruvate))
+  
 ```

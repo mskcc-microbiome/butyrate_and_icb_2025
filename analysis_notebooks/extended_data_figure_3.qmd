@@ -1,6 +1,6 @@
 --- 
 title: |
-  Extended Data Figure 3
+  Extended Figure 3 \nA deeper dive into relationship between ACOA pathway abundance and microbiome taxonomy.
 format:
   html:
     css: styles.css
@@ -16,197 +16,130 @@ format:
 
 library(tidyverse)
 library(ggplot2)
-library(glmnet)
+library(phyloseq)
+library(microViz)
 library(survival)
 library(survminer)
-
-gu_cohort_data <- readRDS("../data/gu_survey_cohort.RDS") 
-
+library(viridis)
+library(yingtools2)
+source("utility_funcs.R")
 
 
 ```
-# Panel A
-Lasso regression raw fiber intake
+
+
+
 ```{r}
-#| echo: false
 #| warning: false
-#| include: true
-#| label: lasso_model_raw_fiber
+#| echo: false
+#| label: load_and_prep_data
+
+plotting_ps <- readRDS("../data/cleaned_data/plotting_phyloseq_deidentified.rds") %>%
+  ps_melt() %>% 
+  mutate(acoa = exp(log_acoa)) %>%
+  group_by(Sample, Family, acoa) %>%
+  summarize(Abundance = sum(Abundance)) %>%
+  ungroup()
+
+```
+Relationship between relative abundance of top families and Acetyl-CoA pathway abundance
+
+## Panel A
 
 
-x <- model.matrix(~ fiber_5g_increment + ageby10 + ecog_1to5_final + 
-                    cancer_RCCvsUC_NAME + stage.simplified.factor + 
-                    bmi + WhiteRace + latinx.binary + Impact.TMB.Imputed +
-                    sex + smoking.binary + calor + 
-                    abx_3mo_yn_imputed + pbx_now_imputed,
-                  data = gu_cohort_data)[, -1]
+Relationship between Rel Abundance of Lachnospiraceae and Acetyle-CoA pathway abundance. 
 
-y <- Surv(gu_cohort_data$pfs_mo, gu_cohort_data$pod_status)
+```{r}
+#| warning: false
+#| label: panel_a_Lachnospiraceae
 
 
-set.seed(42)
-n_sims <- 100
-seeds <- sample(1:10000, n_sims)
-
-# Store coefficients from each run
-coef_matrix <- matrix(NA, nrow = n_sims, ncol = ncol(x))
-colnames(coef_matrix) <- colnames(x)
-
-for (i in 1:n_sims) {
-  set.seed(seeds[i])
-  fit <- cv.glmnet(x, y, family = "cox", alpha = 1)
-  coef_matrix[i, ] <- as.numeric(coef(fit, s = "lambda.min"))
-}
-
-# Summary: mean, median, and SD of coefficients across runs
-coef_summary <- data.frame(
-  Variable = colnames(coef_matrix),
-  Mean_coef = round(apply(coef_matrix, 2, mean), 4),
-  Median_coef = round(apply(coef_matrix, 2, median), 4),
-  SD_coef = round(apply(coef_matrix, 2, sd), 4),
-  Mean_HR = round(exp(apply(coef_matrix, 2, mean)), 4),
-  Median_HR = round(exp(apply(coef_matrix, 2, median)), 4),
-  Pct_nonzero = round(apply(coef_matrix != 0, 2, mean) * 100, 1)
-)
-
-print(coef_summary, row.names = FALSE)
-
-
-coef_summary <- coef_summary %>%
-  mutate(Variable = recode(Variable,
-                           "fiber_5g_bin" = "Daily fiber intake (continuous variable)",
-                           "ageby10" = "Age",
-                           "ecog_1to5_final" = "ECOG PS",
-                           "cancer_RCCvsUC_NAMEUC" = "Cancer type (UC vs RCC)",
-                           "stage.simplified.factorStage IV" = "Stage IV",
-                           "bmi" = "BMI",
-                           "WhiteRace" = "Race",
-                           "Impact.TMB.Imputed" = "TMB",
-                           "smoking.binary" = "Smoking history",
-                           "sex" = "Sex",
-                           "calor" = "Daily caloric intake",
-                           "latinx.binaryNon-Latinx" = "Ethnicity",
-                           "abx_3mo_yn_imputed1" = "Antibiotics",
-                           "pbx_now_imputedYes" = "Probiotics"
-                           
-  ))
-
-coef_summary <- coef_summary %>%
-  arrange(Pct_nonzero) %>%
-  mutate(Variable = factor(Variable, 
-                           levels = c(setdiff(Variable, "Daily fiber intake (continuous variable)"),
-                                      "Daily fiber intake (continuous variable)")))
-
-
-
-ggplot(coef_summary, aes(x = reorder(Variable, Pct_nonzero), y = Pct_nonzero / 100)) +
-  geom_col(fill = "#0072B2", alpha = 0.8) +
-  coord_flip() +
-  scale_y_continuous(labels = scales::percent_format(), expand = c(0, 0.01)) +
-  geom_hline(yintercept = 0.5, lty = 2, color = "grey50") +
+plotting_ps %>%
+  filter(grepl("Lachnospiraceae", Family)) %>%
+  ggplot() +
+  geom_smooth(aes(x=acoa, y=Abundance), method=lm, color="steelblue") +
+  geom_point(aes(x=acoa, y=Abundance),
+             shape=21, size=3, fill="steelblue", alpha=0.8) +
+  theme_classic() + 
   labs(
-    title = "Robustness of predictors in Lasso Cox regression",
-    subtitle = paste("Based on", n_sims, "replications with varying cross-validation folds"),
-    x = NULL,
-    y = "Proportion of runs where variable was retained"
-  ) +
-  theme_minimal(base_size = 12) +
-  theme(
-    panel.grid.major.y = element_blank(),
-    panel.grid.minor.x = element_blank(),
-    plot.title.position = "plot"
+    x = "Acetyl-CoA pathway gene abundance (RPKM)",
+    y = "Lachnospiraceae"
   )
 
-
+#ggsave("svg/extended_figure_4_part_a_Lachnospiraceae.svg", w=5, h = 5)
 ```
-# Panel B
-Lasso regression with fiber density
+
 ```{r}
-#| echo: false
+#|warning: false
+#|label: p_value_panel_a
+fit <- lm(Abundance ~ acoa, plotting_ps %>%
+  filter(grepl("Lachnospiraceae", Family)))
+summary(fit)
+```
+
+## Panel B
+
+Relationship between Rel Abundance of Ruminococcacae and Acetyle-CoA pathway abundance. 
+
+```{r}
 #| warning: false
-#| include: true
-#| label: lasso_model_fiber_density
-
-x <- model.matrix(~ gram_fiber_per_Kcal_aboveRecommended + ageby10 + ecog_1to5_final + 
-                    cancer_RCCvsUC_NAME + stage.simplified.factor + 
-                    bmi + WhiteRace + latinx.binary + Impact.TMB.Imputed +
-                    sex + smoking.binary + calor + 
-                    abx_3mo_yn_imputed + pbx_now_imputed,
-                  data = gu_cohort_data)[, -1]
-
-y <- Surv(gu_cohort_data$pfs_mo, gu_cohort_data$pod_status)
-
-set.seed(42)
-n_sims <- 100
-seeds <- sample(1:10000, n_sims)
-
-# Store coefficients from each run
-coef_matrix <- matrix(NA, nrow = n_sims, ncol = ncol(x))
-colnames(coef_matrix) <- colnames(x)
-
-for (i in 1:n_sims) {
-  set.seed(seeds[i])
-  fit <- cv.glmnet(x, y, family = "cox", alpha = 1)
-  coef_matrix[i, ] <- as.numeric(coef(fit, s = "lambda.min"))
-}
-
-# Summary: mean, median, and SD of coefficients across runs
-coef_summary <- data.frame(
-  Variable = colnames(coef_matrix),
-  Mean_coef = round(apply(coef_matrix, 2, mean), 4),
-  Median_coef = round(apply(coef_matrix, 2, median), 4),
-  SD_coef = round(apply(coef_matrix, 2, sd), 4),
-  Mean_HR = round(exp(apply(coef_matrix, 2, mean)), 4),
-  Median_HR = round(exp(apply(coef_matrix, 2, median)), 4),
-  Pct_nonzero = round(apply(coef_matrix != 0, 2, mean) * 100, 1)
-)
-
-print(coef_summary, row.names = FALSE)
+#| label: panel_b_ruminococcaceae
 
 
-coef_summary <- coef_summary %>%
-  mutate(Variable = recode(Variable,
-                           "gram_fiber_per_Kcal_aboveRecommended" = "Dietary fiber density of 15+ g/1,000 kcal",
-                           "ageby10" = "Age",
-                           "ecog_1to5_final" = "ECOG PS",
-                           "cancer_RCCvsUC_NAMEUC" = "Cancer type (UC vs RCC)",
-                           "stage.simplified.factorStage IV" = "Stage IV",
-                           "bmi" = "BMI",
-                           "WhiteRace" = "Race",
-                           "Impact.TMB.Imputed" = "TMB",
-                           "smoking.binary" = "Smoking history",
-                           "sex" = "Sex",
-                           "calor" = "Daily caloric intake",
-                           "latinx.binaryNon-Latinx" = "Ethnicity",
-                           "abx_3mo_yn_imputed1" = "Antibiotics",
-                           "pbx_now_imputedYes" = "Probiotics"
-  ))
-
-coef_summary <- coef_summary %>%
-  arrange(Pct_nonzero) %>%
-  mutate(Variable = factor(Variable, 
-                           levels = c(setdiff(Variable, "Dietary fiber density of 15+ g/1,000 kcal"),
-                                      "Dietary fiber density of 15+ g/1,000 kcal")))
-
-
-
-ggplot(coef_summary, aes(x = Variable, y = Pct_nonzero / 100)) +
-  geom_col(fill = "#0072B2", alpha = 0.8) +
-  coord_flip() +
-  scale_y_continuous(labels = scales::percent_format(), expand = c(0, 0.01)) +
-  geom_hline(yintercept = 0.5, lty = 2, color = "grey50") +
+plotting_ps %>%
+  filter(grepl("Ruminococcaceae", Family)) %>%
+  ggplot() +
+  geom_smooth(aes(x=acoa, y=Abundance), method=lm, color="goldenrod") +
+  geom_point(aes(x=acoa, y=Abundance),
+             shape=21, size=3, fill="goldenrod", alpha=0.8) +
+  theme_classic() + 
   labs(
-    title = "Robustness of predictors in Lasso Cox regression",
-    subtitle = paste("Based on", n_sims, "replications with varying cross-validation folds"),
-    x = NULL,
-    y = "Proportion of runs where variable was retained"
-  ) +
-  theme_minimal(base_size = 12) +
-  theme(
-    panel.grid.major.y = element_blank(),
-    panel.grid.minor.x = element_blank(),
-    plot.title.position = "plot"
+    x = "Acetyl-CoA pathway gene abundance (RPKM)",
+    y = "Ruminococcaceae"
   )
 
+#ggsave("svg/extended_figure_4_part_b_Ruminococcaceae.svg", w=5, h = 5)
+
 ```
 
+```{r}
+#|warning: false
+#|label: p_value_panel_b
+fit <- lm(Abundance ~ acoa, plotting_ps %>%
+  filter(grepl("Ruminococcaceae", Family)))
+summary(fit)
+```
+
+
+
+## Panel C
+
+Relationship between Rel Abundance of Ruminococcacae and Acetyle-CoA pathway abundance. 
+
+```{r}
+#| warning: false
+#| label: panel_c_bacteroidacea
+
+
+plotting_ps %>%
+  filter(grepl("Bacteroidaceae", Family)) %>%
+  ggplot() +
+  geom_smooth(aes(x=acoa, y=Abundance), method=lm, color="firebrick2") +
+  geom_point(aes(x=acoa, y=Abundance),
+             shape=21, size=3, fill="firebrick2", alpha=0.8) +
+  theme_classic() + 
+  labs(
+    x = "Acetyl-CoA pathway gene abundance (RPKM)",
+    y = "Bacteroidaceae"
+  )
+
+#ggsave("svg/extended_figure_4_part_c_Bacteroidaceae.svg", w=5, h = 5)
+```
+
+```{r}
+#|warning: false
+#|label: p_value_panel_c
+fit <- lm(Abundance ~ acoa, plotting_ps %>%
+  filter(grepl("Bacteroidaceae", Family)))
+summary(fit)
+```
