@@ -134,7 +134,3 @@ fit_out <- maaslin3(input_data = feature_table,
 
 ```
 
-### Panel B
-
-Results of Maaslin 3 run on the External Validation Cohort 
-<iframe src="wargo_maaslin_output_family_level_abundance/figures/summary_plot.pdf" width="100%" height="600px" style="border:none;"></iframe>
