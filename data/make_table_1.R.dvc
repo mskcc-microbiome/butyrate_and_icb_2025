@@ -1,0 +1,5 @@
+outs:
+- md5: faddffb8ce53ad255f0aed14d9f84f9c
+  size: 689
+  hash: md5
+  path: make_table_1.R

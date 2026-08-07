@@ -39,8 +39,6 @@ website:
             href: extended_data_figure_4.qmd
           - text: "Extended Figure 5"
             href: extended_data_figure_5.qmd
-          - text: "Extended Figure 6"
-            href: extended_data_figure_6.qmd
       - section: "Main Tables"
         contents: 
           - text: "Table 1"

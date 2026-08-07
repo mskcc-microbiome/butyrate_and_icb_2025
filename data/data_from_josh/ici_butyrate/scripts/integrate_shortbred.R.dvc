@@ -1,0 +1,5 @@
+outs:
+- md5: e435380f2cdd61787437d4398c3e886d
+  size: 5650
+  hash: md5
+  path: integrate_shortbred.R

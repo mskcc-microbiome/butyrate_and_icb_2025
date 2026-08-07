@@ -1,0 +1,5 @@
+outs:
+- md5: 7830383ed42078a6ac18080d2d20e747
+  size: 7796
+  hash: md5
+  path: maaslin2.log

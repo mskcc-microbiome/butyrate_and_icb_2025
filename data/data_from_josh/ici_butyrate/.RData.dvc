@@ -1,0 +1,5 @@
+outs:
+- md5: bbb25c46f4fe6100096312423f39432e
+  size: 62630215
+  hash: md5
+  path: .RData

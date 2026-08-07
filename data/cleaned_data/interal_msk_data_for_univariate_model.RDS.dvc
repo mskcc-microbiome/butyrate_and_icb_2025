@@ -1,0 +1,5 @@
+outs:
+- md5: 04dbb03c36110b792f780b8778fe09bc
+  size: 19331
+  hash: md5
+  path: interal_msk_data_for_univariate_model.RDS

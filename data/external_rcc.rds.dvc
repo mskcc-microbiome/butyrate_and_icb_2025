@@ -1,0 +1,5 @@
+outs:
+- md5: b490fad7c897716831c4550c97764b27
+  size: 7105
+  hash: md5
+  path: external_rcc.rds

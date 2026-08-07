@@ -1,0 +1,5 @@
+outs:
+- md5: 7be5695f5797094fc26672f3fff05bc8
+  size: 36565
+  hash: md5
+  path: SRR16554741_tmp_metaphlan.tsv

@@ -1,0 +1,5 @@
+outs:
+- md5: 9975e0d71cfd84d8825b8c2c0779e3de
+  size: 82623
+  hash: md5
+  path: log_acoa_10.png

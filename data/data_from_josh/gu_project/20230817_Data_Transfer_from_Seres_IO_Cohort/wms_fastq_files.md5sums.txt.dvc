@@ -1,0 +1,5 @@
+outs:
+- md5: eebe1b739f8978750c96f1789693e283
+  size: 22968
+  hash: md5
+  path: wms_fastq_files.md5sums.txt

@@ -1,0 +1,5 @@
+outs:
+- md5: 0bd0196ab4ff9f8110ccda74601ee1df
+  size: 943
+  hash: md5
+  path: ecogs.csv

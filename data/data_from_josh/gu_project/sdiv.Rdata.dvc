@@ -1,0 +1,5 @@
+outs:
+- md5: 3f60d1f6268f917f461a01f4c3b3e1d8
+  size: 2158
+  hash: md5
+  path: sdiv.Rdata

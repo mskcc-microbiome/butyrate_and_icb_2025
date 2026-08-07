@@ -1,0 +1,5 @@
+outs:
+- md5: 1d390867c3e6aa0b912795a4da1e8003
+  size: 85824
+  hash: md5
+  path: fitted.rds

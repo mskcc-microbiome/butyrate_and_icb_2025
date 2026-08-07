@@ -1,0 +1,5 @@
+outs:
+- md5: c569f39daf5caada3e0a21bae6380a2d
+  size: 14203
+  hash: md5
+  path: analysis.R

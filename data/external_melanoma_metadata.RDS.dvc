@@ -1,0 +1,5 @@
+outs:
+- md5: 7809601b106c119f3353b531d05e60cc
+  size: 9445
+  hash: md5
+  path: external_melanoma_metadata.RDS

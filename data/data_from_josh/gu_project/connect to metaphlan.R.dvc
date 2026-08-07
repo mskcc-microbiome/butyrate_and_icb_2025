@@ -1,0 +1,5 @@
+outs:
+- md5: a2320eded5980d03fe22fa074d757151
+  size: 1220
+  hash: md5
+  path: connect to metaphlan.R

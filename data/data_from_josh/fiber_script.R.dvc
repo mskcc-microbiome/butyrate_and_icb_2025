@@ -1,0 +1,5 @@
+outs:
+- md5: ce0c950b047dc115c23acb0975763169
+  size: 23611
+  hash: md5
+  path: fiber_script.R

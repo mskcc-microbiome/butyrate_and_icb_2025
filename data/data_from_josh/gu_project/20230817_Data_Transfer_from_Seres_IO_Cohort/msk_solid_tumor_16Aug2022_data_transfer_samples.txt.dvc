@@ -1,0 +1,5 @@
+outs:
+- md5: 64d26e56f6e06672a84f28cf56326f0c
+  size: 14292
+  hash: md5
+  path: msk_solid_tumor_16Aug2022_data_transfer_samples.txt

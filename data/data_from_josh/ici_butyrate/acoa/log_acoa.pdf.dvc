@@ -1,0 +1,5 @@
+outs:
+- md5: 934dc43de5cdc407e996b43b3952e0c3
+  size: 104054
+  hash: md5
+  path: log_acoa.pdf

@@ -1,0 +1,5 @@
+outs:
+- md5: be0e950f564e0ff3226fd8b421eed36f
+  size: 86473
+  hash: md5
+  path: residuals.rds

@@ -1,0 +1,5 @@
+outs:
+- md5: a68d2213c0d49ad00ad9536c10caf16c
+  size: 88217
+  hash: md5
+  path: gu_survey_cohort.RDS

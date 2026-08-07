@@ -1,0 +1,5 @@
+outs:
+- md5: 55fffa9044dcd74e31c2555bd9b510da
+  size: 984349
+  hash: md5
+  path: MSK_Solid_Tumor_global_metabolite_data.txt

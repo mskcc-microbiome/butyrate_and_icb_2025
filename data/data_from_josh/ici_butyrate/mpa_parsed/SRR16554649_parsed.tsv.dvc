@@ -1,0 +1,5 @@
+outs:
+- md5: ea156c293c486ac62f9e8fa16c22233c
+  size: 67388
+  hash: md5
+  path: SRR16554649_parsed.tsv

@@ -1,0 +1,5 @@
+outs:
+- md5: ecbc5e5d864e8bda5c5abde713cc2274
+  size: 267
+  hash: md5
+  path: MSK_Solid_Tumor_SCFA_info.txt

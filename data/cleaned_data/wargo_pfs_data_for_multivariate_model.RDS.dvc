@@ -1,0 +1,5 @@
+outs:
+- md5: c997a6ab12c0986eee28117ca25a9820
+  size: 9025
+  hash: md5
+  path: wargo_pfs_data_for_multivariate_model.RDS

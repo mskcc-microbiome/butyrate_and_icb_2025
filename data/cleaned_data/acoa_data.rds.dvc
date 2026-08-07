@@ -1,0 +1,5 @@
+outs:
+- md5: 9acf0de24c3d01fe2706295b586c409c
+  size: 41456
+  hash: md5
+  path: acoa_data.rds

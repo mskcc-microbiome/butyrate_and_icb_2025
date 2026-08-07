@@ -1,0 +1,5 @@
+outs:
+- md5: 266cad114fe42aa3c552cd04890689e0
+  size: 6324
+  hash: md5
+  path: mgx_wargo.R

@@ -1,0 +1,5 @@
+outs:
+- md5: 91287d6ad77be239ec0e1a149fa06386
+  size: 11885
+  hash: md5
+  path: clinout.csv

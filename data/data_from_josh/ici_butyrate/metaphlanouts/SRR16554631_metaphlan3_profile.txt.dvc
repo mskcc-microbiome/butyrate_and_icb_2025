@@ -1,0 +1,5 @@
+outs:
+- md5: 63cfe884d204bdb2fd05e2bce7d0e9af
+  size: 44930
+  hash: md5
+  path: SRR16554631_metaphlan3_profile.txt

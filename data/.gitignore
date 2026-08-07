@@ -1,0 +1,12 @@
+/clean_butyrate_data.R
+/coh_butyrate.rds
+/DATA_dietary_analysis.csv
+/external_melanoma_metadata.RDS
+/external_melanoma_phylo.RDS
+/external_rcc.rds
+/genelist.xlsx
+/gu_survey_cohort.RDS
+/make_table_1.R
+/mixed_solid_tumor.rds
+/mixed_solid_tumor_phyloseq.rds
+/updated_clinical_data.rds

@@ -1,0 +1,5 @@
+outs:
+- md5: b4009b0c3231142adb6c2f5a8bde59b6
+  size: 7210
+  hash: md5
+  path: cmopared models.R

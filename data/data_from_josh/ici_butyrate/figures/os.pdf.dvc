@@ -1,0 +1,5 @@
+outs:
+- md5: 4d2b6c810be20cfe8ae55710d0d9a189
+  size: 8645
+  hash: md5
+  path: os.pdf

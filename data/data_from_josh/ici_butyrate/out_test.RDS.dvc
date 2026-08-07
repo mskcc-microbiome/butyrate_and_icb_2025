@@ -1,0 +1,5 @@
+outs:
+- md5: 57946edc824dbcdb61648e7e53090f5c
+  size: 7661
+  hash: md5
+  path: out_test.RDS

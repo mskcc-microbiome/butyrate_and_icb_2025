@@ -1,0 +1,5 @@
+outs:
+- md5: ef57a0691ca4fea0f0eea95f3019d345
+  size: 7466
+  hash: md5
+  path: DATA_dietary_analysis.csv

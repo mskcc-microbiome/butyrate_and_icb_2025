@@ -1,0 +1,5 @@
+outs:
+- md5: f8b21bc78d2de3a407dc42125b678c89
+  size: 1664662
+  hash: md5
+  path: metaphlanouts.tar.gz

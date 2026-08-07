@@ -1,0 +1,5 @@
+outs:
+- md5: ec3f37dfd79cbb7effd2f0a36e725253
+  size: 2358455
+  hash: md5
+  path: genedata2.RDS

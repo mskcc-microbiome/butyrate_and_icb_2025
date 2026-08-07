@@ -1,0 +1,5 @@
+outs:
+- md5: ef3a1fd92408578d429f74f90c682d4e
+  size: 5246
+  hash: md5
+  path: Generate phyloseq.R
