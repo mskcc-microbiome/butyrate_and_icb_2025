@@ -59,6 +59,8 @@ website:
             href: extended_table_5.qmd
           - text: "Extended Data Table 6"
             href: extended_table_6.qmd
+          - text: "Extended Data Table 7"
+            href: extended_table_7.qmd
 
 format:
   html:
