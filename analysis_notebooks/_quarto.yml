@@ -21,9 +21,9 @@ website:
             href: all_text_hr_values.qmd
       - section: "Main Figures"
         contents: 
-          - text: "Figure 1: Hazard Ratio with Fiber"
+          - text: "Figure 1: Cohort Diagram"
             href: figure_1.qmd
-          - text: "Figure 2: PFS vs Fiber by Disease Type"
+          - text: "Figure 2: Hazard Ratio with Fiber"
             href: figure_1.qmd
           - text: "Figure 3: ACoA Pathway and ICB/Survival Outcomes"
             href: figure_3.qmd
@@ -39,6 +39,8 @@ website:
             href: extended_data_figure_4.qmd
           - text: "Extended Figure 5"
             href: extended_data_figure_5.qmd
+          - text: "Extended Figure 6"
+            href: extended_data_figure_6.qmd
       - section: "Main Tables"
         contents: 
           - text: "Table 1"

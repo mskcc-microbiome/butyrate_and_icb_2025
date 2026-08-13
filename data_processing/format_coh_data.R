@@ -24,10 +24,12 @@ l_lysine <- l_lysine[which(!is.na(l_lysine))]
 genelist <- data.frame(rbind(cbind(l_pyruvate, "pyruvate"),
                              cbind(l_glutarate, "gluatarate"),
                              cbind(l_fouraminobutyrate, "fouraminobutyrate"),
-                             cbind(l_lysine, "lysine"))) %>%
-  unique() %>%
-  rename("gene_family_id" = "l_pyruvate" ,"gene_path_true" = "V2") %>%
+                             cbind(l_lysine, "lysine"))) %>% 
+  unique() %>% 
+  dplyr::rename("gene_family_id" = "l_pyruvate",
+         "gene_path_true" = "V2") %>% 
   mutate(gene_family_id = as.numeric(gene_family_id))
+
 result_df <- readRDS("data/data_from_josh/ici_butyrate/genedata2-May3.RDS") %>%
   select(c(Family, gene_info, TotMarkerLength)) %>% 
   left_join(genelist , by = c("Family" = "gene_family_id")) %>%
@@ -77,9 +79,15 @@ coh_base <- c_meta_s %>%
   filter(collection_cat == "Baseline") %>%
   select(-include_exclude) #relevant to COH analysis not to this project
 
+surv_metadata <- read.csv("data/from_josh_rebuttal/metadataa.csv") %>%
+  janitor::clean_names()
+
 coh_base_ni <- coh_base %>%
   filter(treatment == "Nivo-Ipi") %>%
-  mutate(response01 = ifelse(response == 'Y', 1, 0))
+  mutate(response01 = ifelse(response == 'Y', 1, 0)) %>%
+  left_join(
+    surv_metadata, by = "patient"
+  ) %>%
+  filter(pyruvate > 0)
 
-write_rds(coh_base_ni, "data/coh_butyrate.rds")
-
+write_rds(coh_base_ni, "data/external_rcc.rds")

@@ -1,145 +1,136 @@
 --- 
 title: |
-  Extended Figure 3 \nA deeper dive into relationship between ACOA pathway abundance and microbiome taxonomy.
+  Ext Data Fig 3 - Maaslin
 format:
   html:
     css: styles.css
 ---
-
-
-
 ```{r}
 #| echo: false
 #| warning: false
 #| include: false
 #| label: library_data_imports
+#| eval: false
 
 library(tidyverse)
 library(ggplot2)
 library(phyloseq)
-library(microViz)
-library(survival)
-library(survminer)
-library(viridis)
-library(yingtools2)
-source("utility_funcs.R")
+library(maaslin3)
 
-
-```
-
-
-
-```{r}
-#| warning: false
-#| echo: false
-#| label: load_and_prep_data
-
-plotting_ps <- readRDS("../data/cleaned_data/plotting_phyloseq_deidentified.rds") %>%
-  ps_melt() %>% 
-  mutate(acoa = exp(log_acoa)) %>%
-  group_by(Sample, Family, acoa) %>%
-  summarize(Abundance = sum(Abundance)) %>%
-  ungroup()
-
-```
-Relationship between relative abundance of top families and Acetyl-CoA pathway abundance
-
-## Panel A
-
-
-Relationship between Rel Abundance of Lachnospiraceae and Acetyle-CoA pathway abundance. 
-
-```{r}
-#| warning: false
-#| label: panel_a_Lachnospiraceae
-
-
-plotting_ps %>%
-  filter(grepl("Lachnospiraceae", Family)) %>%
-  ggplot() +
-  geom_smooth(aes(x=acoa, y=Abundance), method=lm, color="steelblue") +
-  geom_point(aes(x=acoa, y=Abundance),
-             shape=21, size=3, fill="steelblue", alpha=0.8) +
-  theme_classic() + 
-  labs(
-    x = "Acetyl-CoA pathway gene abundance (RPKM)",
-    y = "Lachnospiraceae"
-  )
-
-#ggsave("svg/extended_figure_4_part_a_Lachnospiraceae.svg", w=5, h = 5)
+data_folder = "C:\\Users\\baichom1\\Documents\\Github\\butyrate_and_icb_2025"
 ```
 
 ```{r}
-#|warning: false
-#|label: p_value_panel_a
-fit <- lm(Abundance ~ acoa, plotting_ps %>%
-  filter(grepl("Lachnospiraceae", Family)))
-summary(fit)
+#| eval: false
+ps <- readRDS(paste0(data_folder, "/public_data/sequencing_data/plotting_phyloseq_deidentified.rds"))
+acoa_df <- readRDS(paste0(data_folder, "/data/cleaned_data/acoa_data.rds"))
+
+ps_family <- tax_glom(ps, taxrank = "Family")
+tax_table(ps_family)[, "Family"] <- gsub("[^a-zA-Z0-9]", "_", tax_table(ps_family)[, "Family"])
+family_names <- make.unique(tax_table(ps_family)[, "Family"])
+taxa_names(ps_family) <- family_names
+# Extract feature table (transpose to samples x features)
+if (taxa_are_rows(ps_family)) {
+  feature_table <- as.data.frame(t(otu_table(ps_family)))
+} else {
+  feature_table <- as.data.frame(otu_table(ps_family))
+}
+
+# Extract metadata
+metadata <- sample_data(ps_family) %>%
+  as.matrix() %>%
+  as.data.frame() %>% 
+  rownames_to_column("tmp_row_names") %>%
+  mutate(SAMPID = as.integer(SAMPID)) %>%
+  left_join(acoa_df %>% select(c(pyruvate, SAMPID)), by = "SAMPID") %>%
+  rename(acoa = pyruvate) %>% 
+  column_to_rownames("tmp_row_names")  # Note that the "pyruvate" generating pathway is associated with ACOA, apologies for the inconsistent names
+  
+metadata <- metadata[match(rownames(metadata), rownames(feature_table)), ]
+
+# Check that sample names match
+stopifnot(identical(rownames(feature_table), rownames(metadata)))
+
+#output at the species level
+#raw ACoA input here since log transform is included in the maaslin algorithm
+fit_out <- maaslin3(input_data = feature_table,
+                    input_metadata = metadata,
+                    output = 'maaslin_output_family_level_abundance',
+                    formula = '~ acoa',
+                    normalization = 'TSS',
+                    transform = 'LOG',
+                    max_significance = 0.1,
+                    median_comparison_abundance = TRUE,
+                    warn_prevalence = FALSE,
+                    min_abundance = 0.1,
+                    evaluate_only = 'abundance',
+                    max_pngs = 250,
+                    cores = 1)
+
+
 ```
 
-## Panel B
+### Panel A
 
-Relationship between Rel Abundance of Ruminococcacae and Acetyle-CoA pathway abundance. 
+Results of Maaslin 3 run on MSKCC Cohort
+
+<iframe src="maaslin_output_family_level_abundance/figures/summary_plot.pdf" width="100%" height="600px" style="border:none;"></iframe>
+
 
 ```{r}
-#| warning: false
-#| label: panel_b_ruminococcaceae
+#| eval: false
+new_metadata <- readRDS(paste0(data_folder, "/data/cleaned_data/wargo_phylo.rds")) %>%
+  microViz::ps_melt() %>% 
+  mutate(acoa = pyruvate + .001) %>%
+    select(c(Sample, acoa)) %>%
+  unique() %>%
+  column_to_rownames("Sample") %>%
+  phyloseq::sample_data()
+
+ps_wargo <- merge_phyloseq(readRDS(paste0(data_folder, "/data/cleaned_data/wargo_phylo.rds")), new_metadata)
+#same for Wargo!
+# Collapse taxa to the Family level
+ps_wargo_f <- tax_glom(ps_wargo, taxrank = "Family")
+
+# Optional: keep only named families
+ps_wargo_f <- subset_taxa(ps_wargo_f, !is.na(Family) & Family != "")
+
+# Replace NAs and tidy family names
+tax_table(ps_wargo_f)[, "Family"] <- gsub("[^a-zA-Z0-9]", "_", tax_table(ps_wargo_f)[, "Family"])
+family_names <- make.unique(tax_table(ps_wargo_f)[, "Family"])
+taxa_names(ps_wargo_f) <- family_names
 
 
-plotting_ps %>%
-  filter(grepl("Ruminococcaceae", Family)) %>%
-  ggplot() +
-  geom_smooth(aes(x=acoa, y=Abundance), method=lm, color="goldenrod") +
-  geom_point(aes(x=acoa, y=Abundance),
-             shape=21, size=3, fill="goldenrod", alpha=0.8) +
-  theme_classic() + 
-  labs(
-    x = "Acetyl-CoA pathway gene abundance (RPKM)",
-    y = "Ruminococcaceae"
-  )
+# Extract feature table (transpose to samples x features)
+feature_table <- as.data.frame(t(otu_table(ps_wargo_f)))
+if (taxa_are_rows(ps_wargo_f)) {
+  feature_table <- as.data.frame(t(otu_table(ps_wargo_f)))
+} else {
+  feature_table <- as.data.frame(otu_table(ps_wargo_f))
+}
 
-#ggsave("svg/extended_figure_4_part_b_Ruminococcaceae.svg", w=5, h = 5)
+# Extract metadata
+metadata <- data.frame(sample_data(ps_wargo_f))
+
+
+# Check that sample names match
+stopifnot(identical(rownames(feature_table), rownames(metadata)))
+
+
+fit_out <- maaslin3(input_data = feature_table,
+                    input_metadata = metadata,
+                    output = 'wargo_maaslin_output_family_level_abundance',
+                    formula = '~ acoa',
+                    normalization = 'TSS',
+                    transform = 'LOG',
+                    max_significance = 0.1,
+                    median_comparison_abundance = TRUE,
+                    warn_prevalence = FALSE,
+                    min_abundance = 0.1,
+                    evaluate_only = 'abundance',
+                    max_pngs = 250,
+                    cores = 1)
+
 
 ```
 
-```{r}
-#|warning: false
-#|label: p_value_panel_b
-fit <- lm(Abundance ~ acoa, plotting_ps %>%
-  filter(grepl("Ruminococcaceae", Family)))
-summary(fit)
-```
-
-
-
-## Panel C
-
-Relationship between Rel Abundance of Ruminococcacae and Acetyle-CoA pathway abundance. 
-
-```{r}
-#| warning: false
-#| label: panel_c_bacteroidacea
-
-
-plotting_ps %>%
-  filter(grepl("Bacteroidaceae", Family)) %>%
-  ggplot() +
-  geom_smooth(aes(x=acoa, y=Abundance), method=lm, color="firebrick2") +
-  geom_point(aes(x=acoa, y=Abundance),
-             shape=21, size=3, fill="firebrick2", alpha=0.8) +
-  theme_classic() + 
-  labs(
-    x = "Acetyl-CoA pathway gene abundance (RPKM)",
-    y = "Bacteroidaceae"
-  )
-
-#ggsave("svg/extended_figure_4_part_c_Bacteroidaceae.svg", w=5, h = 5)
-```
-
-```{r}
-#|warning: false
-#|label: p_value_panel_c
-fit <- lm(Abundance ~ acoa, plotting_ps %>%
-  filter(grepl("Bacteroidaceae", Family)))
-summary(fit)
-```

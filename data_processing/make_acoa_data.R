@@ -1,4 +1,5 @@
 library(tidyverse)
+library(phyloseq)
 prefix = "data/data_from_josh/gu_project/"
 
 
@@ -9,6 +10,7 @@ ids <- read.delim(paste0(prefix, "sampleids.txt"), sep="\t")
 sdiv <- estimate_richness(serse_phylo, measures="Shannon") %>%
   rownames_to_column("identifier.y")
 named <- readRDS("data/data_from_josh/ici_butyrate/genedata2-May3.RDS")
+cleaned_clinical_data <- readRDS("data/updated_clinical_data.rds")
 
 #create survival variables and smaller dataset
 data <- pt %>%
@@ -66,7 +68,10 @@ genename <- named %>%
 
 tpt1_a <- tpt1 %>%
   left_join(genename, by=c("WMS_SGPID")) %>%
-  filter(!is.na(pyruvate))
+  filter(!is.na(pyruvate)) %>%
+  left_join(cleaned_clinical_data %>% select(c(blinded_subject_id, bmi, imputed_smoking_status))) %>%
+  mutate(bmi = as.numeric(bmi)) %>%
+  mutate(log_acoa = log10(pyruvate))
 
-write_rds(tpt1_a, "data/cleaned_data/acoa_data.rds")
+write_rds(tpt1_a, "data/mixed_solid_tumor_phyloseq.rds")
 

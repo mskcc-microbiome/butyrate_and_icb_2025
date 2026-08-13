@@ -1,6 +1,6 @@
 --- 
 title: |
-  Extended Figure 4 ACOA and Butyrate
+  Extended Figure 4 \nA deeper dive into relationship between ACOA pathway abundance and microbiome taxonomy.
 format:
   html:
     css: styles.css
@@ -28,22 +28,118 @@ source("utility_funcs.R")
 ```
 
 
-### Panel A
-
-
-Acetyle CoA Gene abundance and butyric acid relationship
 
 ```{r}
 #| warning: false
-#| label: panel_c
+#| echo: false
+#| label: load_and_prep_data
 
-metabolomics_db <- readRDS("../data/cleaned_data/metabolomics_data.rds")
+plotting_ps <- readRDS("../data/cleaned_data/plotting_phyloseq_deidentified.rds") %>%
+  ps_melt() %>% 
+  mutate(acoa = exp(log_acoa)) %>%
+  group_by(Sample, Family, acoa) %>%
+  summarize(Abundance = sum(Abundance)) %>%
+  ungroup()
 
-ggplot(metabolomics_db) +
-  geom_smooth(aes(x=log(pyruvate), y=Butyric.acid), method=lm, color="#e05f5f") +
-  geom_point(aes(x=log(pyruvate), y=Butyric.acid),
-             shape=21, size=3, fill="#e05f5f", alpha=0.8) +
-  theme_classic()
-cor.test(metabolomics_db$Butyric.acid, log(metabolomics_db$pyruvate))
-  
+```
+Relationship between relative abundance of top families and Acetyl-CoA pathway abundance
+
+## Panel A
+
+
+Relationship between Rel Abundance of Lachnospiraceae and Acetyle-CoA pathway abundance. 
+
+```{r}
+#| warning: false
+#| label: panel_a_Lachnospiraceae
+
+
+plotting_ps %>%
+  filter(grepl("Lachnospiraceae", Family)) %>%
+  ggplot() +
+  geom_smooth(aes(x=acoa, y=Abundance), method=lm, color="steelblue") +
+  geom_point(aes(x=acoa, y=Abundance),
+             shape=21, size=3, fill="steelblue", alpha=0.8) +
+  theme_classic() + 
+  labs(
+    x = "Acetyl-CoA pathway gene abundance (RPKM)",
+    y = "Lachnospiraceae"
+  )
+
+#ggsave("svg/extended_figure_4_part_a_Lachnospiraceae.svg", w=5, h = 5)
+```
+
+```{r}
+#|warning: false
+#|label: p_value_panel_a
+fit <- lm(Abundance ~ acoa, plotting_ps %>%
+  filter(grepl("Lachnospiraceae", Family)))
+summary(fit)
+```
+
+## Panel B
+
+Relationship between Rel Abundance of Ruminococcacae and Acetyle-CoA pathway abundance. 
+
+```{r}
+#| warning: false
+#| label: panel_b_ruminococcaceae
+
+
+plotting_ps %>%
+  filter(grepl("Ruminococcaceae", Family)) %>%
+  ggplot() +
+  geom_smooth(aes(x=acoa, y=Abundance), method=lm, color="goldenrod") +
+  geom_point(aes(x=acoa, y=Abundance),
+             shape=21, size=3, fill="goldenrod", alpha=0.8) +
+  theme_classic() + 
+  labs(
+    x = "Acetyl-CoA pathway gene abundance (RPKM)",
+    y = "Ruminococcaceae"
+  )
+
+#ggsave("svg/extended_figure_4_part_b_Ruminococcaceae.svg", w=5, h = 5)
+
+```
+
+```{r}
+#|warning: false
+#|label: p_value_panel_b
+fit <- lm(Abundance ~ acoa, plotting_ps %>%
+  filter(grepl("Ruminococcaceae", Family)))
+summary(fit)
+```
+
+
+
+## Panel C
+
+Relationship between Rel Abundance of Ruminococcacae and Acetyle-CoA pathway abundance. 
+
+```{r}
+#| warning: false
+#| label: panel_c_bacteroidacea
+
+
+plotting_ps %>%
+  filter(grepl("Bacteroidaceae", Family)) %>%
+  ggplot() +
+  geom_smooth(aes(x=acoa, y=Abundance), method=lm, color="firebrick2") +
+  geom_point(aes(x=acoa, y=Abundance),
+             shape=21, size=3, fill="firebrick2", alpha=0.8) +
+  theme_classic() + 
+  labs(
+    x = "Acetyl-CoA pathway gene abundance (RPKM)",
+    y = "Bacteroidaceae"
+  )
+
+#ggsave("svg/extended_figure_4_part_c_Bacteroidaceae.svg", w=5, h = 5)
+```
+
+```{r}
+#|warning: false
+#|label: p_value_panel_c
+fit <- lm(Abundance ~ acoa, plotting_ps %>%
+  filter(grepl("Bacteroidaceae", Family)))
+summary(fit)
 ```

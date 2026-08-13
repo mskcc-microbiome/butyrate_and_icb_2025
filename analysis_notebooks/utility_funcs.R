@@ -1,19 +1,3 @@
-####This is the spline function that was used to create the spline plot
-####for the butyrate analysis. It uses a penalized spline pspline(); can try a
-####cubic spline as well in the future rcs(). ##subsequently changed to rcs() as default
-####Variables should be entered as follows:
-#### df = name of the dataframe of interest
-#### survtime = survival time variable, should be given as df$survtime [need to fix this to just the var name]
-#### survevent = survival time event indicator [0,1], should be given as df$survevent [need to fix this to just the var name]
-#### var = variable of interest, a continuous variable, should be fiven as df$var
-#### knots -- number of knots in the partial spline; default is 3
-#### centerpoint -- this is the baseline value at which the spline should cross the x=1 line -- this can be
-####    relocated since the results are a ratio relative to whatever this selected point is
-####    By default this is set to the median value of the variable of interest
-#### title = title for the plot
-#### xlab, ylab = labels for the x and y axes
-
-
 makeSpline <- function(df, survtime, survevent, var,
                        knots=knots, centerpoint = NULL,
                        title=paste("Spline with", knots, "knots"),
@@ -23,7 +7,7 @@ makeSpline <- function(df, survtime, survevent, var,
   require(survival)
   require(tidyverse)
   
-  model_spline <- coxph(Surv(survtime, survevent)~pspline(var,knots), df) #
+  model_spline <- coxph(Surv(survtime, survevent)~rms::rcs(var, knots), df) #
   ptemp <- termplot(model_spline, se=T, plot=F)
   
   splinem <- ptemp$var

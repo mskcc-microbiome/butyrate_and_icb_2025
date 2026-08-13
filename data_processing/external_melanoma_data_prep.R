@@ -1,9 +1,14 @@
 library(tidyverse)
 library(Biostrings)
+library(phyloseq)
+library(microViz)
 
 raw_mpa_phy <- readRDS("data/data_from_josh/ici_butyrate/out_phyloseq80.RDS")
 wargo <- read.delim("data/data_from_josh/ici_butyrate/combined_butyrate_952024.tsv")
-w_meta <- read_csv("data/data_from_josh/ici_butyrate/SraRunTable (1).txt")
+w_meta <- read_csv("data/data_from_josh/ici_butyrate/SraRunTable (1).txt") %>%
+  filter(`Assay Type` == "WGS") %>%
+  mutate(approx_num_seq = as.numeric(Bases)/as.numeric(AvgSpotLen)) %>%
+  filter(approx_num_seq > 20000)
 ici_folder = "P:\\Josh\\ICI_butyrate\\"
 
 
@@ -28,7 +33,8 @@ process_fasta_headers <- function(fasta_file) {
 
 
 wargo <- wargo %>%
-  dplyr::rename(sample_id = sampleid)
+  dplyr::rename(sample_id = sampleid) %>%
+  filter(sample_id %in% w_meta$Run)
 
 # Replace with the path to your FASTA file
 fasta_file_path <- paste0( ici_folder, "data/raw/butyrate_genes.fa")
@@ -117,21 +123,27 @@ taxa_table <- taxa_table
 tax_table(raw_mpa_phy) <- tax_table(as.matrix(taxa_table))
 raw_mpa_phy_icb <- subset_samples(raw_mpa_phy, treatment != "other systemic", )
 
-saveRDS(raw_mpa_phy_icb, "data/cleaned_data/wargo_phylo.RDS")
+saveRDS(raw_mpa_phy_icb, "data/external_melanoma_phylo.RDS")
+
+
 
 result <- raw_mpa_phy_icb %>%
-  get.otu.melt() %>%
-  select(sample, pfs_d, pfsevent, pyruvate, Class, Order, Family, Genus, Species, numseqs) %>%
-  group_by(sample, pfs_d, pfsevent, pyruvate) %>%
+  psmelt() %>% 
+  mutate(
+    age = ifelse(AGE == ">89", 90, as.numeric(AGE)),
+    age10 = age/10) %>% 
+  select(Sample, pfs_d, pfsevent, pyruvate, Class, Order, Family, Genus, Species, age10, AGE, adv_substage, treatment, Abundance) %>%
+  group_by(Sample, pfs_d, pfsevent, pyruvate, age10, AGE, adv_substage, treatment) %>%
   summarise(
-    rum = sum(numseqs[Family == "Ruminococcaceae"], na.rm=T),
-    rum_lach = sum(numseqs[Family %in% c("Ruminococcaceae", "Lachnospiraceae")], na.rm=T),
-    clostridiales = sum(numseqs[Order == "Clostridiales"], na.rm=T),
-    osc = sum(numseqs[Order == "Oscillospirales"], na.rm=T),
-    clostridia = sum(numseqs[Class == "Clostridia"], na.rm=T),
-    faecalibacterium = sum(numseqs[Genus == "Faecalibacterium"], na.rm=T),
-    faecalibacterium_prausnitzii = sum(numseqs[Species == "Faecalibacterium_prausnitzii"], na.rm=T)
+    rum = sum(Abundance[Family == "Ruminococcaceae"], na.rm=T),
+    rum_lach = sum(Abundance[Family %in% c("Ruminococcaceae", "Lachnospiraceae")], na.rm=T),
+    clostridiales = sum(Abundance[Order == "Clostridiales"], na.rm=T),
+    osc = sum(Abundance[Order == "Oscillospirales"], na.rm=T),
+    clostridia = sum(Abundance[Class == "Clostridia"], na.rm=T),
+    faecalibacterium = sum(Abundance[Genus == "Faecalibacterium"], na.rm=T),
+    faecalibacterium_prausnitzii = sum(Abundance[Species == "Faecalibacterium_prausnitzii"], na.rm=T)
   ) %>%
+  ungroup() %>%
   mutate(
     rum = replace_na(rum, 0),
     osc = replace_na(osc, 0),
@@ -142,4 +154,4 @@ result <- raw_mpa_phy_icb %>%
     faecalibacterium_prausnitzii = replace_na(faecalibacterium_prausnitzii, 0)
   )
 
-saveRDS(result, "data/cleaned_data/wargo_pfs_data_for_univariate_model.RDS")
+saveRDS(result, "data/external_melanoma_metadata.RDS")
