@@ -404,6 +404,8 @@ ggsave("svg/updated_fig_3_e_pt2.svg",  w = 3.8, h = 2)
 
 ```{r}
 #| warning: false
+#| include: false
+#| echo: false
 #| label: panel_e_internal_data_os_mv
 
 model1_msk_os <- coxph(Surv(tt_os_d, event_os)~test_v+age10+strata(cohort)+ecog+ bmi + imputed_smoking_status, mixed_solid_tumor %>% mutate(test_v = log1p(pyruvate)))

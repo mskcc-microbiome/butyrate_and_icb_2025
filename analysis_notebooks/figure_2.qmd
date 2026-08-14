@@ -16,15 +16,11 @@ library(dplyr)
 library(survival)
 library(survminer)
 library(forestplot)
-source("utility_funcs.R")
 library(Hmisc)
 library(RColorBrewer)
 library(phyloseq)
+source("utility_funcs.R")
 
-ggsave_workaround <- function(g){survminer:::.build_ggsurvplot(x = g,
-                                                               surv.plot.height = NULL,
-                                                               risk.table.height = NULL,
-                                                               ncensor.plot.height = NULL)}
 
 ylgnbu_palette <- brewer.pal(n = 8, name = "YlGnBu")
 custom_palette <- c(ylgnbu_palette[5], ylgnbu_palette[6], ylgnbu_palette[8])

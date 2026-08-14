@@ -65,5 +65,5 @@ ggsurv_save <- function(plt, name_base, save_date = F, w = 8, h = 8){
     ggsave(paste0("png/dated_versions/", Sys.Date(), "_", name_base, ".png"),width=w, height=h)
   }
   ggsave(file=paste0("svg/", name_base, ".svg"), plot=fixed_p, width=w, height=h)
-  ggsave(file=paste0("png/", name_base, ".pngg"), plot=fixed_p, width=w, height=h)
+  ggsave(file=paste0("png/", name_base, ".png"), plot=fixed_p, width=w, height=h)
 }
