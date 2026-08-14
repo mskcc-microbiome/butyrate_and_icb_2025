@@ -24,7 +24,7 @@ website:
           - text: "Figure 1: Cohort Diagram"
             href: figure_1.qmd
           - text: "Figure 2: Hazard Ratio with Fiber"
-            href: figure_1.qmd
+            href: figure_2.qmd
           - text: "Figure 3: ACoA Pathway and ICB/Survival Outcomes"
             href: figure_3.qmd
       - section: "Extended Data Figures"
@@ -61,8 +61,6 @@ website:
             href: extended_table_5.qmd
           - text: "Extended Data Table 6"
             href: extended_table_6.qmd
-          - text: "Extended Data Table 7"
-            href: extended_table_7.qmd
 
 format:
   html:

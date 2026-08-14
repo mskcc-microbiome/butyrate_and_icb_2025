@@ -28,7 +28,7 @@ makeSpline <- function(df, survtime, survevent, var,
     require(survival)
     require(tidyverse)
     
-    model_spline <- coxph(Surv(survtime, survevent)~pspline(var,knots), df) #
+    model_spline <- coxph(Surv(survtime, survevent)~rms::rcs(var, knots), df) #
     ptemp <- termplot(model_spline, se=T, plot=F)
     
     splinem <- ptemp$var
