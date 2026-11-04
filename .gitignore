@@ -13,3 +13,4 @@ analysis_notebooks/figures/*
 analysis_notebooks/png/*
 analysis_notebooks/svg/*
 old_figures/*
+*.DS_Store
