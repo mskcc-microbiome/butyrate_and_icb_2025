@@ -40,6 +40,10 @@ cleaned_clinical_data <- pt_clinical_data %>%
          bmi_date = service_date
          ) %>%
   filter(blinded_subject_id %in% acoa_data$blinded_subject_id)
+
+#cleaned_clinical_data %>%
+#  select(c(mrn, c1d1, blinded_subject_id)) %>%
+#  write.csv("data/mrn_and_c1d1_solid_tumor_cohort.csv", row.names = F)
   
 cleaned_clinical_data %>%
   mutate(time_bmi_from_service = c1d1 - bmi_date) %>%
@@ -58,7 +62,11 @@ cleaned_clinical_data %>%
 not_matching <- cleaned_clinical_data %>%
   select(intersect(names(cleaned_clinical_data), names(acoa_data))) %>%
   select(-best_overall_response) %>%
-  anti_join(acoa_df %>% select(intersect(names(cleaned_clinical_data), names(acoa_data))) %>% mutate(across(everything(), as.character)) %>% select(-best_overall_response))
+  mutate(id_int = as.character(id_int),
+         ecog = as.character(ecog),
+         impact_tmb_score = as.character(impact_tmb_score),
+         pfs_event = as.character(pfs_event)) %>%
+  anti_join(acoa_data %>% select(intersect(names(cleaned_clinical_data), names(acoa_data))) %>% mutate(across(everything(), as.character)) %>% select(-best_overall_response))
 
 acoa_data %>%
   filter(blinded_subject_id %in% not_matching$blinded_subject_id) %>%

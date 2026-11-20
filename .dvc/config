@@ -1,0 +1,5 @@
+[core]
+    remote = rtssdc_remote
+    autostage = true
+['remote "rtssdc_remote"']
+    url = overwrite_me_in_config_local_file_please
