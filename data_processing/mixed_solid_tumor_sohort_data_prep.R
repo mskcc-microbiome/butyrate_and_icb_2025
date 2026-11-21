@@ -1,6 +1,5 @@
 library(tidyverse)
 library(phyloseq)
-library(yingtools2)
 prefix = "data/data_from_josh/gu_project/"
 
 get_mode <- function(x) {
@@ -75,15 +74,15 @@ genename <- named %>%
   pivot_wider(id_cols= WMS_SGPID, names_from=gene_path_true, values_from=total_count)
 ps <- ps_filter(serse_phylo, experiments %in% tpt1$WMS_SGPID)
 bacterial_abundances <- ps %>%
-  get.otu.melt() %>% 
-  select(sample,cohort, ecog, tt_pfs_d, tt_os_d, pfs_event, event_os, Class, Order, Family, Species, numseqs) %>%
-  group_by(sample) %>%
+  psmelt() %>% 
+  select(Sample,cohort, ecog, tt_pfs_d, tt_os_d, pfs_event, event_os, Class, Order, Family, Species, Abundance) %>%
+  group_by(Sample) %>%
   summarise(
-    rum = sum(numseqs[Family == "Ruminococcaceae"], na.rm=T),
-    rum_lach = sum(numseqs[Family %in% c("Ruminococcaceae", "Lachnospiraceae")], na.rm=T),
-    clostridiales = sum(numseqs[Order == "Clostridiales"], na.rm=T),
-    clostridia = sum(numseqs[Class == "Clostridia"], na.rm=T),
-    faecalibacterium_prausnitzii = sum(numseqs[Species == "Faecalibacterium_prausnitzii"], na.rm=T)
+    rum = sum(Abundance[Family == "Ruminococcaceae"], na.rm=T),
+    rum_lach = sum(Abundance[Family %in% c("Ruminococcaceae", "Lachnospiraceae")], na.rm=T),
+    clostridiales = sum(Abundance[Order == "Clostridiales"], na.rm=T),
+    clostridia = sum(Abundance[Class == "Clostridia"], na.rm=T),
+    faecalibacterium_prausnitzii = sum(Abundance[Species == "Faecalibacterium_prausnitzii"], na.rm=T)
   ) %>%
   mutate(
     rum = replace_na(rum, 0),
@@ -95,7 +94,7 @@ bacterial_abundances <- ps %>%
 
 tpt1_a <- tpt1 %>%
   left_join(genename, by=c("WMS_SGPID")) %>%
-  left_join(bacterial_abundances, by=c("WMS_SGPID" = "sample")) %>%
+  left_join(bacterial_abundances, by=c("WMS_SGPID" = "Sample")) %>%
   filter(!is.na(pyruvate)) %>%
   select(-ecog) %>% # we have an updated list of ecogs with 14 fewer unknown values.  Use that instead:
   left_join(updated_ecogs %>% mutate(id_int = as.character(id_int))) %>%
@@ -103,7 +102,7 @@ tpt1_a <- tpt1 %>%
   mutate(
     bmi = as.numeric(bmi),
     log_acoa = log10(pyruvate),
-    med_p = cut(pyruvate, quantile(pyruvate, probs=seq(0,1,0.5)), c("Below Median", "Above Median")),
+    med_p = if_else(pyruvate > median(pyruvate, na.rm = TRUE), "Above Median", "Below Median"),
     tt_os_months = tt_os_d/30.44,
     tt_pfs_months = tt_pfs_d/30.44, 
     imputed_ecog = ifelse(is.na(ecog), get_mode(ecog), ecog)) %>%
