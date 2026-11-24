@@ -1,0 +1,9 @@
+agora_code,agora_name,number,Common,Systematic,salt_Common,salt_Systematic,Molecular,Structural,"Mass
+(g/mol)"
+ac[e],Acetate,C2:0,Acetic acid,Ethanoic acid,Acetate,Ethanoate,C2H4O2,CH3COOH,60.05
+ppa[e],Propionate,C3:0,Propionic acid,Propanoic acid,Propionate,Propanoate,C3H6O2,CH3CH2COOH,74.08
+but[e],Butyrate,C4:0,Butyric acid,Butanoic acid,Butyrate,Butanoate,C4H8O2,CH3(CH2)2COOH,88.11
+isobut[e],"Isobutyrate, 2-Methylpropanoate",C4:0,Isobutyric acid,2-Methylpropanoic acid,Isobutyrate,2-Methylpropanoate,C4H8O2,(CH3)2CHCOOH,88.11
+M03134[e],Valeric Acid,C5:0,Valeric acid,Pentanoic acid,Valerate,Pentanoate,C5H10O2,CH3(CH2)3COOH,102.13
+isoval[e],"Isovalerate, 3-Methylbutanoate",C5:0,Isovaleric acid,3-Methylbutanoic acid,Isovalerate,3-Methylbutanoate,C5H10O2,(CH3)2CHCH2COOH,102.13
+2mbut[e],2-methylbutyrate,C5:0,2-Methylbutyric acid,2-Methylbutanoic acid,2-Methylbutanoate,2-Methylbutanoate,C5H10O2,CH3CH2CH(CH3)COOH,102.13

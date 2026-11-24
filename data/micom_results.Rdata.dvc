@@ -1,0 +1,5 @@
+outs:
+- md5: bcc823e7205beeb103ba4504963ccc6e
+  size: 4660328
+  hash: md5
+  path: micom_results.Rdata
