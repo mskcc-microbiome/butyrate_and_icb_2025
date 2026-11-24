@@ -1,0 +1,5 @@
+outs:
+- md5: 0d17c0489719fa4626dd2d682f48e298
+  size: 4880364
+  hash: md5
+  path: merged.production_rates.csv

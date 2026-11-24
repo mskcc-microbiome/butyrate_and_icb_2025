@@ -1,0 +1,5 @@
+outs:
+- md5: 4fb58c6e038b400379888e23b81e317c
+  size: 14036520
+  hash: md5
+  path: merged.consumption_rates.csv

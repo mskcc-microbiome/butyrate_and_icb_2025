@@ -1,0 +1,5 @@
+outs:
+- md5: c513279c7cb426c227f9538fc481371b
+  size: 687007
+  hash: md5
+  path: merged.growth_rates.csv

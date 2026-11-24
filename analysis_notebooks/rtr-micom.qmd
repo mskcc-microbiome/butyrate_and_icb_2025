@@ -1,0 +1,234 @@
+---
+
+
+---
+
+```{r}
+
+library(tidyverse)
+library(speedyseq)
+
+dir.create("figures", showWarnings = FALSE)
+theme_set(theme_classic())
+anglelabs <- theme(axis.text.x = element_text(angle=45, hjust=1))
+
+load("../data/micom_results.Rdata", verbose = TRUE)
+
+# scp iris:/data1/collab004/isabl/data_lake/analyses/38/55/113855/merged/ micom-0.0.3-merged
+
+
+growth <- growth_raw %>% select(growth_rate, taxon, sample, medium) %>%
+  filter(taxon != "rare") %>%
+  filter(medium!="agora_high_fiber") %>%
+  pivot_wider(values_from = "growth_rate", names_from = "medium", values_fill = 0)  %>% 
+  mutate(diff = agora_western_fiber_pulse - agora_western) %>% 
+  group_by(taxon) %>% 
+  summarize(
+    median_diff = median(diff, na.rm = T),
+    mean_diff = mean(diff, na.rm = T),
+            n_pos_in_western = sum(agora_western > 0, na.rm = T),
+            n_pos_in_pulse = sum(agora_western_fiber_pulse > 0, na.rm = T),
+            n_samples = n_distinct(growth_raw$sample),
+            prev_pct = round(n_pos_in_western / n_samples * 100, 1)
+            ) %>% 
+  ungroup() %>% 
+  filter(n_pos_in_western > 10) %>% 
+  arrange(desc(n_pos_in_western), desc(median_diff))
+
+
+
+
+
+## joy plot different sitributions
+
+ggplot(growth, aes(x=mean_diff, y=reorder(taxon, mean_diff), alpha = prev_pct )) + 
+  geom_vline(xintercept = 0, linetype="dashed") + 
+  labs(x="Mean difference in simualted growth rate\nbetween western and western + extra fiber diets",
+       alpha="Prevalence %\nacross 108 samples", y="Species") + 
+  geom_point() +
+  theme(text=element_text(size=12),
+        legend.position=c(.7, .2))
+ggsave(filename = "figures/rtr-micom-taxon-growth.pdf", width = 7, height=7)
+ggsave(filename = "figures/rtr-micom-taxon-growth.png", width = 7, height=7)
+
+
+
+ growth_raw %>% select(growth_rate, taxon, sample, medium) %>%
+  filter(taxon != "rare") %>%
+  filter(medium!="agora_high_fiber") %>%
+  pivot_wider(values_from = "growth_rate", names_from = "medium", values_fill = 0)  %>% 
+  mutate(diff = agora_western_fiber_pulse - agora_western)  %>% 
+   group_by(taxon) %>% 
+   filter(n_distinct(sample) > 10) %>% 
+   ungroup() %>% 
+  ggplot(aes(x=diff, y=reorder(taxon, diff))) + 
+  geom_vline(xintercept = 0, linetype="dashed") + 
+  labs(x="Difference in simualted growth rate\nbetween western and western + extra fiber diets",
+       alpha="Prevalence %\nacross 108 samples", y="Species") + 
+ # geom_point() +
+   geom_boxplot(outlier.shape = NA) +
+   scale_x_continuous(limits=c(-.00005, .0005)) + 
+  theme(text=element_text(size=12),
+        legend.position=c(.7, .2))
+
+
+  growth_raw %>% select(growth_rate, taxon, sample, medium) %>%
+  filter(taxon == "_Eubacterium__rectale") %>%
+  filter(medium!="agora_high_fiber") %>%
+  pivot_wider(values_from = "growth_rate", names_from = "medium", values_fill = 0)  %>% 
+  mutate(diff = agora_western_fiber_pulse - agora_western)  %>% 
+   group_by(taxon) %>% 
+   filter(n_distinct(sample) > 10) %>% 
+   ungroup() %>% 
+  ggplot(aes(x=diff, y=reorder(taxon, diff))) + 
+  geom_vline(xintercept = 0, linetype="dashed") + 
+  labs(x="Difference in simualted growth rate\nbetween western and western + extra fiber diets",
+       alpha="Prevalence %\nacross 108 samples", y="Species") + 
+  geom_point() +
+   geom_boxplot(outlier.shape = NA) +
+  theme(text=element_text(size=12),
+        legend.position=c(.7, .2))
+
+
+
+
+
+
+
+
+
+ggplot(prod %>% filter(metabolite %in% scfas$metabolite) %>% 
+         filter(!metabolite %in% c("isobut_e", "m03134_e")) %>% 
+         filter(medium != "agora_high_fiber") %>% 
+         mutate(medium = case_when(
+           medium == "agora_western" ~ "Western",
+           medium == "agora_western_fiber_pulse" ~ "Western + Extra Fiber",
+           TRUE ~ "FIX_ME!"
+         )) %>%
+         left_join(prod_raw %>% select(name, metabolite)) %>% distinct() %>% 
+         mutate(name = gsub("(.*?),.*", "\\1", name)), 
+          aes(x=medium,  y=flux)) + 
+  geom_line(alpha=.6, aes(group=sample), color="gray") + 
+  geom_point(alpha=.6, color="gray")  + 
+  geom_boxplot(aes(x=medium, y=flux), fill=NA, outlier.colour = NA) + 
+  scale_y_log10() + facet_wrap(~name, scales="free") +
+  anglelabs + 
+  labs(x="Simulated Diet", y="Predicted Flux (mmol/gDW/hr)") + 
+  theme(text = element_text(size=16))
+
+ggsave(filename = "figures/rtr-scfa-flux.pdf", width = 5, height=7)
+ggsave(filename = "figures/rtr-scfa-flux.png", width = 5, height=7)
+
+
+
+get_paired_stats <-  function(df, met, media = c("agora_western", "agora_western_fiber_pulse")){
+  testdat <- df[df$metabolite ==met, ] 
+  testdat <- testdat[testdat$medium %in% media, ]  %>% 
+    select(sample, medium, flux) %>%
+  pivot_wider (names_from = medium, values_from = flux, values_fill = 0) %>%
+      data.frame()  
+  return(list(
+    "df"=testdat,
+    "test"=BSDA::SIGN.test(testdat[, media[1]], testdat[, media[2]],  md = 0, conf.level = 0.95) 
+  )
+  )
+}
+
+(signtest_res_but <- get_paired_stats(prod, met="but_e", media = c("agora_western", "agora_western_fiber_pulse") ))
+(signtest_res_ac <- get_paired_stats(prod, met="ac_e", media = c("agora_western", "agora_western_fiber_pulse") ))
+(signtest_res_isoval <- get_paired_stats(prod, met="isoval_e", media = c("agora_western", "agora_western_fiber_pulse") ))
+(signtest_res_ppa <- get_paired_stats(prod, met="ppa_e", media = c("agora_western", "agora_western_fiber_pulse") ))
+
+
+ggplot(exchanges%>% filter(metabolite %in% scfas$metabolite) %>%
+         filter(medium != "agora_high_fiber"), 
+  aes(x=medium, y=flux + .0001)) + 
+  geom_line(alpha=.04, aes(group= interaction(taxon, sample))) +  
+#  geom_boxplot(outlier.colour = NA) + 
+  geom_point(width = .1)  + 
+  scale_y_log10() + 
+  facet_wrap(~metabolite, scales="free") +
+  anglelabs + labs(title="SCFA exports by sample and organism")
+
+
+
+
+
+
+  
+
+# TODO
+
+# show single-organisms model 
+# try aggregating all scfas
+# plot acoa genes vs acetate production
+
+```
+
+# metabolite production ordination
+```{R}
+ordphy <-  micomphy %>% subset_samples(., medium != "agora_high_fiber")
+
+library(microViz)
+ordphy %>%
+  ord_calc(method = "PCA") %>%
+  ord_plot(color = "medium", plot_taxa = 1:10, size = 2, tax_lab_style = microViz::tax_lab_style(size=4)) +
+  scale_colour_brewer(palette = "Dark2") + stat_ellipse(aes(group=medium, color=medium))
+
+
+ggplot(prod %>% filter(metabolite %in% c("but_e")) %>% 
+         filter(medium != "agora_high_fiber"), aes(x=medium, y=flux)) + geom_boxplot() + scale_y_log10() 
+
+
+
+library(maaslin3)
+
+glm_results <- maaslin3::maaslin3(
+  input_metadata = data.frame(sample_data(ordphy)),
+  input_data = as.matrix(data.frame(otu_table(ordphy))),formula = "~medium + (1 | sample)",
+  output = "tmpmaaslin3",
+  normalization = "NONE",min_abundance = 0, min_prevalence = 0, min_variance = 0,
+)
+
+
+
+```
+
+
+## Genes vs production
+```{r}
+ids <- data.frame(sample_data(ordphy))$sample
+mixed_solid_tumor <- readRDS("../data/mixed_solid_tumor.RDS") %>% 
+  rename(sample=identifier.y)
+
+scfa_data <- ordphy %>% 
+  prune_taxa(scfas$metabolite, .) %>% 
+  psmelt() %>% 
+  inner_join(mixed_solid_tumor)
+
+scfa_data_by_bug <- exchanges %>% 
+  filter(metabolite %in% scfas$metabolite) %>% 
+  inner_join(mixed_solid_tumor)
+  
+
+ggplot(scfa_data, aes(x=log_acoa, y=Abundance)) + 
+  geom_point() + 
+  facet_wrap(~OTU, scales="free") + 
+  labs(y="MICOM production", x="log(acoa) gene abundance") 
+  
+ggplot(scfa_data_by_bug, aes(x=log_acoa, y=flux)) + 
+  geom_point(alpha=.3) + 
+  facet_wrap(~metabolite, scales="free") + 
+  labs(y="MICOM flux, by bug", x="log(acoa) gene abundance") + scale_y_log10() +
+  geom_smooth(method="lm")
+
+
+ggplot(scfa_data_by_bug%>% 
+         group_by(sample, metabolite, log_acoa ) %>% 
+         summarize(flux=sum(flux)), aes(x=log_acoa, y=flux)) + 
+  geom_point(alpha=.3) + 
+  facet_wrap(~metabolite, scales="free") + 
+  labs(y="MICOM summed export", x="log(acoa) gene abundance") + scale_y_log10() +
+  geom_smooth(method="lm")
+
+```

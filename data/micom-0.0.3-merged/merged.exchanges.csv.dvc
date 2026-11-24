@@ -1,0 +1,5 @@
+outs:
+- md5: ee8345c4ad59dc35ddc99a592d0ed9ff
+  size: 47668356
+  hash: md5
+  path: merged.exchanges.csv
